@@ -3746,10 +3746,10 @@ pre .coffeescript .title {
   --primary-weak-50: rgba(203, 48, 102, 0.5);
 }
 :root.dark {
-  --primary: #ffc0cb;
-  --primary-70: rgba(255, 192, 203, 0.7);
-  --primary-50: rgba(255, 192, 203, 0.5);
-  --primary-30: rgba(255, 192, 203, 0.3);
-  --primary-weak: #0072ff;
-  --primary-weak-50: rgba(0, 114, 255, 0.5);
+  --primary: #ffffff;
+  --primary-70: rgba(255, 255, 255, 0.7);
+  --primary-50: rgba(255, 255, 255, 0.5);
+  --primary-30: rgba(255, 255, 255, 0.3);
+  --primary-weak: #0a131f;
+  --primary-weak-50: rgba(10, 19, 31, 0.5);
 }
