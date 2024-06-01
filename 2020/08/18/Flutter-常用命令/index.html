@@ -7,22 +7,22 @@
 <meta name="full-screen" content="yes">
 <meta name="theme-color" content="#317EFB" />
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0" name="viewport">
-<meta name="description" content="在使用 GitHub Actions 自动化部署 Hexo 博客的过程中，因为我是使用的私有仓库来存储blog源码,更新后需要将public自动提交到公共仓库中.  部署密钥和令牌问题: GitHub Actions 默认的 GITHUB_TOKEN 不支持推送到外部仓库。这意味着当我们尝试将生成的站点文件从一个仓库推送到另一个仓库时，GITHUB_TOKEN 无法使用,(我这里是使用peacei">
+<meta name="description" content="查看具体命令帮助信息  1flutter help &lt;command&gt;&lt;&#x2F;command&gt;    查看flutter SDK所有分支  1flutter channel    切换分支（例如切换到stable分支）  1flutter channel stable    flutter环境诊断  1flutter doctor    查看详细信息  1flutter doc">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Github Actions私有仓库部署踩坑记">
-<meta property="og:url" content="https://2322222223.github.io/blog/2023/06/01/Github-Actions%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93%E9%83%A8%E7%BD%B2%E8%B8%A9%E5%9D%91%E8%AE%B0/index.html">
+<meta property="og:title" content="Flutter 常用命令">
+<meta property="og:url" content="https://2322222223.github.io/blog/2020/08/18/Flutter-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/index.html">
 <meta property="og:site_name" content="Rlz Blog">
-<meta property="og:description" content="在使用 GitHub Actions 自动化部署 Hexo 博客的过程中，因为我是使用的私有仓库来存储blog源码,更新后需要将public自动提交到公共仓库中.  部署密钥和令牌问题: GitHub Actions 默认的 GITHUB_TOKEN 不支持推送到外部仓库。这意味着当我们尝试将生成的站点文件从一个仓库推送到另一个仓库时，GITHUB_TOKEN 无法使用,(我这里是使用peacei">
+<meta property="og:description" content="查看具体命令帮助信息  1flutter help &lt;command&gt;&lt;&#x2F;command&gt;    查看flutter SDK所有分支  1flutter channel    切换分支（例如切换到stable分支）  1flutter channel stable    flutter环境诊断  1flutter doctor    查看详细信息  1flutter doc">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-06-01T03:35:15.000Z">
+<meta property="article:published_time" content="2020-08-18T06:50:43.000Z">
 <meta property="article:modified_time" content="2024-06-01T07:27:45.297Z">
 <meta property="article:author" content="R.linzhou">
-<meta property="article:tag" content="踩坑">
-<meta property="article:tag" content="Github Actions">
+<meta property="article:tag" content="命令">
+<meta property="article:tag" content="Flutter">
 <meta name="twitter:card" content="summary">
 
 
-<title >Github Actions私有仓库部署踩坑记</title>
+<title >Flutter 常用命令</title>
 
 <!-- Favicon -->
 
@@ -209,7 +209,7 @@
                             NEWS LETTER
                         </div>
                         <h1 class="trm-mb-30 trm-hsmb-font">
-                            Github Actions私有仓库部署踩坑记
+                            Flutter 常用命令
                         </h1>
 
                         
@@ -219,7 +219,7 @@
                                 </li>
                                 <li>
                                     <span>
-                                        2023
+                                        2020
                                     </span>
                                 </li>
                             </ul>
@@ -338,13 +338,13 @@
     <div class="col-sm-4">
         <div class="trm-card trm-label trm-label-light text-center">
             <i class="iconfont far fa-calendar-alt trm-icon"></i><br>
-            06/01
+            08/18
         </div>
     </div>
     <div class="col-sm-4">
         <div class="trm-card trm-label trm-label-light text-center">
             <i class="iconfont far fa-clock trm-icon"></i><br>
-            11:35
+            14:50
         </div>
     </div>
     <div class="col-sm-4">
@@ -356,86 +356,193 @@
 </div>
 <div class="trm-card ">
     <article id="article-container" class="trm-publication">
-    <p><em>在使用 GitHub Actions 自动化部署 Hexo 博客的过程中，因为我是使用的私有仓库来存储blog源码,更新后需要将public自动提交到公共仓库中.</em></p>
-<ol>
-<li><h5 id="部署密钥和令牌问题"><a href="#部署密钥和令牌问题" class="headerlink" title="部署密钥和令牌问题:"></a>部署密钥和令牌问题:</h5><ul>
-<li>GitHub Actions 默认的 GITHUB_TOKEN 不支持推送到外部仓库。这意味着当我们尝试将生成的站点文件从一个仓库推送到另一个仓库时，GITHUB_TOKEN 无法使用,(我这里是使用<code>peaceiris/actions-gh-pages@v3</code>来进行部署)。 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">uses:</span> <span class="string">peaceiris/actions-gh-pages@v3</span></span><br><span class="line">    <span class="attr">with:</span></span><br><span class="line">        <span class="attr">github_token:</span> <span class="string">$&#123;&#123;</span> <span class="string">secrets.GITHUB_TOKEN</span> <span class="string">&#125;&#125;</span></span><br><span class="line">        <span class="attr">publish_dir:</span> <span class="string">./public</span></span><br></pre></td></tr></table></figure>
- 接下来推送代码,部署过程中报错然后查看Workflow Deploy: <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Error: Action failed with <span class="string">&quot;The generated GITHUB_TOKEN (github_tokendoes not support to push to an external repository.</span></span><br><span class="line"><span class="string">Use deploy_key or personal_token.</span></span><br></pre></td></tr></table></figure>
- 原来GITHUB_TOKEN是不支持推送到外部仓库,只能在当前的仓库去执行操作,比如:如推送文件、修改 Issues 等。</li>
-</ul>
-<p> 那就去创建一个,接着:</p>
-<ul>
-<li><code>Settings</code> -&gt; <code>Developer settings</code> -&gt; <code>Personal access tokens</code> -&gt; <code>Generate new token</code> -&gt; <code>勾选repo</code> -&gt; <code>Generate</code></li>
-</ul>
-<p> 然后把创建的PAT添加到Secrets:</p>
-<ul>
-<li><code>仓库页面</code> -&gt; <code>Settings</code> -&gt; <code>Secrets and variables</code> -&gt; <code>Actions</code> -&gt; <code>New repository secret</code> -&gt; <code>填写Name和生成的PAT</code></li>
-</ul>
-<p> OK,把这个名称填写到:</p>
- <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">Deploy</span></span><br><span class="line">  <span class="attr">uses:</span> <span class="string">peaceiris/actions-gh-pages@v3</span></span><br><span class="line">  <span class="attr">with:</span></span><br><span class="line">    <span class="attr">personal_token:</span> <span class="string">$&#123;&#123;</span> <span class="string">secrets.SECRETS_TOKEN</span> <span class="string">&#125;&#125;</span></span><br></pre></td></tr></table></figure>
-<p> 注: secrets.NAME不能使用GITHUB_开头。</p>
-<p> 下面介绍一下支持的Tokens:</p>
-<table>
-<thead>
-<tr>
-<th>Token</th>
-<th>Private repo</th>
-<th>Public repo</th>
-<th>Protocol</th>
-<th>Setup</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>github_token</td>
-<td>✅️</td>
-<td>✅️</td>
-<td>HTTPS</td>
-<td>Unnecessary</td>
-</tr>
-<tr>
-<td>deploy_key</td>
-<td>✅️</td>
-<td>✅️</td>
-<td>SSH</td>
-<td>Necessary</td>
-</tr>
-<tr>
-<td>personal_token</td>
-<td>✅️</td>
-<td>✅️</td>
-<td>HTTPS</td>
-<td>Necessary</td>
-</tr>
-</tbody></table>
-<p> 实际上GITHUB_TOKEN是可以访问部署GitHub Pages的,但由于我们第一步部署需要选择或者创建GitHub Pages分支,通常为:<code>gh-pages</code>,第一次操作通常没有添加write权限,所以会报错:<br> <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/git push origin gh-pages</span><br><span class="line">remote: Write access to repository not granted.</span><br><span class="line">fatal: unable to access &#x27;https://github.com/username/repository.git/&#x27;: The requested URL returned error: 403</span><br><span class="line">Error: Action failed with &quot;The process &#x27;/usr/bin/git&#x27; failed with exit code 128&quot;</span><br></pre></td></tr></table></figure></p>
-</li>
-<li><h5 id="SSH-私钥deploy-key限制"><a href="#SSH-私钥deploy-key限制" class="headerlink" title="SSH 私钥deploy_key限制:"></a>SSH 私钥deploy_key限制:</h5> <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Setup auth token</span><br><span class="line">Error: Action failed with &quot;not found deploy key or tokens&quot;</span><br></pre></td></tr></table></figure>
+    <p>查看具体命令帮助信息</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter help &lt;command&gt;&lt;/command&gt;</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>Secret中Aciton应该的对应的<code>personal_token</code>,主要作用是用于提交git-commit相关的一些操作。</li>
-<li><code>deploy_key</code>应该通过Deploy keys应该是通过SSH生成的公钥。</li>
-<li>同样SSH的私钥应该是在<code>Dependabot</code>中添加的,这样才能对应的上来。</li>
-</ul>
-<p> 具体的操作:</p>
-<ol>
-<li><p>生成部署的秘钥:</p>
- <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -b 4096 -C &quot;$(git config user.email)&quot; -f gh-pages-deploy -N &quot;&quot; </span><br></pre></td></tr></table></figure>
 
-<p> 生成两个文件:<code>gh-pages-deploy.pub</code>公钥,<code>gh-pages-deploy</code> 私钥,<br> 查看并复制</p>
- <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cat gh-pages-deploy</span><br><span class="line">cat gh-pages-deploy.pub</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>然后转到Deploy Key添加公钥，勾选允许写入访问</p>
-</li>
-<li><p>最后转到<code>仓库页面</code> -&gt; <code>Settings</code> -&gt; <code>Secrets and variables</code> -&gt; <code>Actions</code> -&gt; <code>New repository secret</code> 添加私钥</p>
-</li>
-</ol>
-<p> 最后:<br> <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Deploy</span></span><br><span class="line">  <span class="attr">uses:</span> <span class="string">peaceiris/actions-gh-pages@v3</span></span><br><span class="line">  <span class="attr">with:</span></span><br><span class="line">    <span class="attr">personal_token:</span> <span class="string">$&#123;&#123;</span> <span class="string">secrets.SECRETS_TOKEN</span> <span class="string">&#125;&#125;</span></span><br><span class="line">    <span class="attr">deploy_key:</span> <span class="string">$&#123;&#123;</span> <span class="string">secrets.PUBLIC_DEPLOY</span> <span class="string">&#125;&#125;</span></span><br><span class="line">    <span class="attr">publish_dir:</span> <span class="string">./public</span></span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
-</li>
-</ol>
-<h5 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h5><p>GitHub Actions 是一个强大的工具，可以帮助自动化 Hexo 博客的部署过程。然而，正确配置是成功部署的关键。通过以上讨论的问题和解决方案，我们可以更有效地管理和解决在自动化部署过程中可能遇到的挑战。</p>
-<hr>
-<p>这篇文章概述了与 GitHub Actions 相关的一些常见问题以及如何解决这些问题，希望能帮助你更好地使用这个强大的自动化工具。</p>
 
+<p>查看flutter SDK所有分支</p>
+ <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter channel</span><br></pre></td></tr></table></figure>
+
+
+
+<p>切换分支（例如切换到stable分支）</p>
+ <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter channel stable</span><br></pre></td></tr></table></figure>
+
+
+
+<p>flutter环境诊断</p>
+ <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter doctor</span><br></pre></td></tr></table></figure>
+
+
+
+<p>查看详细信息</p>
+ <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter doctor -v</span><br></pre></td></tr></table></figure>
+
+
+
+<p>flutter版本升级</p>
+ <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter upgrade</span><br></pre></td></tr></table></figure>
+
+
+
+<p>获取项目所有的依赖包</p>
+ <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter packages get</span><br></pre></td></tr></table></figure>
+
+
+
+<p>获取项目所有依赖包的最新版本</p>
+ <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter packages upgrade</span><br></pre></td></tr></table></figure>
+
+
+
+<p>添加第三方（例如添加xmpp_plugin）</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter pub add xmpp_plugin</span><br></pre></td></tr></table></figure>
+
+
+
+<p>获取第三方包依赖</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter pub get</span><br></pre></td></tr></table></figure>
+
+
+
+<p>清缓存</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter clean</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="运行项目"><a href="#运行项目" class="headerlink" title="运行项目"></a>运行项目</h2><p>列出所有连接的设备</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter devices</span><br></pre></td></tr></table></figure>
+
+
+
+<p>运行项目</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter run</span><br></pre></td></tr></table></figure>
+
+
+
+<p>显示系统日志运行</p>
+ <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter run --verbose-system-logs</span><br></pre></td></tr></table></figure>
+
+
+
+<p>指定设备运行项目</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter run -d &#x27;iPhone Xʀ&#x27;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>运行在所有可用设备上</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter run -d all</span><br></pre></td></tr></table></figure>
+
+
+
+<p>查看可用模拟器</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter emulators</span><br></pre></td></tr></table></figure>
+
+
+
+<p>启动iOS模拟器</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter emulators --launch apple_ios_simulator</span><br></pre></td></tr></table></figure>
+
+
+
+<p>启动Android 模拟器-只有启动模拟器才可以运行</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter emulators --launch Nexus_5X_API_27</span><br></pre></td></tr></table></figure>
+
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter run -d emulator-5554</span><br></pre></td></tr></table></figure>
+
+
+
+<p>运行IOS真机</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter run -d 00008020-001838491169002E</span><br></pre></td></tr></table></figure>
+
+
+
+<p>查看日志</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter logs</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="项目搭建"><a href="#项目搭建" class="headerlink" title="项目搭建"></a>项目搭建</h2><p>创建项目</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter create flutter_app</span><br></pre></td></tr></table></figure>
+
+
+
+<p>指定语言：默认Android使用Java，iOS使用Objective-C</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter create -i swift -a kotlin flutter_app</span><br></pre></td></tr></table></figure>
+
+
+
+<p>创建混编项目</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter create -t module flutter_module</span><br></pre></td></tr></table></figure>
+
+
+
+<p>旧项目新增平台支持</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter create --platforms=windows,macos,linux .</span><br></pre></td></tr></table></figure>
+
+
+
+<p>开启平台</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter config --enable-web true</span><br></pre></td></tr></table></figure>
+
+
+
+<p>关闭平台（关闭后可以删除项目中对应的平台目录文件夹）</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter config --no-enable-web</span><br></pre></td></tr></table></figure>
+
+
+
+<p>开启和关闭平台后都需要使用命令重新构建下项目（最好都关闭项目然后在终端中cd到当前项目目录后执行命令）</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter create .</span><br></pre></td></tr></table></figure>
+
+<p> 如果报错的话用下面这个(上面的旧项目新增平台的命令如果报错也可以试试这个命令)</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter create --org package_name .</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>分析代码</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter analyze</span><br></pre></td></tr></table></figure>
+
+
+
+<p>构建iOS</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter build ios</span><br></pre></td></tr></table></figure>
+
+
+
+<p>安卓打包</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter build apk</span><br></pre></td></tr></table></figure>
+
+
+
+<p>iOS打包，运行命令后在xcode中打包</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter build ios --release</span><br></pre></td></tr></table></figure>
+
+
+
+<p>打包web，文件在build目录下</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter build web</span><br></pre></td></tr></table></figure>
+
+
+
+<p>截图</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter screenshot</span><br></pre></td></tr></table></figure>
+
+
+
+<p>清除插件缓存</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter pub cache repair</span><br></pre></td></tr></table></figure>
+
+
+
+<p>创建插件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter create --org com.example --template=plugin --platforms=android,ios,linux,macos,windows -a kotlin project-name</span><br></pre></td></tr></table></figure>
+
+
+
+<p>安卓打包</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#arm64</span><br><span class="line">flutter build apk --release --split-per-abi --build-number=1 --build-name=wuhope --tree-shake-icons --analyze-size --target-platform=android-arm64</span><br><span class="line"></span><br><span class="line">#x86</span><br><span class="line">flutter build apk --release --split-per-abi --build-number=1 --build-name=wuhope --tree-shake-icons --analyze-size --target-platform=android-x64</span><br></pre></td></tr></table></figure>
 </article>
     
     
@@ -450,22 +557,42 @@
         </h5>
     </div>
     
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/blog/2022/04/16/ADB-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">ADB 常用命令</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>22/04/16</li>
+                <li>14:50</li>
+                <li>Android</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
     
         <div class="col-lg-6">
     <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
         <div class="trm-older-publication">
             
-            <a class="trm-op-top trm-anima-link" href="/blog/2023/02/18/Docker-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
+            <a class="trm-op-top trm-anima-link" href="/blog/2018/11/18/Git-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
                 <span class="trm-op-cover">
                     <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
                 </span>
-                <h6 class="trm-op-title">Docker 常用命令</h6>
+                <h6 class="trm-op-title">Git 常用命令</h6>
             </a>
             <div class="trm-divider trm-mb-15 trm-mt-20"></div>
             <ul class="trm-card-data trm-label">
-                <li>23/02/18</li>
+                <li>18/11/18</li>
                 <li>14:50</li>
-                <li>Docker</li>
+                <li>Git</li>
             </ul>
         </div>
     </div>

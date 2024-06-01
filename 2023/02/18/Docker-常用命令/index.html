@@ -7,22 +7,22 @@
 <meta name="full-screen" content="yes">
 <meta name="theme-color" content="#317EFB" />
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0" name="viewport">
-<meta name="description" content="在使用 GitHub Actions 自动化部署 Hexo 博客的过程中，因为我是使用的私有仓库来存储blog源码,更新后需要将public自动提交到公共仓库中.  部署密钥和令牌问题: GitHub Actions 默认的 GITHUB_TOKEN 不支持推送到外部仓库。这意味着当我们尝试将生成的站点文件从一个仓库推送到另一个仓库时，GITHUB_TOKEN 无法使用,(我这里是使用peacei">
+<meta name="description" content="保存命令   1234docker save -o name.tar image-name#压缩镜像gzip name.tar   保存并直接压缩   1docker save image-name |gzip&gt;name.tar.gz   build   1234567docker build -t image-name:tag -f Dockerfile .#根据当前的cpu架构来构建#">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Github Actions私有仓库部署踩坑记">
-<meta property="og:url" content="https://2322222223.github.io/blog/2023/06/01/Github-Actions%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93%E9%83%A8%E7%BD%B2%E8%B8%A9%E5%9D%91%E8%AE%B0/index.html">
+<meta property="og:title" content="Docker 常用命令">
+<meta property="og:url" content="https://2322222223.github.io/blog/2023/02/18/Docker-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/index.html">
 <meta property="og:site_name" content="Rlz Blog">
-<meta property="og:description" content="在使用 GitHub Actions 自动化部署 Hexo 博客的过程中，因为我是使用的私有仓库来存储blog源码,更新后需要将public自动提交到公共仓库中.  部署密钥和令牌问题: GitHub Actions 默认的 GITHUB_TOKEN 不支持推送到外部仓库。这意味着当我们尝试将生成的站点文件从一个仓库推送到另一个仓库时，GITHUB_TOKEN 无法使用,(我这里是使用peacei">
+<meta property="og:description" content="保存命令   1234docker save -o name.tar image-name#压缩镜像gzip name.tar   保存并直接压缩   1docker save image-name |gzip&gt;name.tar.gz   build   1234567docker build -t image-name:tag -f Dockerfile .#根据当前的cpu架构来构建#">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-06-01T03:35:15.000Z">
+<meta property="article:published_time" content="2023-02-18T06:50:43.000Z">
 <meta property="article:modified_time" content="2024-06-01T07:27:45.297Z">
 <meta property="article:author" content="R.linzhou">
-<meta property="article:tag" content="踩坑">
-<meta property="article:tag" content="Github Actions">
+<meta property="article:tag" content="命令">
+<meta property="article:tag" content="Docker">
 <meta name="twitter:card" content="summary">
 
 
-<title >Github Actions私有仓库部署踩坑记</title>
+<title >Docker 常用命令</title>
 
 <!-- Favicon -->
 
@@ -209,7 +209,7 @@
                             NEWS LETTER
                         </div>
                         <h1 class="trm-mb-30 trm-hsmb-font">
-                            Github Actions私有仓库部署踩坑记
+                            Docker 常用命令
                         </h1>
 
                         
@@ -338,13 +338,13 @@
     <div class="col-sm-4">
         <div class="trm-card trm-label trm-label-light text-center">
             <i class="iconfont far fa-calendar-alt trm-icon"></i><br>
-            06/01
+            02/18
         </div>
     </div>
     <div class="col-sm-4">
         <div class="trm-card trm-label trm-label-light text-center">
             <i class="iconfont far fa-clock trm-icon"></i><br>
-            11:35
+            14:50
         </div>
     </div>
     <div class="col-sm-4">
@@ -356,85 +356,121 @@
 </div>
 <div class="trm-card ">
     <article id="article-container" class="trm-publication">
-    <p><em>在使用 GitHub Actions 自动化部署 Hexo 博客的过程中，因为我是使用的私有仓库来存储blog源码,更新后需要将public自动提交到公共仓库中.</em></p>
-<ol>
-<li><h5 id="部署密钥和令牌问题"><a href="#部署密钥和令牌问题" class="headerlink" title="部署密钥和令牌问题:"></a>部署密钥和令牌问题:</h5><ul>
-<li>GitHub Actions 默认的 GITHUB_TOKEN 不支持推送到外部仓库。这意味着当我们尝试将生成的站点文件从一个仓库推送到另一个仓库时，GITHUB_TOKEN 无法使用,(我这里是使用<code>peaceiris/actions-gh-pages@v3</code>来进行部署)。 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">uses:</span> <span class="string">peaceiris/actions-gh-pages@v3</span></span><br><span class="line">    <span class="attr">with:</span></span><br><span class="line">        <span class="attr">github_token:</span> <span class="string">$&#123;&#123;</span> <span class="string">secrets.GITHUB_TOKEN</span> <span class="string">&#125;&#125;</span></span><br><span class="line">        <span class="attr">publish_dir:</span> <span class="string">./public</span></span><br></pre></td></tr></table></figure>
- 接下来推送代码,部署过程中报错然后查看Workflow Deploy: <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Error: Action failed with <span class="string">&quot;The generated GITHUB_TOKEN (github_tokendoes not support to push to an external repository.</span></span><br><span class="line"><span class="string">Use deploy_key or personal_token.</span></span><br></pre></td></tr></table></figure>
- 原来GITHUB_TOKEN是不支持推送到外部仓库,只能在当前的仓库去执行操作,比如:如推送文件、修改 Issues 等。</li>
-</ul>
-<p> 那就去创建一个,接着:</p>
-<ul>
-<li><code>Settings</code> -&gt; <code>Developer settings</code> -&gt; <code>Personal access tokens</code> -&gt; <code>Generate new token</code> -&gt; <code>勾选repo</code> -&gt; <code>Generate</code></li>
-</ul>
-<p> 然后把创建的PAT添加到Secrets:</p>
-<ul>
-<li><code>仓库页面</code> -&gt; <code>Settings</code> -&gt; <code>Secrets and variables</code> -&gt; <code>Actions</code> -&gt; <code>New repository secret</code> -&gt; <code>填写Name和生成的PAT</code></li>
-</ul>
-<p> OK,把这个名称填写到:</p>
- <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">Deploy</span></span><br><span class="line">  <span class="attr">uses:</span> <span class="string">peaceiris/actions-gh-pages@v3</span></span><br><span class="line">  <span class="attr">with:</span></span><br><span class="line">    <span class="attr">personal_token:</span> <span class="string">$&#123;&#123;</span> <span class="string">secrets.SECRETS_TOKEN</span> <span class="string">&#125;&#125;</span></span><br></pre></td></tr></table></figure>
-<p> 注: secrets.NAME不能使用GITHUB_开头。</p>
-<p> 下面介绍一下支持的Tokens:</p>
-<table>
-<thead>
-<tr>
-<th>Token</th>
-<th>Private repo</th>
-<th>Public repo</th>
-<th>Protocol</th>
-<th>Setup</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>github_token</td>
-<td>✅️</td>
-<td>✅️</td>
-<td>HTTPS</td>
-<td>Unnecessary</td>
-</tr>
-<tr>
-<td>deploy_key</td>
-<td>✅️</td>
-<td>✅️</td>
-<td>SSH</td>
-<td>Necessary</td>
-</tr>
-<tr>
-<td>personal_token</td>
-<td>✅️</td>
-<td>✅️</td>
-<td>HTTPS</td>
-<td>Necessary</td>
-</tr>
-</tbody></table>
-<p> 实际上GITHUB_TOKEN是可以访问部署GitHub Pages的,但由于我们第一步部署需要选择或者创建GitHub Pages分支,通常为:<code>gh-pages</code>,第一次操作通常没有添加write权限,所以会报错:<br> <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/git push origin gh-pages</span><br><span class="line">remote: Write access to repository not granted.</span><br><span class="line">fatal: unable to access &#x27;https://github.com/username/repository.git/&#x27;: The requested URL returned error: 403</span><br><span class="line">Error: Action failed with &quot;The process &#x27;/usr/bin/git&#x27; failed with exit code 128&quot;</span><br></pre></td></tr></table></figure></p>
-</li>
-<li><h5 id="SSH-私钥deploy-key限制"><a href="#SSH-私钥deploy-key限制" class="headerlink" title="SSH 私钥deploy_key限制:"></a>SSH 私钥deploy_key限制:</h5> <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Setup auth token</span><br><span class="line">Error: Action failed with &quot;not found deploy key or tokens&quot;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>Secret中Aciton应该的对应的<code>personal_token</code>,主要作用是用于提交git-commit相关的一些操作。</li>
-<li><code>deploy_key</code>应该通过Deploy keys应该是通过SSH生成的公钥。</li>
-<li>同样SSH的私钥应该是在<code>Dependabot</code>中添加的,这样才能对应的上来。</li>
-</ul>
-<p> 具体的操作:</p>
-<ol>
-<li><p>生成部署的秘钥:</p>
- <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -b 4096 -C &quot;$(git config user.email)&quot; -f gh-pages-deploy -N &quot;&quot; </span><br></pre></td></tr></table></figure>
-
-<p> 生成两个文件:<code>gh-pages-deploy.pub</code>公钥,<code>gh-pages-deploy</code> 私钥,<br> 查看并复制</p>
- <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cat gh-pages-deploy</span><br><span class="line">cat gh-pages-deploy.pub</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>然后转到Deploy Key添加公钥，勾选允许写入访问</p>
-</li>
-<li><p>最后转到<code>仓库页面</code> -&gt; <code>Settings</code> -&gt; <code>Secrets and variables</code> -&gt; <code>Actions</code> -&gt; <code>New repository secret</code> 添加私钥</p>
-</li>
+    <ol>
+<li>保存命令</li>
 </ol>
-<p> 最后:<br> <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Deploy</span></span><br><span class="line">  <span class="attr">uses:</span> <span class="string">peaceiris/actions-gh-pages@v3</span></span><br><span class="line">  <span class="attr">with:</span></span><br><span class="line">    <span class="attr">personal_token:</span> <span class="string">$&#123;&#123;</span> <span class="string">secrets.SECRETS_TOKEN</span> <span class="string">&#125;&#125;</span></span><br><span class="line">    <span class="attr">deploy_key:</span> <span class="string">$&#123;&#123;</span> <span class="string">secrets.PUBLIC_DEPLOY</span> <span class="string">&#125;&#125;</span></span><br><span class="line">    <span class="attr">publish_dir:</span> <span class="string">./public</span></span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
-</li>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker save -o name.tar image-name</span><br><span class="line"></span><br><span class="line">#压缩镜像</span><br><span class="line">gzip name.tar</span><br></pre></td></tr></table></figure>
+</blockquote>
+<ol>
+<li>保存并直接压缩</li>
 </ol>
-<h5 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h5><p>GitHub Actions 是一个强大的工具，可以帮助自动化 Hexo 博客的部署过程。然而，正确配置是成功部署的关键。通过以上讨论的问题和解决方案，我们可以更有效地管理和解决在自动化部署过程中可能遇到的挑战。</p>
-<hr>
-<p>这篇文章概述了与 GitHub Actions 相关的一些常见问题以及如何解决这些问题，希望能帮助你更好地使用这个强大的自动化工具。</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker save image-name |gzip&gt;name.tar.gz</span><br></pre></td></tr></table></figure>
+</blockquote>
+<ol>
+<li>build</li>
+</ol>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker build -t image-name:tag -f Dockerfile .</span><br><span class="line"></span><br><span class="line">#根据当前的cpu架构来构建</span><br><span class="line">#docker build -t 172.18.0.40:82/ai/kubeflow-dashboard-frontend-enterprise:2023.12.28-amd64 -f install/docker/dockerFrontend/Dockerfile .</span><br><span class="line"></span><br><span class="line">#指定平台构建 可以选择amd64或arm64或者打包两个</span><br><span class="line">docker buildx build --platform linux/amd64,linux/arm64 -t image-name:tag -f Dockerfile .  --push</span><br></pre></td></tr></table></figure>
+</blockquote>
+<ol>
+<li>推送</li>
+</ol>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker push image-name</span><br></pre></td></tr></table></figure>
+</blockquote>
+<ol>
+<li>运行</li>
+</ol>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker run</span><br><span class="line"></span><br><span class="line">#docker run -d -p 80:80 --name webserver nginx</span><br><span class="line">#使用 -d 参数在后台运行容器。-p 80:80 将容器的80端口映射到主机的80端口。--name webserver 给容器命名为 webserver。nginx 是要运行的镜像名称</span><br></pre></td></tr></table></figure>
+</blockquote>
+<ol>
+<li>查看镜像</li>
+</ol>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker images</span><br><span class="line">#列出所有本地存储的镜像</span><br></pre></td></tr></table></figure>
+</blockquote>
+<ol>
+<li>查看容器</li>
+</ol>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker ps</span><br><span class="line">#列出当前运行的容器。</span><br><span class="line">#不带参数默认只显示运行中的容器。-a 参数显示所有容器，包括未运行</span><br></pre></td></tr></table></figure>
+</blockquote>
+<ol>
+<li>停止</li>
+</ol>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker stop</span><br><span class="line">#停止一个或多个运行中的容器 docker stop webserver</span><br><span class="line">#停止所有: </span><br><span class="line">#docker stop $(docker ps -aq)</span><br></pre></td></tr></table></figure>
+</blockquote>
+<ol>
+<li>删除容器</li>
+</ol>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker rm</span><br><span class="line">#删除一个或多个容器 docker rm webserver / docker rm -f webserver</span><br><span class="line">#删除所有:</span><br><span class="line">#docker rm $(docker ps -aq)</span><br></pre></td></tr></table></figure>
+</blockquote>
+<ol>
+<li>删除镜像</li>
+</ol>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker rmi</span><br><span class="line">#删除一个或多个镜像 docker rmi webserver</span><br><span class="line">#删除所有:</span><br><span class="line">#docker rmi $(docker ps -aq)</span><br></pre></td></tr></table></figure>
+</blockquote>
+<ol>
+<li>进入容器执行命令</li>
+</ol>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker exec</span><br><span class="line">#进入容器可以执行命令 docker exec -it webserver bash</span><br><span class="line">#docker exec -it mysql mysql -uroot -p</span><br></pre></td></tr></table></figure>
+</blockquote>
+<ol>
+<li>查看容器或镜像的详细信息</li>
+</ol>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker inspect</span><br><span class="line">#docker inspect webserver </span><br><span class="line">#webserver 是容器或镜像的名称或 ID</span><br></pre></td></tr></table></figure>
+</blockquote>
+<ol>
+<li>查看log</li>
+</ol>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker logs</span><br><span class="line">#获取容器列出的日志</span><br><span class="line">#docker logs webserver</span><br></pre></td></tr></table></figure>
+</blockquote>
+<ol>
+<li>其他:</li>
+</ol>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">#启动容器</span><br><span class="line">docker start</span><br><span class="line"></span><br><span class="line">#暂停进程</span><br><span class="line">docker pause</span><br><span class="line"></span><br><span class="line">#恢复容器</span><br><span class="line">docker unpause</span><br><span class="line"></span><br><span class="line">#重启容器</span><br><span class="line">docker restart</span><br><span class="line"></span><br><span class="line">#杀掉运行中的容器</span><br><span class="line">docker kill</span><br><span class="line"></span><br><span class="line">#开启docker </span><br><span class="line">systemctl start docker</span><br><span class="line"></span><br><span class="line">#查看docker状态</span><br><span class="line">systemctl status docker </span><br><span class="line"></span><br><span class="line">#停止</span><br><span class="line">systemctl stop docker </span><br><span class="line"></span><br><span class="line">#重启</span><br><span class="line">systemctl  restart docker</span><br><span class="line"></span><br><span class="line">#设置开启自启</span><br><span class="line">systemctl enable docker</span><br></pre></td></tr></table></figure>
+</blockquote>
+<ol>
+<li>打标签</li>
+</ol>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker tag</span><br><span class="line">#给本地镜像打标签</span><br><span class="line">#docker tag myimage:tag username/repository:tag</span><br></pre></td></tr></table></figure>
+</blockquote>
+<ol>
+<li>加载本地镜像</li>
+</ol>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker load</span><br><span class="line">#加载tar本地镜像</span><br><span class="line">#docker load -i filename.tar</span><br></pre></td></tr></table></figure>
+</blockquote>
+<ol>
+<li>查看历史记录</li>
+</ol>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker history</span><br><span class="line">#查看镜像的历史记录</span><br><span class="line">#docker history myimage:tag</span><br></pre></td></tr></table></figure>
+</blockquote>
+<ol>
+<li>从容器中拷贝</li>
+</ol>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker cp container-name file-name</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>19.导出容器 另存为文件</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker export -o file-name.tar container-name/container-id</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>20.从文件导入镜像</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker import file-name.tar container-name:tag</span><br></pre></td></tr></table></figure></blockquote>
 
 </article>
     
@@ -450,22 +486,42 @@
         </h5>
     </div>
     
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/blog/2023/06/01/Github-Actions%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93%E9%83%A8%E7%BD%B2%E8%B8%A9%E5%9D%91%E8%AE%B0/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">Github Actions私有仓库部署踩坑记</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>23/06/01</li>
+                <li>11:35</li>
+                <li>Other</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
     
         <div class="col-lg-6">
     <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
         <div class="trm-older-publication">
             
-            <a class="trm-op-top trm-anima-link" href="/blog/2023/02/18/Docker-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
+            <a class="trm-op-top trm-anima-link" href="/blog/2022/10/18/Linux-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
                 <span class="trm-op-cover">
                     <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
                 </span>
-                <h6 class="trm-op-title">Docker 常用命令</h6>
+                <h6 class="trm-op-title">Linux 常用命令</h6>
             </a>
             <div class="trm-divider trm-mb-15 trm-mt-20"></div>
             <ul class="trm-card-data trm-label">
-                <li>23/02/18</li>
+                <li>22/10/18</li>
                 <li>14:50</li>
-                <li>Docker</li>
+                <li>Linux</li>
             </ul>
         </div>
     </div>

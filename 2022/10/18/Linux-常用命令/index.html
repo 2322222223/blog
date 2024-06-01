@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="x5-fullscreen" content="true">
+<meta name="full-screen" content="yes">
+<meta name="theme-color" content="#317EFB" />
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0" name="viewport">
+<meta name="description" content="基础常用命令 某个命令 --h，对这个命令进行解释  某个命令 --help，解释这个命令(更详细)  man某个命令，文档式解释这个命令(更更详细)(执行该命令后,还可以按&#x2F;+关键字进行查询结果的搜索)  Ctrl + c，结束命令  history，查看所有的历史命令  Ctrl + r，进入历史命令的搜索功能模式  clear，清除屏幕里面的所有命令  pwd，显示当前目录路径（常">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 常用命令">
+<meta property="og:url" content="https://2322222223.github.io/blog/2022/10/18/Linux-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/index.html">
+<meta property="og:site_name" content="Rlz Blog">
+<meta property="og:description" content="基础常用命令 某个命令 --h，对这个命令进行解释  某个命令 --help，解释这个命令(更详细)  man某个命令，文档式解释这个命令(更更详细)(执行该命令后,还可以按&#x2F;+关键字进行查询结果的搜索)  Ctrl + c，结束命令  history，查看所有的历史命令  Ctrl + r，进入历史命令的搜索功能模式  clear，清除屏幕里面的所有命令  pwd，显示当前目录路径（常">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-10-18T06:50:43.000Z">
+<meta property="article:modified_time" content="2024-06-01T07:27:45.297Z">
+<meta property="article:author" content="R.linzhou">
+<meta property="article:tag" content="命令">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+
+
+<title >Linux 常用命令</title>
+
+<!-- Favicon -->
+
+    <link href='/blog/img/logo.svg?v=2.2.1' rel='icon' type='image/png' sizes='16x16' ></link>
+
+
+    <link href='/blog/img/logo.svg?v=2.2.1' rel='icon' type='image/png' sizes='32x32' ></link>
+
+
+
+
+<!-- Plugin -->
+
+
+
+
+    
+<link rel="stylesheet" href="/blog/css/plugins/bootstrap.row.css">
+
+    
+<link rel="stylesheet" href="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.css">
+
+    
+    
+
+
+
+
+<!-- Icon -->
+
+    
+<link rel="stylesheet" href="/blog/css/plugins/font-awesome.min.css">
+
+
+
+
+<!-- Variable -->
+<script>window.ASYNC_CONFIG = {"hostname":"2322222223.github.io","author":"R.linzhou","root":"/blog/","typed_text":["Mobile development"],"theme_version":"2.2.1","theme":{"switch":true,"default":"style-light"},"favicon":{"logo":"/img/logo.svg","icon16":"/img/logo.svg","icon32":"/img/logo.svg","appleTouchIcon":null,"webmanifest":null,"visibilitychange":false,"hidden":"/ogo.svg","showText":"(/≧▽≦/)咦！又好了！","hideText":"(●—●)喔哟，崩溃啦！","apple_touch_icon":null,"show_text":"R.linzhou Blog","hide_text":"R.linzhou Blog","comment":{"giscus":{"enable":true,"repo":"https://github.com/2322222223/blog.git","repo-id":"2322222223/blog","category":"Announcements","category-id":"DIC_kwDOMCoZ884Cfxl-","mapping":"pathname","reactions-enabled":1,"emit-metadata":1,"lang":"zh-CN","theme":{"light":"light","dark":"dark"}}}},"i18n":{"placeholder":"搜索文章...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）","author":"本文作者：","copyright_link":"本文链接：","copyright_license_title":"版权声明：","copyright_license_content":"本博客所有文章除特别声明外，均默认采用 undefined 许可协议。","copy_success":"复制成功","copy_failure":"复制失败","open_read_mode":"进入阅读模式","exit_read_mode":"退出阅读模式","notice_outdate_message":"距离上次更新已经 undefined 天了, 文章内容可能已经过时。","sticky":"置顶","just":"刚刚","min":"分钟前","hour":"小时前","day":"天前","month":"个月前"},"swup":false,"plugin":{"flickr_justified_gallery":"https://unpkg.com/flickr-justified-gallery@latest/dist/fjGallery.min.js"},"icons":{"sun":"far fa-sun","moon":"far fa-moon","play":"fas fa-play","email":"far fa-envelope","next":"fas fa-arrow-right","calendar":"far fa-calendar-alt","clock":"far fa-clock","user":"far fa-user","back_top":"fas fa-arrow-up","close":"fas fa-times","search":"fas fa-search","reward":"fas fa-hand-holding-usd","user_tag":"fas fa-user-alt","toc_tag":"fas fa-th-list","read":"fas fa-book-reader","arrows":"fas fa-arrows-alt-h","double_arrows":"fas fa-angle-double-down","copy":"fas fa-copy"},"icontype":"font","highlight":{"plugin":"highlighjs","theme":true,"copy":true,"lang":false,"title":"default","height_limit":200},"toc":{"post_title":true},"live_time":{"start_time":"","prefix":"博客已萌萌哒运行 undefined 天"},"danmu":{"enable":false,"el":".trm-banner"},"creative_commons":{"license":"by-nc-sa","language":"deed.zh"}};</script>
+<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2024-06-01 15:27:45"};</script>
+
+<!-- Theme mode css -->
+<link data-swup-theme rel="stylesheet" href="/blog/css/index.css?v=2.2.1" id="trm-switch-style">
+<script>
+    let defaultMode = ASYNC_CONFIG.theme.default !=='auto' ?  ASYNC_CONFIG.theme.default : (window.matchMedia("(prefers-color-scheme: light)").matches ? 'style-light' : 'style-dark')
+    let catchMode = localStorage.getItem('theme-mode') || defaultMode;
+    let type = catchMode === 'style-dark' ? 'add' : 'remove';
+    document.documentElement.classList[type]('dark')
+</script>
+
+<!-- CDN -->
+
+
+    
+    
+
+
+
+<!-- Site Analytics -->
+ 
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+<body>
+
+  <!-- app wrapper -->
+  <div class="trm-app-frame">
+
+    <!-- page preloader -->
+    <div class="trm-preloader">
+    <div class="trm-holder">
+        <div class="preloader">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+</div>
+    <!-- page preloader end -->
+
+    <!-- change mode preloader -->
+    <div class="trm-mode-swich-animation-frame">
+    <div class="trm-mode-swich-animation">
+        <i class="i-sun"><i class="iconfont far fa-sun"></i></i>
+        <div class="trm-horizon"></div>
+        <i class="i-moon"><i class="iconfont far fa-moon"></i></i>
+    </div>
+</div>
+    <!-- change mode preloader end -->
+
+      <!-- scroll container -->
+      <div id="trm-dynamic-content" class="trm-swup-animation">
+        <div id="trm-scroll-container" class="trm-scroll-container" style="opacity: 0">
+            <!-- top bar -->
+            <header class="trm-top-bar">
+	<div class="container">
+		<div class="trm-left-side">
+			<!-- logo -->
+<a href="/blog/" class="trm-logo-frame trm-anima-link">
+    
+        <img alt="logo" src="/blog/img/logo.svg">
+    
+    
+        <div class="trm-logo-text">
+            Blog<span></span>
+        </div>
+    
+</a>
+<!-- logo end -->
+		</div>
+		<div class="trm-right-side">
+			<!-- menu -->
+<div class="trm-menu">
+    <nav>
+        <ul>
+            
+            <li class="menu-item-has-children ">
+                <a  href="/blog/" target="">
+                    home
+                </a>
+                
+            </li>
+            
+            <li class="menu-item-has-children ">
+                <a data-no-swup href="/blog/archives/" target="">
+                    archives
+                </a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+</div>
+<!-- menu end -->
+			
+    <!-- mode switcher place -->
+    <div class="trm-mode-switcher-place">
+        <div class="trm-mode-switcher">
+            <i class="iconfont far fa-sun"></i>
+            <input class="tgl tgl-light" id="trm-swich" type="checkbox">
+            <label class="trm-swich" for="trm-swich"></label>
+            <i class="iconfont far fa-moon"></i>
+        </div>
+    </div>
+    <!-- mode switcher place end -->
+
+			
+		</div>
+		<div class="trm-menu-btn">
+			<span></span>
+		</div>
+	</div>
+</header>
+            <!-- top bar end -->
+
+            <!-- body -->
+            
+<div class="trm-content-start">
+    <!-- banner -->
+    <div class="trm-banner">
+    
+    <!-- banner cover -->
+    <img style="object-position:top;object-fit:cover;" alt="banner" class="trm-banner-cover" src="/blog/img/banner.png">
+    <!-- banner cover end -->
+    
+
+    <!-- banner content -->
+    <div class="trm-banner-content trm-overlay">
+        <div class="container">
+            <div class="row">
+                
+                <div class="col-lg-4"></div>
+                
+                <div class="col-lg-8">
+
+                    <!-- banner title -->
+                    <div class="trm-banner-text ">
+                        <div class="trm-label trm-mb-20">
+                            NEWS LETTER
+                        </div>
+                        <h1 class="trm-mb-30 trm-hsmb-font">
+                            Linux 常用命令
+                        </h1>
+
+                        
+                            <ul class="trm-breadcrumbs trm-label">
+                                <li>
+                                    <a href="/blog/" class="trm-anima-link">Home</a>
+                                </li>
+                                <li>
+                                    <span>
+                                        2022
+                                    </span>
+                                </li>
+                            </ul>
+                        
+                    </div>
+                    <!-- banner title end -->
+
+                    <!-- scroll hint -->
+                    <span id="scroll-triger" class="trm-scroll-hint-frame">
+                        <div class="trm-scroll-hint"></div>
+                        <span class="trm-label">Scroll down</span>
+                    </span>
+                    <!-- scroll hint end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- banner content end -->
+</div>
+    <!-- banner end -->
+    <div class="container">
+        <div class="row">
+            
+                <div class="trm-page-sidebar col-lg-4 hidden-sm">
+                    <!-- main card -->
+                    <div class="trm-main-card-frame trm-sidebar">
+    <div class="trm-main-card"> 
+        <!-- card header -->
+<div class="trm-mc-header">
+    <div class="trm-avatar-frame trm-mb-20">
+        <img alt="Avatar" class="trm-avatar" src="/blog/img/avatar.png">
+    </div>
+    <h5 class="trm-name trm-mb-15">
+        R.linzhou
+    </h5>
+    
+        <div class="trm-label">
+            I&#39;m
+            <span class="trm-typed-text">
+                <!-- Words for theme.user.typedText -->
+            </span>
+        </div>
+    
+</div>
+<!-- card header end -->
+        <!-- sidebar social -->
+
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<div class="trm-social">
+    
+        <a href="https://github.com/2322222223" title="Github" rel="nofollow" target="_blank">
+            <i class="iconfont fab fa-github"></i>
+        </a>
+    
+        <a href="http://2322222223.com" title="Resume" rel="nofollow" target="_blank">
+            <i class="iconfont far fa-smile"></i>
+        </a>
+    
+</div>
+
+<!-- sidebar social end -->
+        <!-- info -->
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<ul class="trm-table trm-mb-20">
+    
+        <li>
+            <div class="trm-label">
+                地址:
+            </div>
+            <div class="trm-label trm-label-light">
+                Beijing
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                年龄:
+            </div>
+            <div class="trm-label trm-label-light">
+                32
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                邮箱:
+            </div>
+            <div class="trm-label trm-label-light">
+                g2322222223@gmail.com
+            </div>
+        </li>
+    
+</ul>
+<!-- info end -->
+
+        
+    <div class="trm-divider trm-mb-40 trm-mt-40"></div>
+    <!-- action button -->
+    <div class="text-center">
+        <a href="mailto:g2322222223@gmail.com" class="trm-btn">
+            联系我
+            <i class="iconfont far fa-envelope"></i>
+        </a>
+    </div>
+    <!-- action button end -->
+
+    </div>
+</div>
+                    <!-- main card end -->
+                </div>
+            
+            <div class="trm-page-content col-lg-8">
+                <div id="trm-content" class="trm-content">
+                    <div class="trm-post-info row hidden-sm">
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-calendar-alt trm-icon"></i><br>
+            10/18
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-clock trm-icon"></i><br>
+            14:50
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div id="post-author" class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-user trm-icon"></i><br>
+            R.linzhou
+        </div>
+    </div>
+</div>
+<div class="trm-card ">
+    <article id="article-container" class="trm-publication">
+    <h2 id="基础常用命令"><a href="#基础常用命令" class="headerlink" title="基础常用命令"></a>基础常用命令</h2><ul>
+<li><p><code>某个命令 --h</code>，对这个命令进行解释</p>
+</li>
+<li><p><code>某个命令 --help</code>，解释这个命令(更详细)</p>
+</li>
+<li><p><code>man某个命令</code>，文档式解释这个命令(更更详细)(执行该命令后,还可以按&#x2F;+关键字进行查询结果的搜索)</p>
+</li>
+<li><p><code>Ctrl + c</code>，结束命令</p>
+</li>
+<li><p><code>history</code>，查看所有的历史命令</p>
+</li>
+<li><p><code>Ctrl + r</code>，进入历史命令的搜索功能模式</p>
+</li>
+<li><p><code>clear</code>，清除屏幕里面的所有命令</p>
+</li>
+<li><p><code>pwd</code>，显示当前目录路径（常用）</p>
+</li>
+<li><p><code>firefox&amp;</code>，最后后面的 <strong>&amp;</strong> 符号，表示使用后台方式打开 Firefox，然后显示该进程的 PID 值</p>
+</li>
+<li><p><code>jobs</code>，查看后台运行的程序列表</p>
+</li>
+<li><p><code>ifconfig</code>，查看内网 IP 等信息（常用）</p>
+</li>
+<li><p><code>curl ifconfig.me</code>，查看外网 IP 信息</p>
+</li>
+<li><p><code>curl ip.cn</code>，查看外网 IP 信息</p>
+</li>
+<li><pre><code>locate 搜索关键字
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">  ，快速搜索系统文件/文件夹（类似 Windows 上的 everything 索引式搜索）（常用）</span><br><span class="line"></span><br><span class="line">  - `updatedb`，配合上面的 locate，给 locate 的索引更新（locate 默认是一天更新一次索引）（常用）</span><br><span class="line"></span><br><span class="line">- ```</span><br><span class="line">  date</span><br></pre></td></tr></table></figure>
+
+
+
+，查看系统时间（常用）
+
+- `date -s20080103`，设置日期（常用）
+- `date -s18:24`，设置时间，如果要同时更改 BIOS 时间，再执行 `hwclock --systohc`（常用）
+</code></pre>
+</li>
+<li><p><code>cal</code>，在终端中查看日历，肯定没有农历显示的</p>
+</li>
+<li><p><code>uptime</code>，查看系统已经运行了多久，当前有几个用户等信息（常用）</p>
+</li>
+<li><p><code>cat 文件路名</code>，显示文件内容（属于打印语句）</p>
+</li>
+<li><p><code>cat -n 文件名</code>，显示文件，并每一行内容都编号</p>
+</li>
+<li><p><code>more 文件名</code>，用分页的方式查看文件内容（按 space 翻下一页，按 <em>Ctrl + B</em> 返回上页）</p>
+</li>
+<li><pre><code>less
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">  文件名，用分页的方式查看文件内容（带上下翻页）</span><br><span class="line"></span><br><span class="line">  - 按 **j** 向下移动，按 **k** 向上移动</span><br><span class="line">  - 按 **/** 后，输入要查找的字符串内容，可以对文件进行向下查询，如果存在多个结果可以按 **n** 调到下一个结果出</span><br><span class="line">  - 按 **？** 后，输入要查找的字符串内容，可以对文件进行向上查询，如果存在多个结果可以按 **n** 调到下一个结果出</span><br><span class="line"></span><br><span class="line">- ```</span><br><span class="line">  shutdown</span><br></pre></td></tr></table></figure>
+
+
+
+- `shutdown -hnow`，立即关机
+- `shutdown -h+10`，10 分钟后关机
+- `shutdown -h23:30`，23:30 关机
+- `shutdown -rnew`，立即重启
+</code></pre>
+</li>
+<li><p><code>poweroff</code>，立即关机（常用）</p>
+</li>
+<li><p><code>reboot</code>，立即重启（常用）</p>
+</li>
+<li><pre><code>zip mytest.zip /opt/test/
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">  ，把 /opt 目录下的 test/ 目录进行压缩，压缩成一个名叫 mytest 的 zip 文件</span><br><span class="line"></span><br><span class="line">  - `unzip mytest.zip`，对 mytest.zip 这个文件进行解压，解压到当前所在目录</span><br><span class="line">  - `unzip mytest.zip -d /opt/setups/`，对 mytest.zip 这个文件进行解压，解压到 /opt/setups/ 目录下</span><br><span class="line"></span><br><span class="line">- `tar -cvf mytest.tar mytest/`，对 mytest/ 目录进行归档处理（归档和压缩不一样）</span><br><span class="line"></span><br><span class="line">- ```</span><br><span class="line">  tar -xvf mytest.tar</span><br></pre></td></tr></table></figure>
+
+
+
+，释放 mytest.tar 这个归档文件，释放到当前目录
+
+- `tar -xvf mytest.tar -C /opt/setups/`，释放 mytest.tar 这个归档文件，释放到 /opt/setups/ 目录下
+</code></pre>
+</li>
+<li><p><code>last</code>，显示最近登录的帐户及时间</p>
+</li>
+<li><p><code>lastlog</code>，显示系统所有用户各自在最近登录的记录，如果没有登录过的用户会显示 <strong>从未登陆过</strong></p>
+</li>
+<li><pre><code>ls
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">，列出当前目录下的所有没有隐藏的文件 / 文件夹。</span><br><span class="line"></span><br><span class="line">- `ls -a`，列出包括以.号开头的隐藏文件 / 文件夹（也就是所有文件）</span><br><span class="line">- `ls -R`，显示出目录下以及其所有子目录的文件 / 文件夹（递归地方式，不显示隐藏的文件）</span><br><span class="line">- `ls -a -R`，显示出目录下以及其所有子目录的文件 / 文件夹（递归地方式，显示隐藏的文件）</span><br><span class="line">- `ls -al`，列出目录下所有文件（包含隐藏）的权限、所有者、文件大小、修改时间及名称（也就是显示详细信息）</span><br><span class="line">- `ls -ld 目录名`，显示该目录的基本信息</span><br><span class="line">- `ls -t`，依照文件最后修改时间的顺序列出文件名。</span><br><span class="line">- `ls -F`，列出当前目录下的文件名及其类型。以 **/** 结尾表示为目录名，以 ***** 结尾表示为可执行文件，以 **@** 结尾表示为符号连接</span><br><span class="line">- `ls -lg`，同上，并显示出文件的所有者工作组名。</span><br><span class="line">- `ls -lh`，查看文件夹类文件详细信息，文件大小，文件修改时间</span><br><span class="line">- `ls /opt | head -5`，显示 opt 目录下前 5 条记录</span><br><span class="line">- `ls -l | grep &#x27;.jar&#x27;`，查找当前目录下所有 jar 文件</span><br><span class="line">- `ls -l /opt |grep &quot;^-&quot;|wc -l`，统计 opt 目录下文件的个数，不会递归统计</span><br><span class="line">- `ls -lR /opt |grep &quot;^-&quot;|wc -l`，统计 opt 目录下文件的个数，会递归统计</span><br><span class="line">- `ls -l /opt |grep &quot;^d&quot;|wc -l`，统计 opt 目录下目录的个数，不会递归统计</span><br><span class="line">- `ls -lR /opt |grep &quot;^d&quot;|wc -l`，统计 opt 目录下目录的个数，会递归统计</span><br><span class="line">- `ls -lR /opt |grep &quot;js&quot;|wc -l`，统计 opt 目录下 js 文件的个数，会递归统计</span><br><span class="line">- `ls -l`，列出目录下所有文件的权限、所有者、文件大小、修改时间及名称（也就是显示详细信息，不显示隐藏文件）。显示出来的效果如下：</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+-rwxr-xr-x. 1 root root 4096 3月 26 10:57，其中最前面的 - 表示这是一个普通文件
+lrwxrwxrwx. 1 root root 4096 3月 26 10:57，其中最前面的 l 表示这是一个链接文件，类似 Windows 的快捷方式
+drwxr-xr-x. 5 root root 4096 3月 26 10:57，其中最前面的 d 表示这是一个目录
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- ```</span><br><span class="line">  cd</span><br></pre></td></tr></table></figure>
+
+
+
+，目录切换
+
+- `cd ..`，改变目录位置至当前目录的父目录(上级目录)。
+- `cd ~`，改变目录位置至用户登录时的工作目录。
+- `cd 回车`，回到家目录
+- `cd -`，上一个工作目录
+- `cd dir1/`，改变目录位置至 dir1 目录下。
+- `cd ~user`，改变目录位置至用户的工作目录。
+- `cd ../user`，改变目录位置至相对路径user的目录下。
+- `cd /../..`，改变目录位置至绝对路径的目录位置下。
+</code></pre>
+</li>
+<li><pre><code>cp 源文件 目标文件
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">  ，复制文件</span><br><span class="line"></span><br><span class="line">  - `cp -r 源文件夹 目标文件夹`，复制文件夹</span><br><span class="line">  - `cp -r -v 源文件夹 目标文件夹`，复制文件夹(显示详细信息，一般用于文件夹很大，需要查看复制进度的时候)</span><br><span class="line">  - `cp /usr/share/easy-rsa/2.0/keys/&#123;ca.crt,server.&#123;crt,key&#125;,dh2048.pem,ta.key&#125; /etc/openvpn/keys/`，复制同目录下花括号中的文件</span><br><span class="line"></span><br><span class="line">- `tar cpf - . | tar xpf - -C /opt`，复制当前所有文件到 /opt 目录下，一般如果文件夹文件多的情况下用这个更好，用 cp 比较容易出问题</span><br><span class="line"></span><br><span class="line">- ```</span><br><span class="line">  mv 文件 目标文件夹</span><br></pre></td></tr></table></figure>
+
+
+
+，移动文件到目标文件夹
+
+- `mv 文件`，不指定目录重命名后的名字，用来重命名文件
+</code></pre>
+</li>
+<li><p><code>touch 文件名</code>，创建一个空白文件&#x2F;更新已有文件的时间(后者少用)</p>
+</li>
+<li><p><code>mkdir 文件夹名</code>，创建文件夹</p>
+</li>
+<li><p><code>mkdir -p /opt/setups/nginx/conf/</code>，创建一个名为 conf 文件夹，如果它的上级目录 nginx 没有也会跟着一起生成，如果有则跳过</p>
+</li>
+<li><p><code>rmdir 文件夹名</code>，删除文件夹(只能删除文件夹里面是没有东西的文件夹)</p>
+</li>
+<li><pre><code>rm 文件
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">  ，删除文件</span><br><span class="line"></span><br><span class="line">  - `rm -r 文件夹`，删除文件夹</span><br><span class="line">  - `rm -r -i 文件夹`，在删除文件夹里的文件会提示(要的话,在提示后面输入yes)</span><br><span class="line">  - `rm -r -f 文件夹`，强制删除</span><br><span class="line">  - `rm -r -f 文件夹1/ 文件夹2/ 文件夹3/`删除多个</span><br><span class="line"></span><br><span class="line">- ```</span><br><span class="line">  find</span><br></pre></td></tr></table></figure>
+
+
+
+，高级查找
+
+- `find . -name *lin*`，其中 . 代表在当前目录找，-name 表示匹配文件名 / 文件夹名，*lin* 用通配符搜索含有lin的文件或是文件夹
+- `find . -iname *lin*`，其中 . 代表在当前目录找，-iname 表示匹配文件名 / 文件夹名（忽略大小写差异），*lin* 用通配符搜索含有lin的文件或是文件夹
+- `find / -name *.conf`，其中 / 代表根目录查找，*.conf代表搜索后缀会.conf的文件
+- `find /opt -name .oh-my-zsh`，其中 /opt 代表目录名，.oh-my-zsh 代表搜索的是隐藏文件 / 文件夹名字为 oh-my-zsh 的
+- `find /opt -type f -iname .oh-my-zsh`，其中 /opt 代表目录名，-type f 代表只找文件，.oh-my-zsh 代表搜索的是隐藏文件名字为 oh-my-zsh 的
+- `find /opt -type d -iname .oh-my-zsh`，其中 /opt 代表目录名，-type d 代表只找目录，.oh-my-zsh 代表搜索的是隐藏文件夹名字为 oh-my-zsh 的
+- `find . -name &quot;lin*&quot; -exec ls -l &#123;&#125; \;`，当前目录搜索lin开头的文件，然后用其搜索后的结果集，再执行ls -l的命令（这个命令可变，其他命令也可以），其中 -exec 和 &#123;&#125; ; 都是固定格式
+- `find /opt -type f -size +800M  -print0 | xargs -0 du -h | sort -nr`，找出 /opt 目录下大于 800 M 的文件
+- `find / -name &quot;*tower*&quot; -exec rm &#123;&#125; \;`，找到文件并删除
+- `find / -name &quot;*tower*&quot; -exec mv &#123;&#125; /opt \;`，找到文件并移到 opt 目录
+- `find . -name &quot;*&quot; |xargs grep &quot;youmeek&quot;`，递归查找当前文件夹下所有文件内容中包含 youmeek 的文件
+- `find . -size 0 | xargs rm -f &amp;`，删除当前目录下文件大小为0的文件
+- `du -hm --max-depth=2 | sort -nr | head -12`，找出系统中占用容量最大的前 12 个目录
+</code></pre>
+</li>
+<li><p><code>cat /etc/resolv.conf</code>，查看 DNS 设置</p>
+</li>
+<li><p><code>netstat -tlunp</code>，查看当前运行的服务，同时可以查看到：运行的程序已使用端口情况</p>
+</li>
+<li><p><code>env</code>，查看所有系统变量</p>
+</li>
+<li><p><code>export</code>，查看所有系统变量</p>
+</li>
+<li><pre><code>echo
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">  - `echo $JAVA_HOME`，查看指定系统变量的值，这里查看的是自己配置的 JAVA_HOME。</span><br><span class="line">  - `echo &quot;字符串内容&quot;`，输出 &quot;字符串内容&quot;</span><br><span class="line">  - `echo &gt; aa.txt`，清空 aa.txt 文件内容（类似的还有：`: &gt; aa.txt`，其中 : 是一个占位符, 不产生任何输出）</span><br><span class="line"></span><br><span class="line">- `unset $JAVA_HOME`，删除指定的环境变量</span><br><span class="line"></span><br><span class="line">- `ln -s /opt/data /opt/logs/data`，表示给 /opt/logs 目录下创建一个名为 data 的软链接，该软链接指向到 /opt/data</span><br><span class="line"></span><br><span class="line">- ```</span><br><span class="line">  grep</span><br></pre></td></tr></table></figure>
+
+
+
+- `shell grep -H &#39;安装&#39; *.sh`，查找当前目录下所有 sh 类型文件中，文件内容包含 `安装` 的当前行内容
+- `grep &#39;test&#39; java*`，显示当前目录下所有以 java 开头的文件中包含 test 的行
+- `grep &#39;test&#39; spring.ini docker.sh`，显示当前目录下 spring.ini docker.sh 两个文件中匹配 test 的行
+</code></pre>
+</li>
+<li><pre><code>ps
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">  - `ps –ef|grep java`，查看当前系统中有关 java 的所有进程</span><br><span class="line">  - `ps -ef|grep --color java`，高亮显示当前系统中有关 java 的所有进程</span><br><span class="line"></span><br><span class="line">- ```</span><br><span class="line">  kill</span><br></pre></td></tr></table></figure>
+
+
+
+- `kill 1234`，结束 pid 为 1234 的进程
+- `kill -9 1234`，强制结束 pid 为 1234 的进程（慎重）
+- `killall java`，结束同一进程组内的所有为 java 进程
+- `ps -ef|grep hadoop|grep -v grep|cut -c 9-15|xargs kill -9`，结束包含关键字 hadoop 的所有进程
+</code></pre>
+</li>
+<li><pre><code>head
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">  - `head -n 10 spring.ini`，查看当前文件的前 10 行内容</span><br><span class="line"></span><br><span class="line">- ```</span><br><span class="line">  tail</span><br></pre></td></tr></table></figure>
+
+
+
+- `tail -n 10 spring.ini`，查看当前文件的后 10 行内容
+- `tail -200f 文件名`，查看文件被更新的新内容尾 200 行，如果文件还有在新增可以动态查看到（一般用于查看日记文件）
+</code></pre>
+</li>
+</ul>
+<h2 id="用户、权限-相关命令"><a href="#用户、权限-相关命令" class="headerlink" title="用户、权限-相关命令"></a>用户、权限-相关命令</h2><ul>
+<li><p>使用 pem 证书登录：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -i /opt/mykey.pem root@192.168.0.70</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>证书权限不能太大，不然无法使用：<code>chmod 600 mykey.pem</code></li>
+</ul>
+</li>
+<li><p><code>hostname</code>，查看当前登陆用户全名</p>
+</li>
+<li><p><code>cat /etc/group</code>，查看所有组</p>
+</li>
+<li><p><code>cat /etc/passwd</code>，查看所有用户</p>
+</li>
+<li><p><code>groups youmeek</code>，查看 youmeek 用户属于哪个组</p>
+</li>
+<li><p><code>useradd youmeek -g judasn</code>，添加用户并绑定到 judasn 组下</p>
+</li>
+<li><pre><code>userdel -r youmeek
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">  ，删除名字为 youmeek 的用户</span><br><span class="line"></span><br><span class="line">  - 参数：`-r`，表示删除用户的时候连同用户的家目录一起删除</span><br><span class="line"></span><br><span class="line">- 修改普通用户 youmeek 的权限跟 root 权限一样：</span><br><span class="line"></span><br><span class="line">  - 常用方法（原理是把该用户加到可以直接使用 sudo 的一个权限状态而已）：</span><br><span class="line"></span><br><span class="line">    - 编辑配置文件：`vim /etc/sudoers`</span><br><span class="line">    - 找到 98 行（预估），有一个：`root    ALL=(ALL)   ALL`，在这一行下面再增加一行，效果如下：</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+   root    ALL=(ALL)   ALL
+   youmeek    ALL=(ALL)   ALL
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">  - 另一种方法：</span><br><span class="line"></span><br><span class="line">    - 编辑系统用户的配置文件：`vim /etc/passwd`，找到 **root** 和 **youmeek** 各自开头的那一行，比如 root 是：`root:x:0:0:root:/root:/bin/zsh`，这个代表的含义为：*用户名:密码:UserId:GroupId:描述:家目录:登录使用的 shell*</span><br><span class="line">    - 通过这两行对比，我们可以直接修改 youmeek 所在行的 UserId 值 和 GroupId 值，都改为 0。</span><br><span class="line"></span><br><span class="line">- `groupadd judasn`，添加一个名为 judasn 的用户组</span><br><span class="line"></span><br><span class="line">- `groupdel judasn`，删除一个名为 judasn 的用户组（前提：先删除组下面的所有用户）</span><br><span class="line"></span><br><span class="line">- `usermod 用户名 -g 组名`，把用户修改到其他组下</span><br><span class="line"></span><br><span class="line">- `passwd youmeek`，修改 youmeek 用户的密码（前提：只有 root 用户才有修改其他用户的权限，其他用户只能修改自己的）</span><br><span class="line"></span><br><span class="line">- ```</span><br><span class="line">  chmod 777 文件名/目录</span><br></pre></td></tr></table></figure>
+
+
+
+，给指定文件增加最高权限，系统中的所有人都可以进行读写。
+
+- linux 的权限分为 rwx。r 代表：可读，w 代表：可写，x 代表：可执行
+- 这三个权限都可以转换成数值表示，r = 4，w = 2，x = 1，- = 0，所以总和是 7，也就是最大权限。第一个 7 是所属主（user）的权限，第二个 7 是所属组（group）的权限，最后一位 7 是非本群组用户（others）的权限。
+- `chmod -R 777 目录` 表示递归目录下的所有文件夹，都赋予 777 权限
+- `chown myUsername:myGroupName myFile` 表示修改文件所属用户、组
+- `chown -R myUsername:myGroupName myFolder` 表示递归修改指定目录下的所有文件权限
+</code></pre>
+</li>
+<li><pre><code>su
+
+chown -R &lt;username&gt; a/
+chgrp -R &lt;username&gt; a/
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">  ：切换到 root 用户，终端目录还是原来的地方（常用）</span><br><span class="line"></span><br><span class="line">  - `su -`：切换到 root 用户，其中 **-** 号另起一个终端并切换账号</span><br><span class="line">  - `su 用户名`，切换指定用户帐号登陆，终端目录还是原来地方。</span><br><span class="line">  - `su - 用户名`，切换到指定用户帐号登陆，其中 **-** 号另起一个终端并切换账号</span><br><span class="line"></span><br><span class="line">- `exit`，注销当前用户（常用）</span><br><span class="line"></span><br><span class="line">- `sudo 某个命令`，使用管理员权限使用命令，使用 sudo 回车之后需要输入当前登录账号的密码。（常用）</span><br><span class="line"></span><br><span class="line">- `passwd`，修改当前用户密码（常用）</span><br><span class="line"></span><br><span class="line">- 添加临时账号，并指定用户根目录，并只有可读权限方法</span><br><span class="line"></span><br><span class="line">  - 添加账号并指定根目录（用户名 tempuser）：`useradd -d /data/logs -m tempuser`</span><br><span class="line">  - 设置密码：`passwd tempuser` 回车设置密码</span><br><span class="line">  - 删除用户（该用户必须退出 SSH 才能删除成功），也会同时删除组：`userdel tempuser`</span><br><span class="line"></span><br><span class="line">## 磁盘管理</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- ```</span><br><span class="line">  df -h</span><br></pre></td></tr></table></figure>
+
+
+
+，自动以合适的磁盘容量单位查看磁盘大小和使用空间
+
+- `df -k`，以磁盘容量单位 K 为数值结果查看磁盘使用情况
+- `df -m`，以磁盘容量单位 M 为数值结果查看磁盘使用情况
+</code></pre>
+</li>
+<li><p><code>du -sh /opt</code>，查看 opt 这个文件夹大小 （h 的意思 human-readable 用人类可读性较好方式显示，系统会自动调节单位，显示合适大小的单位）</p>
+</li>
+<li><p><code>du -sh ./*</code>，查看当前目录下所有文件夹大小 （h 的意思 human-readable 用人类可读性较好方式显示，系统会自动调节单位，显示合适大小的单位）</p>
+</li>
+<li><p><code>du -sh /opt/setups/</code>，显示 &#x2F;opt&#x2F;setups&#x2F; 目录所占硬盘空间大小（s 表示 –summarize 仅显示总计，即当前目录的大小。h 表示 –human-readable 以 KB，MB，GB 为单位，提高信息的可读性）</p>
+</li>
+<li><pre><code>mount /dev/sdb5 /newDir/
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">  ，把分区 sdb5 挂载在根目录下的一个名为 newDir 的空目录下，需要注意的是：这个目录最好为空，不然已有的那些文件将看不到，除非卸载挂载。</span><br><span class="line"></span><br><span class="line">  - 挂载好之后，通过：`df -h`，查看挂载情况。</span><br><span class="line"></span><br><span class="line">- ```</span><br><span class="line">  umount /newDir/</span><br></pre></td></tr></table></figure>
+
+
+
+，卸载挂载，用目录名
+
+- 如果这样卸载不了可以使用：`umount -l /newDir/`
+</code></pre>
+</li>
+<li><p><code>umount /dev/sdb5</code>，卸载挂载，用分区名</p>
+</li>
+</ul>
+<h2 id="wget-下载文件"><a href="#wget-下载文件" class="headerlink" title="wget 下载文件"></a>wget 下载文件</h2><ul>
+<li>常规下载：<code>wget http://www.gitnavi.com/index.html</code></li>
+<li>自动断点下载：<code>wget -c http://www.gitnavi.com/index.html</code></li>
+<li>后台下载：<code>wget -b http://www.gitnavi.com/index.html</code></li>
+<li>伪装代理名称下载：<code>wget --user-agent=&quot;Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.204 Safari/534.16&quot; http://www.gitnavi.com/index.html</code></li>
+<li>限速下载：<code>wget --limit-rate=300k http://www.gitnavi.com/index.html</code></li>
+<li>批量下载：<code>wget -i /opt/download.txt</code>，一个下载地址一行</li>
+<li>后台批量下载：<code>wget -b -c -i /opt/download.txt</code>，一个下载地址一行</li>
+</ul>
+<hr>
+<h1 id="Linux-下常用压缩文件的解压、压缩"><a href="#Linux-下常用压缩文件的解压、压缩" class="headerlink" title="Linux 下常用压缩文件的解压、压缩"></a>Linux 下常用压缩文件的解压、压缩</h1><h2 id="常用压缩包–解压–令整理"><a href="#常用压缩包–解压–令整理" class="headerlink" title="常用压缩包–解压–令整理"></a>常用压缩包–解压–令整理</h2><ul>
+<li><p>Linux 后缀为 <code>.war</code> 格式的文件（一般用在部署 Tomcat 项目的时候）</p>
+</li>
+<li><p>命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unzip -oq XXXXXX.war -d ROOT</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>如果没有 ROOT 目录会自动创建 ROOT 目录。</li>
+</ul>
+</li>
+<li><p>Linux 后缀为 <code>.tar.gz</code> 格式的文件-解压</p>
+</li>
+<li><p>命令：<code>tar zxvf XXXXXX.tar.gz</code></p>
+</li>
+<li><p>Linux 后缀为 <code>.bz2</code> 格式的文件-解压</p>
+</li>
+<li><p>命令：<code>bzip2 -d XXXXXX.bz2</code></p>
+</li>
+<li><p>Linux 后缀为 <code>.tar.bz2</code> 格式的文件-解压</p>
+</li>
+<li><p>命令：<code>tar jxvf XXXXXX.tar.bz2</code></p>
+</li>
+<li><p>Linux 后缀为 <code>.tar</code> 格式的文件-解压</p>
+</li>
+<li><p>命令：<code>tar zxvf XXXXXX.tar</code></p>
+</li>
+<li><p>Linux 后缀为 <code>.gz</code> 格式的文件-解压</p>
+</li>
+<li><p>命令：<code>gunzip XXXXXX.gz</code></p>
+</li>
+<li><p>Linux 后缀为 <code>.zip</code> 格式的文件-解压</p>
+</li>
+<li><p>命令：<code>unzip XXXXXX.zip</code></p>
+</li>
+<li><p>命令：<code>unzip XXXXXX.zip -d /opt/</code>，解压到指定目录</p>
+</li>
+<li><p>Linux 后缀为 <code>.7z</code> 格式的文件-解压</p>
+</li>
+<li><p>命令：<code>7za x XXXXXX.7z</code></p>
+</li>
+<li><p>Linux 后缀为 <code>.tar.xz</code> 格式的文件-解压，解压出来是tar，再对tar进行解压</p>
+</li>
+<li><p>命令：<code>tar xf XXXXXX.tar.xz</code></p>
+</li>
+</ul>
+<hr>
+<h2 id="常用文件进行–压缩–命令整理"><a href="#常用文件进行–压缩–命令整理" class="headerlink" title="常用文件进行–压缩–命令整理"></a>常用文件进行–压缩–命令整理</h2><ul>
+<li>Linux 压缩文件夹为后缀 <code>.war</code> 格式的文件（最好不要对根目录进行压缩，不然会多出一级目录）</li>
+<li>命令：<code>jar -cvfM0 cas.war /opt/cas/META-INF /opt/cas/WEB-INF /opt/cas/index.jsp</code></li>
+<li>或者命令：<code>cd 项目根目录 ; jar -cvfM0 cas.war ./*</code></li>
+<li>Linux 压缩文件为后缀 <code>.tar</code> 格式的文件</li>
+<li>命令：<code>tar -zcvf test11.tar test11</code></li>
+<li>Linux 压缩文件为后缀 <code>.tar.gz</code> 格式的文件</li>
+<li>命令：<code>tar -zcvf test11.tar.gz test11</code></li>
+<li>Linux 压缩文件为后缀 <code>.bz2</code> 格式的文件</li>
+<li>命令：<code>bzip2 -v test.txt</code></li>
+<li>Linux 压缩文件为后缀 <code>.tar.bz2</code> 格式的文件</li>
+<li>命令：<code>tar -jcvf test11.tar.gz test11</code></li>
+<li>Linux 压缩文件为后缀 <code>.zip</code> 格式的文件</li>
+<li>命令：<code>zip -r test1.zip /opt/test1/</code></li>
+<li>Linux 压缩文件为后缀 <code>.7z</code> 格式的文件</li>
+<li>命令：<code>7za a test1.7z /opt/test1/</code></li>
+</ul>
+<h2 id="分卷压缩"><a href="#分卷压缩" class="headerlink" title="分卷压缩"></a>分卷压缩</h2><ul>
+<li>分卷压缩：<code>zip -s 100M myFile.zip --out newFile.zip</code></li>
+<li>最终效果：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">newFile.z01</span><br><span class="line">newFile.z02</span><br><span class="line">newFile.z03</span><br><span class="line">newFile.z04</span><br><span class="line">newFile.zip</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="特殊格式"><a href="#特殊格式" class="headerlink" title="特殊格式"></a>特殊格式</h2><ul>
+<li>7z<ul>
+<li>7z 的安装：<ul>
+<li>访问官网下载解压包：<a target="_blank" rel="noopener" href="http://sourceforge.net/projects/p7zip/files/p7zip/">http://sourceforge.net/projects/p7zip/files/p7zip/</a></li>
+<li>解压压缩包：<code>tar jxvf p7zip_15.14_src_all.tar.bz2</code></li>
+<li>进入目录：<code>cd p7zip_15.14</code></li>
+<li>执行安装：<code>sh install.sh</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>rar<ul>
+<li>rar 的安装：<ul>
+<li>下载：<code>wget http://www.rarlab.com/rar/rarlinux-3.8.0.tar.gz</code></li>
+<li>解压下载下来的压缩包：<code>tar zxvf rarlinux-3.8.0.tar.gz</code></li>
+<li>进入解压后目录：<code>cd rar</code></li>
+<li>编译：<code>make</code></li>
+<li>安装：<code>make install</code></li>
+</ul>
+</li>
+<li>rar 解压：<code>rar x 文件名.rar</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>scp是secure copy的简写，用于在Linux下进行远程拷贝文件的命令，和它类似的命令有cp，不过cp只是在本机进行拷贝不能跨服务器，而且scp传输是加密的。当你服务器硬盘变为只读 read only system时，用scp可以帮你把文件移出来。</p>
+<p>注解</p>
+<p>类似的工具有rsync；scp消耗资源少，不会提高多少系统负荷，在这一点上，rsync就远远不及它了。rsync比scp会快一点，但当小文件多的情况下，rsync会导致硬盘I&#x2F;O非常高，而scp基本不影响系统正常使用。</p>
+<h2 id="18-1-命令格式："><a href="#18-1-命令格式：" class="headerlink" title="18.1. 命令格式："></a>18.1. 命令格式：</h2><p>scp [参数] [原路径] [目标路径]</p>
+<h2 id="18-2-命令参数："><a href="#18-2-命令参数：" class="headerlink" title="18.2. 命令参数："></a>18.2. 命令参数：</h2><ul>
+<li>-1 强制scp命令使用协议ssh1</li>
+<li>-2 强制scp命令使用协议ssh2</li>
+<li>-4 强制scp命令只使用IPv4寻址</li>
+<li>-6 强制scp命令只使用IPv6寻址</li>
+<li>-B 使用批处理模式（传输过程中不询问传输口令或短语）</li>
+<li>-C 允许压缩。（将-C标志传递给ssh，从而打开压缩功能）</li>
+<li>-p 留原文件的修改时间，访问时间和访问权限。</li>
+<li>-q 不显示传输进度条。</li>
+<li>-r 递归复制整个目录。</li>
+<li>-v 详细方式显示输出。scp和ssh(1)会显示出整个过程的调试信息。这些信息用于调试连接，验证和配置问题。</li>
+<li>-c cipher 以cipher将数据传输进行加密，这个选项将直接传递给ssh。</li>
+<li>-F ssh_config 指定一个替代的ssh配置文件，此参数直接传递给ssh。</li>
+<li>-i identity_file 从指定文件中读取传输时使用的密钥文件，此参数直接传递给ssh。</li>
+<li>-l limit 限定用户所能使用的带宽，以Kbit&#x2F;s为单位。</li>
+<li>-o ssh_option 如果习惯于使用ssh_config(5)中的参数传递方式，</li>
+<li>-P port 注意是大写的P, port是指定数据传输用到的端口号</li>
+<li>-S program 指定加密传输时所使用的程序。此程序必须能够理解ssh(1)的选项。</li>
+</ul>
+<h2 id="18-3-使用说明"><a href="#18-3-使用说明" class="headerlink" title="18.3. 使用说明"></a>18.3. 使用说明</h2><h3 id="从本地服务器复制到远程服务器"><a href="#从本地服务器复制到远程服务器" class="headerlink" title="从本地服务器复制到远程服务器"></a>从本地服务器复制到远程服务器</h3><p>复制文件:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$scp local_file remote_username@remote_ip:remote_folder</span><br><span class="line">$scp local_file remote_username@remote_ip:remote_file</span><br><span class="line">$scp local_file remote_ip:remote_folder</span><br><span class="line">$scp local_file remote_ip:remote_file</span><br></pre></td></tr></table></figure>
+
+
+
+<p>指定了用户名，命令执行后需要输入用户密码；如果不指定用户名，命令执行后需要输入用户名和密码；</p>
+<p>复制目录:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$scp -r local_folder remote_username@remote_ip:remote_folder</span><br><span class="line">$scp -r local_folder remote_ip:remote_folder</span><br></pre></td></tr></table></figure>
+
+
+
+<p>第1个指定了用户名，命令执行后需要输入用户密码； 第2个没有指定用户名，命令执行后需要输入用户名和密码；</p>
+<p>注解</p>
+<p>从远程复制到本地的scp命令与上面的命令一样，只要将从本地复制到远程的命令后面2个参数互换顺序就行了。</p>
+<h2 id="18-4-使用示例"><a href="#18-4-使用示例" class="headerlink" title="18.4. 使用示例"></a>18.4. 使用示例</h2><h3 id="实例1：从远处复制文件到本地目录"><a href="#实例1：从远处复制文件到本地目录" class="headerlink" title="实例1：从远处复制文件到本地目录"></a>实例1：从远处复制文件到本地目录</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$scp root@10.6.159.147:/opt/soft/demo.tar /opt/soft/</span><br></pre></td></tr></table></figure>
+
+
+
+<p>说明： 从10.6.159.147机器上的&#x2F;opt&#x2F;soft&#x2F;的目录中下载demo.tar 文件到本地&#x2F;opt&#x2F;soft&#x2F;目录中</p>
+<h3 id="实例2：从远处复制到本地"><a href="#实例2：从远处复制到本地" class="headerlink" title="实例2：从远处复制到本地"></a>实例2：从远处复制到本地</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$scp -r root@10.6.159.147:/opt/soft/test /opt/soft/</span><br></pre></td></tr></table></figure>
+
+
+
+<p>说明： 从10.6.159.147机器上的&#x2F;opt&#x2F;soft&#x2F;中下载test目录到本地的&#x2F;opt&#x2F;soft&#x2F;目录来。</p>
+<h3 id="实例3：上传本地文件到远程机器指定目录"><a href="#实例3：上传本地文件到远程机器指定目录" class="headerlink" title="实例3：上传本地文件到远程机器指定目录"></a>实例3：上传本地文件到远程机器指定目录</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$scp /opt/soft/demo.tar root@10.6.159.147:/opt/soft/scptest</span><br></pre></td></tr></table></figure>
+
+
+
+<p>说明： 复制本地opt&#x2F;soft&#x2F;目录下的文件demo.tar 到远程机器10.6.159.147的opt&#x2F;soft&#x2F;scptest目录</p>
+<h3 id="实例4：上传本地目录到远程机器指定目录"><a href="#实例4：上传本地目录到远程机器指定目录" class="headerlink" title="实例4：上传本地目录到远程机器指定目录"></a>实例4：上传本地目录到远程机器指定目录</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$scp -r /opt/soft/test root@10.6.159.147:/opt/soft/scptest</span><br></pre></td></tr></table></figure>
+
+
+
+<p>说明： 上传本地目录 &#x2F;opt&#x2F;soft&#x2F;test到远程机器10.6.159.147上&#x2F;opt&#x2F;soft&#x2F;scptest的目录中</p>
+
+</article>
+    
+    
+
+</div>
+<div class="trm-post-next-prev row">
+    <div class="col-lg-12">
+        <!-- title -->
+        <h5 class="trm-title-with-divider">
+            其他文章
+            <span data-number="02"></span>
+        </h5>
+    </div>
+    
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/blog/2023/02/18/Docker-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">Docker 常用命令</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>23/02/18</li>
+                <li>14:50</li>
+                <li>Docker</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+    
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/blog/2022/04/16/ADB-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">ADB 常用命令</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>22/04/16</li>
+                <li>14:50</li>
+                <li>Android</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+</div>
+
+    
+
+
+
+                    <div class="trm-divider footer-divider"></div>
+
+                    <!-- footer -->
+                    <footer class="trm-footer-card trm-scroll-animation">
+
+    
+
+    
+        <div class="trm-footer-item">
+            <span>© 2020- 2024</span>
+            <span class="footer-separator"data-separator=" · "></span>
+            <span class="trm-accent-color">R.linzhou</span>
+        </div>
+    
+
+      
+
+     
+
+     
+</footer>
+                    <!-- footer end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            <!-- body end -->
+
+            
+
+            
+<div class="trm-fixed-container">
+    
+    
+        <div class="trm-fixed-btn" data-title="阅读模式" onclick="asyncFun.switchReadMode()">
+            <i class="iconfont fas fa-book-reader"></i>
+        </div>
+    
+    
+        <div class="trm-fixed-btn hidden-md" data-title="单栏和双栏切换" onclick="asyncFun.switchSingleColumn()">
+            <i class="iconfont fas fa-arrows-alt-h"></i>
+        </div>
+    
+    <div id="trm-back-top" class="trm-fixed-btn" data-title="回到顶部">
+        <i class="iconfont fas fa-arrow-up"></i>
+    </div>
+</div>
+        </div>
+      </div>
+      <!-- scroll container end -->
+  </div>
+  <!-- app wrapper end -->
+
+  
+  <!-- Plugin -->
+
+
+
+
+    
+    
+<script src="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+
+    
+
+    
+        <script src="/blog/js/plugins/typing.js?v=2.2.1"></script>
+    
+
+    
+
+    <!-- 数学公式 -->
+    
+
+    <!-- 评论插件 -->
+    
+        
+
+        
+    
+
+		
+
+
+
+
+    <!-- Service Worker -->
+    
+    <script>
+        "serviceWorker" in navigator ?
+        navigator.serviceWorker.register('/blog/sw.js').then(function () {
+            navigator.serviceWorker.controller ? 
+             console.log("Assets cached by the controlling service worker.") :
+             console.log("Please reload this page to allow the service worker to handle network operations.")
+        }).catch(function (e) {
+            console.log("ERROR: " + e)
+        }) : console.log("Service workers are not supported in the current browser.")
+    </script>
+
+    <!-- baidu push -->
+    
+
+
+<script id="async-script" src="/blog/js/main.js?v=2.2.1"></script>
+
+<!-- CDN -->
+
+
+    
+
+    
+
+    
+
+
+
+</body>
+
+</html>
