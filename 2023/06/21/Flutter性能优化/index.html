@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="x5-fullscreen" content="true">
+<meta name="full-screen" content="yes">
+<meta name="theme-color" content="#317EFB" />
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0" name="viewport">
+<meta name="description" content="尽管 Flutter 本身性能已经非常出色，但在实际应用中仍然存在优化的空间。本文将详细介绍一些 Flutter 性能优化的示例和技巧，以帮助开发者提升应用的运行效率和用户体验。 目录 概述 减少 Rebuild 使用 const 构造函数 使用高效的列表控件 避免不必要的布局计算 异步处理 I&#x2F;O 操作 使用显式动画 图片优化 网络请求优化 使用性能分析工具  概述在开发 Flutte">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flutter性能优化">
+<meta property="og:url" content="https://2322222223.github.io/blog/2023/06/21/Flutter%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/index.html">
+<meta property="og:site_name" content="Rlz Blog">
+<meta property="og:description" content="尽管 Flutter 本身性能已经非常出色，但在实际应用中仍然存在优化的空间。本文将详细介绍一些 Flutter 性能优化的示例和技巧，以帮助开发者提升应用的运行效率和用户体验。 目录 概述 减少 Rebuild 使用 const 构造函数 使用高效的列表控件 避免不必要的布局计算 异步处理 I&#x2F;O 操作 使用显式动画 图片优化 网络请求优化 使用性能分析工具  概述在开发 Flutte">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-06-21T03:22:25.000Z">
+<meta property="article:modified_time" content="2024-06-02T03:27:34.223Z">
+<meta property="article:author" content="R.linzhou">
+<meta property="article:tag" content="Flutter">
+<meta name="twitter:card" content="summary">
+
+
+<title >Flutter性能优化</title>
+
+<!-- Favicon -->
+
+    <link href='/blog/img/logo.svg?v=2.2.1' rel='icon' type='image/png' sizes='16x16' ></link>
+
+
+    <link href='/blog/img/logo.svg?v=2.2.1' rel='icon' type='image/png' sizes='32x32' ></link>
+
+
+
+
+<!-- Plugin -->
+
+
+
+
+    
+<link rel="stylesheet" href="/blog/css/plugins/bootstrap.row.css">
+
+    
+<link rel="stylesheet" href="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.css">
+
+    
+    
+
+
+
+
+<!-- Icon -->
+
+    
+<link rel="stylesheet" href="/blog/css/plugins/font-awesome.min.css">
+
+
+
+
+<!-- Variable -->
+<script>window.ASYNC_CONFIG = {"hostname":"2322222223.github.io","author":"R.linzhou","root":"/blog/","typed_text":["Mobile development"],"theme_version":"2.2.1","theme":{"switch":true,"default":"style-light"},"favicon":{"logo":"/img/logo.svg","icon16":"/img/logo.svg","icon32":"/img/logo.svg","appleTouchIcon":null,"webmanifest":null,"visibilitychange":false,"hidden":"/ogo.svg","showText":"(/≧▽≦/)咦！又好了！","hideText":"(●—●)喔哟，崩溃啦！","apple_touch_icon":null,"show_text":"R.linzhou Blog","hide_text":"R.linzhou Blog"},"i18n":{"placeholder":"搜索文章...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）","author":"本文作者：","copyright_link":"本文链接：","copyright_license_title":"版权声明：","copyright_license_content":"本博客所有文章除特别声明外，均默认采用 undefined 许可协议。","copy_success":"复制成功","copy_failure":"复制失败","open_read_mode":"进入阅读模式","exit_read_mode":"退出阅读模式","notice_outdate_message":"距离上次更新已经 undefined 天了, 文章内容可能已经过时。","sticky":"置顶","just":"刚刚","min":"分钟前","hour":"小时前","day":"天前","month":"个月前"},"swup":false,"plugin":{"flickr_justified_gallery":"https://unpkg.com/flickr-justified-gallery@latest/dist/fjGallery.min.js"},"icons":{"sun":"far fa-sun","moon":"far fa-moon","play":"fas fa-play","email":"far fa-envelope","next":"fas fa-arrow-right","calendar":"far fa-calendar-alt","clock":"far fa-clock","user":"far fa-user","back_top":"fas fa-arrow-up","close":"fas fa-times","search":"fas fa-search","reward":"fas fa-hand-holding-usd","user_tag":"fas fa-user-alt","toc_tag":"fas fa-th-list","read":"fas fa-book-reader","arrows":"fas fa-arrows-alt-h","double_arrows":"fas fa-angle-double-down","copy":"fas fa-copy"},"icontype":"font","highlight":{"plugin":"highlighjs","theme":true,"copy":true,"lang":false,"title":"default","height_limit":200},"toc":{"post_title":true},"live_time":{"start_time":"","prefix":"博客已萌萌哒运行 undefined 天"},"danmu":{"enable":false,"el":".trm-banner"},"creative_commons":{"license":"by-nc-sa","language":"deed.zh"}};</script>
+<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2024-06-02 11:27:34"};</script>
+
+<!-- Theme mode css -->
+<link data-swup-theme rel="stylesheet" href="/blog/css/index.css?v=2.2.1" id="trm-switch-style">
+<script>
+    let defaultMode = ASYNC_CONFIG.theme.default !=='auto' ?  ASYNC_CONFIG.theme.default : (window.matchMedia("(prefers-color-scheme: light)").matches ? 'style-light' : 'style-dark')
+    let catchMode = localStorage.getItem('theme-mode') || defaultMode;
+    let type = catchMode === 'style-dark' ? 'add' : 'remove';
+    document.documentElement.classList[type]('dark')
+</script>
+
+<!-- CDN -->
+
+
+    
+    
+
+
+
+<!-- Site Analytics -->
+ 
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+<body>
+
+  <!-- app wrapper -->
+  <div class="trm-app-frame">
+
+    <!-- page preloader -->
+    <div class="trm-preloader">
+    <div class="trm-holder">
+        <div class="preloader">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+</div>
+    <!-- page preloader end -->
+
+    <!-- change mode preloader -->
+    <div class="trm-mode-swich-animation-frame">
+    <div class="trm-mode-swich-animation">
+        <i class="i-sun"><i class="iconfont far fa-sun"></i></i>
+        <div class="trm-horizon"></div>
+        <i class="i-moon"><i class="iconfont far fa-moon"></i></i>
+    </div>
+</div>
+    <!-- change mode preloader end -->
+
+      <!-- scroll container -->
+      <div id="trm-dynamic-content" class="trm-swup-animation">
+        <div id="trm-scroll-container" class="trm-scroll-container" style="opacity: 0">
+            <!-- top bar -->
+            <header class="trm-top-bar">
+	<div class="container">
+		<div class="trm-left-side">
+			<!-- logo -->
+<a href="/blog/" class="trm-logo-frame trm-anima-link">
+    
+        <img alt="logo" src="/blog/img/logo.svg">
+    
+    
+        <div class="trm-logo-text">
+            Blog<span></span>
+        </div>
+    
+</a>
+<!-- logo end -->
+		</div>
+		<div class="trm-right-side">
+			<!-- menu -->
+<div class="trm-menu">
+    <nav>
+        <ul>
+            
+            <li class="menu-item-has-children ">
+                <a  href="/blog/" target="">
+                    home
+                </a>
+                
+            </li>
+            
+            <li class="menu-item-has-children ">
+                <a data-no-swup href="/blog/archives/" target="">
+                    archives
+                </a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+</div>
+<!-- menu end -->
+			
+    <!-- mode switcher place -->
+    <div class="trm-mode-switcher-place">
+        <div class="trm-mode-switcher">
+            <i class="iconfont far fa-sun"></i>
+            <input class="tgl tgl-light" id="trm-swich" type="checkbox">
+            <label class="trm-swich" for="trm-swich"></label>
+            <i class="iconfont far fa-moon"></i>
+        </div>
+    </div>
+    <!-- mode switcher place end -->
+
+			
+		</div>
+		<div class="trm-menu-btn">
+			<span></span>
+		</div>
+	</div>
+</header>
+            <!-- top bar end -->
+
+            <!-- body -->
+            
+<div class="trm-content-start">
+    <!-- banner -->
+    <div class="trm-banner">
+    
+    <!-- banner cover -->
+    <img style="object-position:top;object-fit:cover;" alt="banner" class="trm-banner-cover" src="/blog/img/banner.png">
+    <!-- banner cover end -->
+    
+
+    <!-- banner content -->
+    <div class="trm-banner-content trm-overlay">
+        <div class="container">
+            <div class="row">
+                
+                <div class="col-lg-4"></div>
+                
+                <div class="col-lg-8">
+
+                    <!-- banner title -->
+                    <div class="trm-banner-text ">
+                        <div class="trm-label trm-mb-20">
+                            NEWS LETTER
+                        </div>
+                        <h1 class="trm-mb-30 trm-hsmb-font">
+                            Flutter性能优化
+                        </h1>
+
+                        
+                            <ul class="trm-breadcrumbs trm-label">
+                                <li>
+                                    <a href="/blog/" class="trm-anima-link">Home</a>
+                                </li>
+                                <li>
+                                    <span>
+                                        2023
+                                    </span>
+                                </li>
+                            </ul>
+                        
+                    </div>
+                    <!-- banner title end -->
+
+                    <!-- scroll hint -->
+                    <span id="scroll-triger" class="trm-scroll-hint-frame">
+                        <div class="trm-scroll-hint"></div>
+                        <span class="trm-label">Scroll down</span>
+                    </span>
+                    <!-- scroll hint end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- banner content end -->
+</div>
+    <!-- banner end -->
+    <div class="container">
+        <div class="row">
+            
+                <div class="trm-page-sidebar col-lg-4 hidden-sm">
+                    <!-- main card -->
+                    <div class="trm-main-card-frame trm-sidebar">
+    <div class="trm-main-card"> 
+        <!-- card header -->
+<div class="trm-mc-header">
+    <div class="trm-avatar-frame trm-mb-20">
+        <img alt="Avatar" class="trm-avatar" src="/blog/img/avatar.png">
+    </div>
+    <h5 class="trm-name trm-mb-15">
+        R.linzhou
+    </h5>
+    
+        <div class="trm-label">
+            I&#39;m
+            <span class="trm-typed-text">
+                <!-- Words for theme.user.typedText -->
+            </span>
+        </div>
+    
+</div>
+<!-- card header end -->
+        <!-- sidebar social -->
+
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<div class="trm-social">
+    
+        <a href="https://github.com/2322222223" title="Github" rel="nofollow" target="_blank">
+            <i class="iconfont fab fa-github"></i>
+        </a>
+    
+        <a href="http://2322222223.com" title="Resume" rel="nofollow" target="_blank">
+            <i class="iconfont far fa-smile"></i>
+        </a>
+    
+</div>
+
+<!-- sidebar social end -->
+        <!-- info -->
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<ul class="trm-table trm-mb-20">
+    
+        <li>
+            <div class="trm-label">
+                地址:
+            </div>
+            <div class="trm-label trm-label-light">
+                Beijing
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                年龄:
+            </div>
+            <div class="trm-label trm-label-light">
+                32
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                邮箱:
+            </div>
+            <div class="trm-label trm-label-light">
+                g2322222223@gmail.com
+            </div>
+        </li>
+    
+</ul>
+<!-- info end -->
+
+        
+    <div class="trm-divider trm-mb-40 trm-mt-40"></div>
+    <!-- action button -->
+    <div class="text-center">
+        <a href="mailto:g2322222223@gmail.com" class="trm-btn">
+            联系我
+            <i class="iconfont far fa-envelope"></i>
+        </a>
+    </div>
+    <!-- action button end -->
+
+    </div>
+</div>
+                    <!-- main card end -->
+                </div>
+            
+            <div class="trm-page-content col-lg-8">
+                <div id="trm-content" class="trm-content">
+                    <div class="trm-post-info row hidden-sm">
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-calendar-alt trm-icon"></i><br>
+            06/21
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-clock trm-icon"></i><br>
+            11:22
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div id="post-author" class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-user trm-icon"></i><br>
+            R.linzhou
+        </div>
+    </div>
+</div>
+<div class="trm-card ">
+    <article id="article-container" class="trm-publication">
+    <p>尽管 Flutter 本身性能已经非常出色，但在实际应用中仍然存在优化的空间。本文将详细介绍一些 Flutter 性能优化的示例和技巧，以帮助开发者提升应用的运行效率和用户体验。</p>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ol>
+<li><a href="#%E6%A6%82%E8%BF%B0">概述</a></li>
+<li><a href="#%E5%87%8F%E5%B0%91-rebuild">减少 Rebuild</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-const-%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0">使用 const 构造函数</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8%E9%AB%98%E6%95%88%E7%9A%84%E5%88%97%E8%A1%A8%E6%8E%A7%E4%BB%B6">使用高效的列表控件</a></li>
+<li><a href="#%E9%81%BF%E5%85%8D%E4%B8%8D%E5%BF%85%E8%A6%81%E7%9A%84%E5%B8%83%E5%B1%80%E8%AE%A1%E7%AE%97">避免不必要的布局计算</a></li>
+<li><a href="#%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86-io-%E6%93%8D%E4%BD%9C">异步处理 I&#x2F;O 操作</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8%E6%98%BE%E5%BC%8F%E5%8A%A8%E7%94%BB">使用显式动画</a></li>
+<li><a href="#%E5%9B%BE%E7%89%87%E4%BC%98%E5%8C%96">图片优化</a></li>
+<li><a href="#%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82%E4%BC%98%E5%8C%96">网络请求优化</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7">使用性能分析工具</a></li>
+</ol>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>在开发 Flutter 应用时，性能优化主要集中在以下几个方面：</p>
+<ul>
+<li><strong>UI 渲染效率</strong>：避免不必要的 UI 重建和布局计算。</li>
+<li><strong>图片处理</strong>：优化图片加载和显示。</li>
+<li><strong>网络请求</strong>：减少网络请求的频率和大小。</li>
+<li><strong>动画</strong>：使用高效的动画控件和方法。</li>
+<li><strong>异步操作</strong>：确保 I&#x2F;O 操作异步执行，不阻塞主线程。</li>
+</ul>
+<p>接下来，我们将详细讨论这些方面的优化方法和示例。</p>
+<h2 id="减少-Rebuild"><a href="#减少-Rebuild" class="headerlink" title="减少 Rebuild"></a>减少 Rebuild</h2><p>在 Flutter 中，Widget 是不可变的，每次状态变化都会导致 Widget 重建。如果不加以控制，频繁的重建会导致性能问题。我们可以通过以下几种方式减少不必要的 rebuild：</p>
+<h3 id="使用-const-构造函数"><a href="#使用-const-构造函数" class="headerlink" title="使用 const 构造函数"></a>使用 <code>const</code> 构造函数</h3><p>使用 <code>const</code> 构造函数创建的 Widget 是不可变的，只会在初始化时构建一次。这样可以避免不必要的重建，提高性能。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">dart</span><br><span class="line">复制代码</span><br><span class="line">class MyWidget extends StatelessWidget &#123;</span><br><span class="line">  const MyWidget(&#123;Key? key&#125;) : super(key: key);</span><br><span class="line"></span><br><span class="line">  @override</span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    return const Text(&#x27;Hello, World!&#x27;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用-AutomaticKeepAliveClientMixin"><a href="#使用-AutomaticKeepAliveClientMixin" class="headerlink" title="使用 AutomaticKeepAliveClientMixin"></a>使用 <code>AutomaticKeepAliveClientMixin</code></h3><p>在长列表中，滚动时会销毁不在屏幕上的 Widget。我们可以使用 <code>AutomaticKeepAliveClientMixin</code> 来保留这些 Widget，从而减少重建。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">dart</span><br><span class="line">复制代码</span><br><span class="line">class MyListItem extends StatefulWidget &#123;</span><br><span class="line">  @override</span><br><span class="line">  _MyListItemState createState() =&gt; _MyListItemState();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class _MyListItemState extends State&lt;MyListItem&gt; with AutomaticKeepAliveClientMixin &#123;</span><br><span class="line">  @override</span><br><span class="line">  bool get wantKeepAlive =&gt; true;</span><br><span class="line"></span><br><span class="line">  @override</span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    super.build(context);</span><br><span class="line">    return ListTile(title: Text(&#x27;List Item&#x27;));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用高效的列表控件"><a href="#使用高效的列表控件" class="headerlink" title="使用高效的列表控件"></a>使用高效的列表控件</h2><p>在处理长列表时，使用高效的列表控件可以显著提高性能。<code>ListView.builder</code> 和 <code>GridView.builder</code> 是处理长列表的最佳选择，因为它们只会构建当前屏幕上可见的项。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">dart</span><br><span class="line">复制代码</span><br><span class="line">ListView.builder(</span><br><span class="line">  itemCount: 1000,</span><br><span class="line">  itemBuilder: (context, index) &#123;</span><br><span class="line">    return ListTile(</span><br><span class="line">      title: Text(&#x27;Item $index&#x27;),</span><br><span class="line">    );</span><br><span class="line">  &#125;,</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h2 id="避免不必要的布局计算"><a href="#避免不必要的布局计算" class="headerlink" title="避免不必要的布局计算"></a>避免不必要的布局计算</h2><p>使用 <code>LayoutBuilder</code> 可以避免在布局过程中进行不必要的计算。<code>LayoutBuilder</code> 只有在其约束条件改变时才会重新构建其子 Widget。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">dart</span><br><span class="line">复制代码</span><br><span class="line">LayoutBuilder(</span><br><span class="line">  builder: (context, constraints) &#123;</span><br><span class="line">    return Container(</span><br><span class="line">      width: constraints.maxWidth / 2,</span><br><span class="line">      height: 50,</span><br><span class="line">      color: Colors.blue,</span><br><span class="line">    );</span><br><span class="line">  &#125;,</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h2 id="异步处理-I-O-操作"><a href="#异步处理-I-O-操作" class="headerlink" title="异步处理 I&#x2F;O 操作"></a>异步处理 I&#x2F;O 操作</h2><p>将耗时的 I&#x2F;O 操作（如文件读取和网络请求）放在异步方法中执行，避免阻塞主线程，从而提高应用的响应速度。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">dart</span><br><span class="line">复制代码</span><br><span class="line">Future&lt;void&gt; loadData() async &#123;</span><br><span class="line">  final data = await fetchDataFromNetwork();</span><br><span class="line">  setState(() &#123;</span><br><span class="line">    _data = data;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用显式动画"><a href="#使用显式动画" class="headerlink" title="使用显式动画"></a>使用显式动画</h2><p>Flutter 提供了多种动画控件，如 <code>AnimatedContainer</code>、<code>AnimatedOpacity</code> 等。这些控件在状态变化时会自动执行动画，简化了动画的实现过程。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">dart</span><br><span class="line">复制代码</span><br><span class="line">AnimatedContainer(</span><br><span class="line">  duration: Duration(seconds: 1),</span><br><span class="line">  width: _isExpanded ? 200 : 100,</span><br><span class="line">  height: 50,</span><br><span class="line">  color: _isExpanded ? Colors.blue : Colors.red,</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h2 id="图片优化"><a href="#图片优化" class="headerlink" title="图片优化"></a>图片优化</h2><h3 id="使用合适的图片格式"><a href="#使用合适的图片格式" class="headerlink" title="使用合适的图片格式"></a>使用合适的图片格式</h3><p>根据图片内容选择合适的格式。例如，矢量图使用 SVG 格式，照片使用 JPEG 格式，图标使用 PNG 格式。</p>
+<h3 id="图片缓存"><a href="#图片缓存" class="headerlink" title="图片缓存"></a>图片缓存</h3><p>使用 <code>cached_network_image</code> 包可以轻松实现图片缓存，减少网络请求次数，提高图片加载速度。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">dart</span><br><span class="line">复制代码</span><br><span class="line">CachedNetworkImage(</span><br><span class="line">  imageUrl: &quot;https://example.com/image.jpg&quot;,</span><br><span class="line">  placeholder: (context, url) =&gt; CircularProgressIndicator(),</span><br><span class="line">  errorWidget: (context, url, error) =&gt; Icon(Icons.error),</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h2 id="网络请求优化"><a href="#网络请求优化" class="headerlink" title="网络请求优化"></a>网络请求优化</h2><h3 id="批量请求"><a href="#批量请求" class="headerlink" title="批量请求"></a>批量请求</h3><p>将多个网络请求合并为一个请求，减少请求次数和网络开销。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">dart</span><br><span class="line">复制代码</span><br><span class="line">Future&lt;void&gt; fetchMultipleData() async &#123;</span><br><span class="line">  final responses = await Future.wait([</span><br><span class="line">    http.get(Uri.parse(&#x27;https://example.com/data1&#x27;)),</span><br><span class="line">    http.get(Uri.parse(&#x27;https://example.com/data2&#x27;)),</span><br><span class="line">  ]);</span><br><span class="line"></span><br><span class="line">  // 处理响应数据</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用合适的数据格式"><a href="#使用合适的数据格式" class="headerlink" title="使用合适的数据格式"></a>使用合适的数据格式</h3><p>根据需求选择合适的数据格式。例如，文本数据使用 JSON 格式，二进制数据使用 Protobuf 格式。</p>
+<h2 id="使用性能分析工具"><a href="#使用性能分析工具" class="headerlink" title="使用性能分析工具"></a>使用性能分析工具</h2><p>Flutter 提供了多种性能分析工具，如 Flutter DevTools、Dart DevTools 等。这些工具可以帮助开发者检测和解决性能问题。</p>
+<h3 id="Flutter-DevTools"><a href="#Flutter-DevTools" class="headerlink" title="Flutter DevTools"></a>Flutter DevTools</h3><p>Flutter DevTools 提供了详细的性能分析和调试功能，可以用来检测 UI 渲染性能、内存使用情况等。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">dart</span><br><span class="line">复制代码</span><br><span class="line">void main() &#123;</span><br><span class="line">  runApp(MyApp());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在运行应用时，使用以下命令启动 DevTools：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sh</span><br><span class="line">复制代码</span><br><span class="line">flutter pub global activate devtools</span><br><span class="line">flutter pub global run devtools</span><br></pre></td></tr></table></figure>
+
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>以上是一些基础的优化方案，可以提高 Flutter 应用的性能。在实际开发中，应结合具体应用场景，选择适合的优化方法，不断提升应用的运行效率和用户体验。</p>
+<p>希望本文对你在 Flutter 性能优化方面有所帮助。如果有任何疑问或建议，欢迎在评论区交流讨论。</p>
+
+</article>
+    
+    
+
+</div>
+<div class="trm-post-next-prev row">
+    <div class="col-lg-12">
+        <!-- title -->
+        <h5 class="trm-title-with-divider">
+            其他文章
+            <span data-number="02"></span>
+        </h5>
+    </div>
+    
+    
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/blog/2023/06/01/Github-Actions%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93%E9%83%A8%E7%BD%B2%E8%B8%A9%E5%9D%91%E8%AE%B0/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">Github Actions私有仓库部署踩坑记</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>23/06/01</li>
+                <li>11:35</li>
+                <li>Other</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+</div>
+
+    
+
+    <div id="giscus-wrap" class="trm-card trm-scroll-animation comment-container"></div>
+<script data-swup-reload-script>
+    function loadGiscus() {
+        let nowTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+        const config = {
+            src: 'https://giscus.app/client.js',
+            "data-repo": '2322222223/blog',
+            "data-repo-id": 'R_kgDOMCoZ8w',
+            "data-category": 'Announcements',
+            "data-category-id": 'DIC_kwDOMCoZ884Cfxl-',
+            "data-mapping": 'pathname',
+            "data-reactions-enabled": '1',
+            "data-emit-metadata": '1',
+            "data-theme": nowTheme,
+            "data-lang": 'zh-CN',
+            crossorigin: "anonymous",
+            async: true
+        }
+        let ele = document.createElement('script')
+        for (let key in config) {
+            ele.setAttribute(key, config[key])
+        }
+        document.getElementById('giscus-wrap').insertAdjacentElement('afterbegin', ele)
+    }
+
+    function changeGiscusTheme() {
+        let theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+
+        function sendMessage(message) {
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (!iframe) return;
+            iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+
+        sendMessage({
+            setConfig: {
+                theme: theme
+            }
+        });
+    }
+
+    loadGiscus();
+</script>
+
+
+
+                    <div class="trm-divider footer-divider"></div>
+
+                    <!-- footer -->
+                    <footer class="trm-footer-card trm-scroll-animation">
+
+    
+
+    
+        <div class="trm-footer-item">
+            <span>© 2020- 2024</span>
+            <span class="footer-separator"data-separator=" · "></span>
+            <span class="trm-accent-color">R.linzhou</span>
+        </div>
+    
+
+      
+
+     
+
+     
+</footer>
+                    <!-- footer end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            <!-- body end -->
+
+            
+
+            
+<div class="trm-fixed-container">
+    
+    
+        <div class="trm-fixed-btn" data-title="阅读模式" onclick="asyncFun.switchReadMode()">
+            <i class="iconfont fas fa-book-reader"></i>
+        </div>
+    
+    
+        <div class="trm-fixed-btn hidden-md" data-title="单栏和双栏切换" onclick="asyncFun.switchSingleColumn()">
+            <i class="iconfont fas fa-arrows-alt-h"></i>
+        </div>
+    
+    <div id="trm-back-top" class="trm-fixed-btn" data-title="回到顶部">
+        <i class="iconfont fas fa-arrow-up"></i>
+    </div>
+</div>
+        </div>
+      </div>
+      <!-- scroll container end -->
+  </div>
+  <!-- app wrapper end -->
+
+  
+  <!-- Plugin -->
+
+
+
+
+    
+    
+<script src="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+
+    
+
+    
+        <script src="/blog/js/plugins/typing.js?v=2.2.1"></script>
+    
+
+    
+
+    <!-- 数学公式 -->
+    
+
+    <!-- 评论插件 -->
+    
+        
+
+        
+    
+
+		
+
+
+
+
+    <!-- Service Worker -->
+    
+    <script>
+        "serviceWorker" in navigator ?
+        navigator.serviceWorker.register('/blog/sw.js').then(function () {
+            navigator.serviceWorker.controller ? 
+             console.log("Assets cached by the controlling service worker.") :
+             console.log("Please reload this page to allow the service worker to handle network operations.")
+        }).catch(function (e) {
+            console.log("ERROR: " + e)
+        }) : console.log("Service workers are not supported in the current browser.")
+    </script>
+
+    <!-- baidu push -->
+    
+
+
+<script id="async-script" src="/blog/js/main.js?v=2.2.1"></script>
+
+<!-- CDN -->
+
+
+    
+
+    
+
+    
+
+
+
+</body>
+
+</html>
