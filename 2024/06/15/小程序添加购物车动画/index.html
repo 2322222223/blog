@@ -362,18 +362,18 @@
 <div class="trm-card ">
     <article id="article-container" class="trm-publication">
     <p>因为最近在做一个添加购物车的页面,涉及到贝塞尔曲线绘制技术,在用户点击添加到购物车时，会出现一个小球从点击位置飞向购物车图标的位置，模拟商品被添加到购物车的动画效果。</p>
-<p><img src="/blog/2024-06-15_11.45.05.gif" alt="效果图"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
+<p><img src="2024-06-15_11.45.05.gif" alt="效果图"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
 <p>与是网上查阅资料,下面简单介绍下关于贝塞尔曲线的一些原理知识。</p>
 <p>贝塞尔曲线通过一组控制点来定义其形状。最常见的贝塞尔曲线是二次和三次贝塞尔曲线。下面通过图文介绍其原理。</p>
 <h4 id="1-二次贝塞尔曲线"><a href="#1-二次贝塞尔曲线" class="headerlink" title="1. 二次贝塞尔曲线"></a>1. 二次贝塞尔曲线</h4><p>二次贝塞尔曲线由三个点定义：起点 P0、控制点 P1 和终点 P2。曲线的方程如下：</p>
 <p>B(t)&#x3D;(1−t)2P0+2(1−t)tP1+t2P2B(t) &#x3D; (1 - t)^2 P0 + 2(1 - t)t P1 + t^2 P2B(t)&#x3D;(1−t)2P0+2(1−t)tP1+t2P2</p>
 <p>其中 ttt 是一个从 0 到 1 的参数，控制曲线从 P0 移动到 P2。</p>
-<p><img src="/blog/b1.gif" alt="二次贝塞尔曲线"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
+<p><img src="b1.gif" alt="二次贝塞尔曲线"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
 <p><em>图1：二次贝塞尔曲线</em></p>
 <h4 id="2-三次贝塞尔曲线"><a href="#2-三次贝塞尔曲线" class="headerlink" title="2. 三次贝塞尔曲线"></a>2. 三次贝塞尔曲线</h4><p>三次贝塞尔曲线由四个点定义：起点 P0、两个控制点 P1 和 P2、以及终点 P3。曲线的方程如下：</p>
 <p>B(t)&#x3D;(1−t)3P0+3(1−t)2tP1+3(1−t)t2P2+t3P3B(t) &#x3D; (1 - t)^3 P0 + 3(1 - t)^2 t P1 + 3(1 - t) t^2 P2 + t^3 P3B(t)&#x3D;(1−t)3P0+3(1−t)2tP1+3(1−t)t2P2+t3P3</p>
 <p>同样，ttt 是一个从 0 到 1 的参数。</p>
-<p><img src="/blog/b2.gif" alt="三次贝塞尔曲线"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
+<p><img src="b2.gif" alt="三次贝塞尔曲线"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
 <p><em>图2：三次贝塞尔曲线</em></p>
 <h3 id="贝塞尔曲线的构建步骤"><a href="#贝塞尔曲线的构建步骤" class="headerlink" title="贝塞尔曲线的构建步骤"></a>贝塞尔曲线的构建步骤</h3><p>以三次贝塞尔曲线为例：</p>
 <ol>
