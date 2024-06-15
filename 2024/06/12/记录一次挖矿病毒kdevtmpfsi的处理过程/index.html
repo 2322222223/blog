@@ -360,7 +360,7 @@
 <div class="trm-card ">
     <article id="article-container" class="trm-publication">
     <p>端午节了,我终于可以休息下了,但是发现我的服务器没有休息.<br>早上突然收到一条服务器的恶意软件的告警信息.<br>然后想登录服务器查看,但无法连接,然后只能重启机器,<br>通过查看内存:</p>
-<p><img src="/blog/image.png" alt="alt text"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
+<p><img src="image.png" alt="alt text"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
 <p>发现一个kdevtmpfsi,PID为171665的进程占用了99.7%的CPU,由于忙着其他事情当时没有在意,所以直接</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">kill</span> -9 171665</span><br></pre></td></tr></table></figure>
 <p>等到下午的时候登录服务器的时候,居然又发现了同样的问题,于是网上搜了一下,原来kdevtmpfsi是一个挖矿病毒,大多数是在数据库,redis,pg等侵入.</p>
