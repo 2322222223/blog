@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="x5-fullscreen" content="true">
+<meta name="full-screen" content="yes">
+<meta name="theme-color" content="#317EFB" />
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0" name="viewport">
+<meta name="description" content="安卓中的内存模型与垃圾回收算法详解1. 简介在Android开发中，内存管理和垃圾回收（Garbage Collection，GC）是非常重要的主题。内存管理的好坏直接影响应用的性能和稳定性。本文将详细介绍Android中的内存模型和垃圾回收算法，包括源码，并进行详细的对比分析。 2. 内存模型Android的内存模型主要由以下几个部分组成：  堆内存（Heap Memory）：用于动态分配对象的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android-垃圾回收算法详解">
+<meta property="og:url" content="https://2322222223.github.io/blog/2019/05/25/Android-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="Rlz Blog">
+<meta property="og:description" content="安卓中的内存模型与垃圾回收算法详解1. 简介在Android开发中，内存管理和垃圾回收（Garbage Collection，GC）是非常重要的主题。内存管理的好坏直接影响应用的性能和稳定性。本文将详细介绍Android中的内存模型和垃圾回收算法，包括源码，并进行详细的对比分析。 2. 内存模型Android的内存模型主要由以下几个部分组成：  堆内存（Heap Memory）：用于动态分配对象的">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-05-25T12:03:01.000Z">
+<meta property="article:modified_time" content="2024-06-30T08:04:06.732Z">
+<meta property="article:author" content="R.linzhou">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="GC">
+<meta name="twitter:card" content="summary">
+
+
+<title >Android-垃圾回收算法详解</title>
+
+<!-- Favicon -->
+
+    <link href='/blog/img/logo.svg?v=2.2.2' rel='icon' type='image/png' sizes='16x16' ></link>
+
+
+    <link href='/blog/img/logo.svg?v=2.2.2' rel='icon' type='image/png' sizes='32x32' ></link>
+
+
+
+
+<!-- Plugin -->
+
+
+
+
+    
+<link rel="stylesheet" href="/blog/css/plugins/bootstrap.row.css">
+
+    
+<link rel="stylesheet" href="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.css">
+
+    
+    
+
+
+
+
+<!-- Icon -->
+
+    
+<link rel="stylesheet" href="/blog/css/plugins/font-awesome.min.css">
+
+
+
+
+<!-- Variable -->
+<script>window.ASYNC_CONFIG = {"hostname":"2322222223.github.io","author":"R.linzhou","root":"/blog/","typed_text":["Mobile development"],"theme_version":"2.2.2","theme":{"switch":true,"default":"style-light"},"favicon":{"logo":"/img/logo.svg","icon16":"/img/logo.svg","icon32":"/img/logo.svg","apple_touch_icon":null,"webmanifest":null,"visibilitychange":false,"hidden":"/ogo.svg","show_text":"R.linzhou Blog","hide_text":"R.linzhou Blog"},"i18n":{"placeholder":"搜索文章...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）","author":"本文作者：","copyright_link":"本文链接：","copyright_license_title":"版权声明：","copyright_license_content":"本博客所有文章除特别声明外，均默认采用 undefined 许可协议。","copy_success":"复制成功","copy_failure":"复制失败","open_read_mode":"进入阅读模式","exit_read_mode":"退出阅读模式","notice_outdate_message":"距离上次更新已经 undefined 天了, 文章内容可能已经过时。","sticky":"置顶","just":"刚刚","min":"分钟前","hour":"小时前","day":"天前","month":"个月前"},"swup":false,"plugin":{"flickr_justified_gallery":"https://unpkg.com/flickr-justified-gallery@latest/dist/fjGallery.min.js"},"icons":{"sun":"far fa-sun","moon":"far fa-moon","play":"fas fa-play","email":"far fa-envelope","next":"fas fa-arrow-right","calendar":"far fa-calendar-alt","clock":"far fa-clock","user":"far fa-user","back_top":"fas fa-arrow-up","close":"fas fa-times","search":"fas fa-search","reward":"fas fa-hand-holding-usd","user_tag":"fas fa-user-alt","toc_tag":"fas fa-th-list","read":"fas fa-book-reader","arrows":"fas fa-arrows-alt-h","double_arrows":"fas fa-angle-double-down","copy":"fas fa-copy"},"icontype":"font","highlight":{"plugin":"highlighjs","theme":true,"copy":true,"lang":false,"title":"default","height_limit":200},"toc":{"post_title":true},"live_time":{"start_time":"","prefix":"博客已萌萌哒运行 undefined 天"},"danmu":{"enable":false,"el":".trm-banner"},"creative_commons":{"license":"by-nc-sa","language":"deed.zh"}};</script>
+<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2024-06-30 16:04:06"};</script>
+
+<!-- Theme mode css -->
+<link data-swup-theme rel="stylesheet" href="/blog/css/index.css?v=2.2.2" id="trm-switch-style">
+<script>
+    let defaultMode = ASYNC_CONFIG.theme.default !=='auto' ?  ASYNC_CONFIG.theme.default : (window.matchMedia("(prefers-color-scheme: light)").matches ? 'style-light' : 'style-dark')
+    let catchMode = localStorage.getItem('theme-mode') || defaultMode;
+    let type = catchMode === 'style-dark' ? 'add' : 'remove';
+    document.documentElement.classList[type]('dark')
+</script>
+
+<!-- CDN -->
+
+
+    
+    
+
+
+
+<!-- Site Analytics -->
+
+ 
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+<body>
+
+  <!-- app wrapper -->
+  <div class="trm-app-frame">
+
+    <!-- page preloader -->
+    <div class="trm-preloader">
+    <div class="trm-holder">
+        <div class="preloader">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+</div>
+    <!-- page preloader end -->
+
+    <!-- change mode preloader -->
+    <div class="trm-mode-swich-animation-frame">
+    <div class="trm-mode-swich-animation">
+        <i class="i-sun"><i class="iconfont far fa-sun"></i></i>
+        <div class="trm-horizon"></div>
+        <i class="i-moon"><i class="iconfont far fa-moon"></i></i>
+    </div>
+</div>
+    <!-- change mode preloader end -->
+
+      <!-- scroll container -->
+      <div id="trm-dynamic-content" class="trm-swup-animation">
+        <div id="trm-scroll-container" class="trm-scroll-container" style="opacity: 0">
+            <!-- top bar -->
+            <header class="trm-top-bar">
+	<div class="container">
+		<div class="trm-left-side">
+			<!-- logo -->
+<a href="/blog/" class="trm-logo-frame trm-anima-link">
+    
+        <img alt="logo" src="/blog/img/logo.svg">
+    
+    
+        <div class="trm-logo-text">
+            Blog<span></span>
+        </div>
+    
+</a>
+<!-- logo end -->
+		</div>
+		<div class="trm-right-side">
+			<!-- menu -->
+<div class="trm-menu">
+    <nav>
+        <ul>
+            
+            <li class="menu-item-has-children ">
+                <a  href="/blog/" target="">
+                    home
+                </a>
+                
+            </li>
+            
+            <li class="menu-item-has-children ">
+                <a data-no-swup href="/blog/archives/" target="">
+                    archives
+                </a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+</div>
+<!-- menu end -->
+			
+    <!-- mode switcher place -->
+    <div class="trm-mode-switcher-place">
+        <div class="trm-mode-switcher">
+            <i class="iconfont far fa-sun"></i>
+            <input class="tgl tgl-light" id="trm-swich" type="checkbox">
+            <label class="trm-swich" for="trm-swich"></label>
+            <i class="iconfont far fa-moon"></i>
+        </div>
+    </div>
+    <!-- mode switcher place end -->
+
+			
+		</div>
+		<div class="trm-menu-btn">
+			<span></span>
+		</div>
+	</div>
+</header>
+            <!-- top bar end -->
+
+            <!-- body -->
+            
+<div class="trm-content-start">
+    <!-- banner -->
+    <div class="trm-banner">
+    
+    <!-- banner cover -->
+    <img style="object-position:top;object-fit:cover;" alt="banner" class="trm-banner-cover" src="/blog/img/banner.png">
+    <!-- banner cover end -->
+    
+
+    <!-- banner content -->
+    <div class="trm-banner-content trm-overlay">
+        <div class="container">
+            <div class="row">
+                
+                <div class="col-lg-4"></div>
+                
+                <div class="col-lg-8">
+
+                    <!-- banner title -->
+                    <div class="trm-banner-text ">
+                        <div class="trm-label trm-mb-20">
+                            NEWS LETTER
+                        </div>
+                        <h1 class="trm-mb-30 trm-hsmb-font">
+                            Android-垃圾回收算法详解
+                        </h1>
+
+                        
+                            <ul class="trm-breadcrumbs trm-label">
+                                <li>
+                                    <a href="/blog/" class="trm-anima-link">Home</a>
+                                </li>
+                                <li>
+                                    <span>
+                                        2019
+                                    </span>
+                                </li>
+                            </ul>
+                        
+                    </div>
+                    <!-- banner title end -->
+
+                    <!-- scroll hint -->
+                    <span id="scroll-triger" class="trm-scroll-hint-frame">
+                        <div class="trm-scroll-hint"></div>
+                        <span class="trm-label">Scroll down</span>
+                    </span>
+                    <!-- scroll hint end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- banner content end -->
+</div>
+    <!-- banner end -->
+    <div class="container">
+        <div class="row">
+            
+                <div class="trm-page-sidebar col-lg-4 hidden-sm">
+                    <!-- main card -->
+                    <div class="trm-main-card-frame trm-sidebar">
+    <div class="trm-main-card"> 
+        <!-- card header -->
+<div class="trm-mc-header">
+    <div class="trm-avatar-frame trm-mb-20">
+        <img alt="Avatar" class="trm-avatar" src="/blog/img/avatar.png">
+    </div>
+    <h5 class="trm-name trm-mb-15">
+        R.linzhou
+    </h5>
+    
+        <div class="trm-label">
+            I&#39;m
+            <span class="trm-typed-text">
+                <!-- Words for theme.user.typedText -->
+            </span>
+        </div>
+    
+</div>
+<!-- card header end -->
+        <!-- sidebar social -->
+
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<div class="trm-social">
+    
+        <a href="https://github.com/2322222223" title="Github" rel="nofollow" target="_blank">
+            <i class="iconfont fab fa-github"></i>
+        </a>
+    
+        <a href="http://2322222223.com" title="Resume" rel="nofollow" target="_blank">
+            <i class="iconfont far fa-smile"></i>
+        </a>
+    
+</div>
+
+<!-- sidebar social end -->
+        <!-- info -->
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<ul class="trm-table trm-mb-20">
+    
+        <li>
+            <div class="trm-label">
+                地址:
+            </div>
+            <div class="trm-label trm-label-light">
+                Beijing
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                年龄:
+            </div>
+            <div class="trm-label trm-label-light">
+                32
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                邮箱:
+            </div>
+            <div class="trm-label trm-label-light">
+                g2322222223@gmail.com
+            </div>
+        </li>
+    
+</ul>
+<!-- info end -->
+
+        
+    <div class="trm-divider trm-mb-40 trm-mt-40"></div>
+    <!-- action button -->
+    <div class="text-center">
+        <a href="mailto:g2322222223@gmail.com" class="trm-btn">
+            联系我
+            <i class="iconfont far fa-envelope"></i>
+        </a>
+    </div>
+    <!-- action button end -->
+
+    </div>
+</div>
+                    <!-- main card end -->
+                </div>
+            
+            <div class="trm-page-content col-lg-8">
+                <div id="trm-content" class="trm-content">
+                    <div class="trm-post-info row hidden-sm">
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-calendar-alt trm-icon"></i><br>
+            05/25
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-clock trm-icon"></i><br>
+            20:03
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div id="post-author" class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-user trm-icon"></i><br>
+            R.linzhou
+        </div>
+    </div>
+</div>
+<div class="trm-card ">
+    <article id="article-container" class="trm-publication">
+    <h3 id="安卓中的内存模型与垃圾回收算法详解"><a href="#安卓中的内存模型与垃圾回收算法详解" class="headerlink" title="安卓中的内存模型与垃圾回收算法详解"></a>安卓中的内存模型与垃圾回收算法详解</h3><h4 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h4><p>在Android开发中，内存管理和垃圾回收（Garbage Collection，GC）是非常重要的主题。内存管理的好坏直接影响应用的性能和稳定性。本文将详细介绍Android中的内存模型和垃圾回收算法，包括源码，并进行详细的对比分析。</p>
+<h4 id="2-内存模型"><a href="#2-内存模型" class="headerlink" title="2. 内存模型"></a>2. 内存模型</h4><p>Android的内存模型主要由以下几个部分组成：</p>
+<ol>
+<li><strong>堆内存（Heap Memory）</strong>：用于动态分配对象的内存区域。</li>
+<li><strong>栈内存（Stack Memory）</strong>：用于方法调用和局部变量的内存区域。</li>
+<li><strong>本地内存（Native Memory）</strong>：用于JNI调用和其他本地资源的内存区域。</li>
+</ol>
+<h5 id="2-1-堆内存"><a href="#2-1-堆内存" class="headerlink" title="2.1 堆内存"></a>2.1 堆内存</h5><p>堆内存是Android应用中动态分配对象的主要区域。每个应用都有自己的堆内存，堆内存的大小可以通过配置文件进行调整。</p>
+<h6 id="示例：调整堆内存大小"><a href="#示例：调整堆内存大小" class="headerlink" title="示例：调整堆内存大小"></a>示例：调整堆内存大小</h6><p>在<code>AndroidManifest.xml</code>中可以通过<code>android:largeHeap</code>属性来请求更大的堆内存：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">xml</span><br><span class="line"></span><br><span class="line">&lt;application</span><br><span class="line">    android:largeHeap=&quot;true&quot;</span><br><span class="line">    ... &gt;</span><br><span class="line">    ...</span><br><span class="line">&lt;/application&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-2-栈内存"><a href="#2-2-栈内存" class="headerlink" title="2.2 栈内存"></a>2.2 栈内存</h5><p>栈内存用于存储方法调用和局部变量。每个线程都有自己的栈内存，栈内存的大小一般较小且固定。</p>
+<h6 id="示例：栈内存的使用"><a href="#示例：栈内存的使用" class="headerlink" title="示例：栈内存的使用"></a>示例：栈内存的使用</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">java</span><br><span class="line"></span><br><span class="line">public void exampleMethod() &#123;</span><br><span class="line">    int localVariable = 42; // 局部变量存储在栈内存中</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-3-本地内存"><a href="#2-3-本地内存" class="headerlink" title="2.3 本地内存"></a>2.3 本地内存</h5><p>本地内存用于JNI调用和其他本地资源的分配。这部分内存不受Java虚拟机（JVM）的管理，需要开发者手动管理。</p>
+<h6 id="示例：JNI调用"><a href="#示例：JNI调用" class="headerlink" title="示例：JNI调用"></a>示例：JNI调用</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">java</span><br><span class="line"></span><br><span class="line">public class NativeExample &#123;</span><br><span class="line">    static &#123;</span><br><span class="line">        System.loadLibrary(&quot;native-lib&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public native String stringFromJNI();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-垃圾回收算法"><a href="#3-垃圾回收算法" class="headerlink" title="3. 垃圾回收算法"></a>3. 垃圾回收算法</h4><p>Android中的垃圾回收算法主要由ART（Android Runtime）虚拟机管理。常用的垃圾回收算法包括标记-清除（Mark-Sweep）、标记-整理（Mark-Compact）和分代回收（Generational Garbage Collection）。</p>
+<h5 id="3-1-标记-清除算法"><a href="#3-1-标记-清除算法" class="headerlink" title="3.1 标记-清除算法"></a>3.1 标记-清除算法</h5><p>标记-清除算法包括两个主要步骤：</p>
+<ol>
+<li><strong>标记</strong>：从根对象开始，遍历所有可达对象，并标记这些对象。</li>
+<li><strong>清除</strong>：遍历堆内存，回收所有未标记的对象。</li>
+</ol>
+<h6 id="示例：标记-清除算法的伪代码"><a href="#示例：标记-清除算法的伪代码" class="headerlink" title="示例：标记-清除算法的伪代码"></a>示例：标记-清除算法的伪代码</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">plaintext</span><br><span class="line"></span><br><span class="line">function markSweepGC(heap):</span><br><span class="line">    for each object in heap:</span><br><span class="line">        object.marked = false</span><br><span class="line"></span><br><span class="line">    for each root in roots:</span><br><span class="line">        mark(root)</span><br><span class="line"></span><br><span class="line">    for each object in heap:</span><br><span class="line">        if object.marked == false:</span><br><span class="line">            free(object)</span><br><span class="line"></span><br><span class="line">function mark(object):</span><br><span class="line">    if object.marked == true:</span><br><span class="line">        return</span><br><span class="line">    object.marked = true</span><br><span class="line">    for each reference in object.references:</span><br><span class="line">        mark(reference)</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-2-标记-整理算法"><a href="#3-2-标记-整理算法" class="headerlink" title="3.2 标记-整理算法"></a>3.2 标记-整理算法</h5><p>标记-整理算法与标记-清除算法类似，但在清除阶段，将存活对象压缩到堆的一端，减少内存碎片。</p>
+<h6 id="示例：标记-整理算法的伪代码"><a href="#示例：标记-整理算法的伪代码" class="headerlink" title="示例：标记-整理算法的伪代码"></a>示例：标记-整理算法的伪代码</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">plaintext</span><br><span class="line"></span><br><span class="line">function markCompactGC(heap):</span><br><span class="line">    for each object in heap:</span><br><span class="line">        object.marked = false</span><br><span class="line"></span><br><span class="line">    for each root in roots:</span><br><span class="line">        mark(root)</span><br><span class="line"></span><br><span class="line">    freePointer = heap.start</span><br><span class="line">    for each object in heap:</span><br><span class="line">        if object.marked == true:</span><br><span class="line">            copy(object, freePointer)</span><br><span class="line">            freePointer += object.size</span><br><span class="line"></span><br><span class="line">    for each object in heap:</span><br><span class="line">        if object.marked == false:</span><br><span class="line">            free(object)</span><br><span class="line"></span><br><span class="line">function mark(object):</span><br><span class="line">    if object.marked == true:</span><br><span class="line">        return</span><br><span class="line">    object.marked = true</span><br><span class="line">    for each reference in object.references:</span><br><span class="line">        mark(reference)</span><br><span class="line"></span><br><span class="line">function copy(object, destination):</span><br><span class="line">    // 复制对象到新位置</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-3-分代回收算法"><a href="#3-3-分代回收算法" class="headerlink" title="3.3 分代回收算法"></a>3.3 分代回收算法</h5><p>分代回收算法将堆内存划分为年轻代（Young Generation）、老年代（Old Generation）和永久代（Permanent Generation）。大部分对象在年轻代分配，短生命周期的对象在年轻代被回收，长生命周期的对象会晋升到老年代。</p>
+<h6 id="示例：分代回收算法的结构"><a href="#示例：分代回收算法的结构" class="headerlink" title="示例：分代回收算法的结构"></a>示例：分代回收算法的结构</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Young Generation:</span><br><span class="line">    Eden Space</span><br><span class="line">    Survivor Space 1</span><br><span class="line">    Survivor Space 2</span><br><span class="line"></span><br><span class="line">Old Generation</span><br><span class="line"></span><br><span class="line">Permanent Generation</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-源码分析"><a href="#4-源码分析" class="headerlink" title="4. 源码分析"></a>4. 源码分析</h4><p>以下是Android垃圾回收算法相关源码的详细分析。</p>
+<h5 id="4-1-ART虚拟机中的垃圾回收"><a href="#4-1-ART虚拟机中的垃圾回收" class="headerlink" title="4.1 ART虚拟机中的垃圾回收"></a>4.1 ART虚拟机中的垃圾回收</h5><p>ART虚拟机中的垃圾回收由<code>gc/collector</code>目录下的多个类实现，如<code>mark_sweep.h</code>和<code>mark_sweep.cc</code>。</p>
+<h6 id="mark-sweep-h"><a href="#mark-sweep-h" class="headerlink" title="mark_sweep.h"></a>mark_sweep.h</h6><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MarkSweep</span> : <span class="keyword">public</span> GarbageCollector &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">MarkSweep</span><span class="params">(Heap* heap)</span></span>;</span><br><span class="line">    ~<span class="built_in">MarkSweep</span>() &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">RunPhases</span><span class="params">()</span> OVERRIDE <span class="title">REQUIRES</span><span class="params">(!Locks::mutator_lock_)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">MarkingPhase</span><span class="params">()</span> <span class="title">REQUIRES</span><span class="params">(Locks::mutator_lock_)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">ReclaimPhase</span><span class="params">()</span> <span class="title">REQUIRES</span><span class="params">(Locks::mutator_lock_)</span></span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h6 id="mark-sweep-cc"><a href="#mark-sweep-cc" class="headerlink" title="mark_sweep.cc"></a>mark_sweep.cc</h6><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">MarkSweep::RunPhases</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">MarkingPhase</span>();</span><br><span class="line">    <span class="built_in">ReclaimPhase</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">MarkSweep::MarkingPhase</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 标记所有可达对象</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">MarkSweep::ReclaimPhase</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 回收所有未标记的对象</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-内存模型和垃圾回收算法的对比"><a href="#5-内存模型和垃圾回收算法的对比" class="headerlink" title="5. 内存模型和垃圾回收算法的对比"></a>5. 内存模型和垃圾回收算法的对比</h4><h5 id="5-1-内存模型对比"><a href="#5-1-内存模型对比" class="headerlink" title="5.1 内存模型对比"></a>5.1 内存模型对比</h5><table>
+<thead>
+<tr>
+<th>内存模型</th>
+<th>作用</th>
+<th>优缺点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>堆内存</td>
+<td>动态分配对象</td>
+<td>大小可调，但容易产生内存碎片</td>
+</tr>
+<tr>
+<td>栈内存</td>
+<td>方法调用和局部变量</td>
+<td>高效，但大小固定，不能动态调整</td>
+</tr>
+<tr>
+<td>本地内存</td>
+<td>JNI调用和本地资源</td>
+<td>高效，但需要手动管理，易产生内存泄漏</td>
+</tr>
+</tbody></table>
+<h5 id="5-2-垃圾回收算法对比"><a href="#5-2-垃圾回收算法对比" class="headerlink" title="5.2 垃圾回收算法对比"></a>5.2 垃圾回收算法对比</h5><table>
+<thead>
+<tr>
+<th>垃圾回收算法</th>
+<th>适用场景</th>
+<th>优缺点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>标记-清除算法</td>
+<td>一般场景</td>
+<td>实现简单，但容易产生内存碎片</td>
+</tr>
+<tr>
+<td>标记-整理算法</td>
+<td>长生命周期对象较多的场景</td>
+<td>减少内存碎片，但整理阶段开销较大</td>
+</tr>
+<tr>
+<td>分代回收算法</td>
+<td>各种场景</td>
+<td>高效，适用于大多数场景，但实现复杂，需调优</td>
+</tr>
+</tbody></table>
+<h4 id="6-结论"><a href="#6-结论" class="headerlink" title="6. 结论"></a>6. 结论</h4><h4 id="补充java中的一些垃圾回收算法"><a href="#补充java中的一些垃圾回收算法" class="headerlink" title="补充java中的一些垃圾回收算法:"></a>补充java中的一些垃圾回收算法:</h4><p>Java虚拟机（JVM）提供了多种垃圾回收算法来管理内存。每种算法都有其优缺点和适用场景。本文将详细介绍这些垃圾回收算法，分析其优缺点，并讨论目前在Android中使用的垃圾回收算法。</p>
+<h4 id="2-垃圾回收算法概述"><a href="#2-垃圾回收算法概述" class="headerlink" title="2. 垃圾回收算法概述"></a>2. 垃圾回收算法概述</h4><p>Java中的垃圾回收算法主要包括：</p>
+<ol>
+<li><strong>串行垃圾回收器（Serial GC）</strong></li>
+<li><strong>并行垃圾回收器（Parallel GC）</strong></li>
+<li><strong>并发标记清除垃圾回收器（CMS GC）</strong></li>
+<li><strong>G1垃圾回收器（Garbage-First GC）</strong></li>
+</ol>
+<h5 id="2-1-串行垃圾回收器（Serial-GC）"><a href="#2-1-串行垃圾回收器（Serial-GC）" class="headerlink" title="2.1 串行垃圾回收器（Serial GC）"></a>2.1 串行垃圾回收器（Serial GC）</h5><p>串行垃圾回收器是最简单的垃圾回收器，适用于单线程环境。</p>
+<h6 id="优点："><a href="#优点：" class="headerlink" title="优点："></a>优点：</h6><ul>
+<li>实现简单，适用于小型应用或单线程环境。</li>
+<li>由于没有线程间的切换开销，效率较高。</li>
+</ul>
+<h6 id="缺点："><a href="#缺点：" class="headerlink" title="缺点："></a>缺点：</h6><ul>
+<li>不能利用多核CPU的优势。</li>
+<li>停顿时间较长，应用暂停时间较明显。</li>
+</ul>
+<h5 id="2-2-并行垃圾回收器（Parallel-GC）"><a href="#2-2-并行垃圾回收器（Parallel-GC）" class="headerlink" title="2.2 并行垃圾回收器（Parallel GC）"></a>2.2 并行垃圾回收器（Parallel GC）</h5><p>并行垃圾回收器利用多线程进行垃圾回收，适用于多核CPU环境。</p>
+<h6 id="优点：-1"><a href="#优点：-1" class="headerlink" title="优点："></a>优点：</h6><ul>
+<li>能够充分利用多核CPU的优势，提高垃圾回收的效率。</li>
+<li>相对于串行垃圾回收器，减少了停顿时间。</li>
+</ul>
+<h6 id="缺点：-1"><a href="#缺点：-1" class="headerlink" title="缺点："></a>缺点：</h6><ul>
+<li>复杂度较高，需要管理多线程的协调。</li>
+<li>在大量小对象分配和回收的情况下，效率可能下降。</li>
+</ul>
+<h5 id="2-3-并发标记清除垃圾回收器（CMS-GC）"><a href="#2-3-并发标记清除垃圾回收器（CMS-GC）" class="headerlink" title="2.3 并发标记清除垃圾回收器（CMS GC）"></a>2.3 并发标记清除垃圾回收器（CMS GC）</h5><p>CMS GC是一种低停顿垃圾回收器，适用于需要快速响应的应用。</p>
+<h6 id="优点：-2"><a href="#优点：-2" class="headerlink" title="优点："></a>优点：</h6><ul>
+<li>低停顿时间，适用于需要快速响应的应用。</li>
+<li>并发标记和清除，减少了应用暂停的时间。</li>
+</ul>
+<h6 id="缺点：-2"><a href="#缺点：-2" class="headerlink" title="缺点："></a>缺点：</h6><ul>
+<li>实现复杂，垃圾回收的开销较高。</li>
+<li>容易产生内存碎片，需要定期进行内存整理。</li>
+</ul>
+<h5 id="2-4-G1垃圾回收器（Garbage-First-GC）"><a href="#2-4-G1垃圾回收器（Garbage-First-GC）" class="headerlink" title="2.4 G1垃圾回收器（Garbage-First GC）"></a>2.4 G1垃圾回收器（Garbage-First GC）</h5><p>G1 GC是一种面向服务端应用的垃圾回收器，适用于大内存和多核CPU环境。</p>
+<h6 id="优点：-3"><a href="#优点：-3" class="headerlink" title="优点："></a>优点：</h6><ul>
+<li>能够进行预期停顿时间控制，适用于大内存应用。</li>
+<li>减少内存碎片，通过区域化内存管理提高效率。</li>
+</ul>
+<h6 id="缺点：-3"><a href="#缺点：-3" class="headerlink" title="缺点："></a>缺点：</h6><ul>
+<li>实现复杂，开销较高。</li>
+<li>在某些情况下，性能可能不如CMS GC。</li>
+</ul>
+<p>内存管理是Android应用开发中至关重要的一环，合理的内存管理和垃圾回收可以显著提高应用的性能和稳定性。理解这些基本原理，对于编写高效、可靠的Android应用程序具有重要意义。</p>
+
+</article>
+    
+    
+
+</div>
+<div class="trm-post-next-prev row">
+    <div class="col-lg-12">
+        <!-- title -->
+        <h5 class="trm-title-with-divider">
+            其他文章
+            <span data-number="02"></span>
+        </h5>
+    </div>
+    
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/blog/2019/06/22/Android-Handler%E7%9A%84post%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E5%8F%8A%E4%BC%98%E5%85%88%E7%BA%A7%E8%A7%A3%E6%9E%90/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">Android-Handler的post实现原理及优先级解析</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>19/06/22</li>
+                <li>22:23</li>
+                <li>Android</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+    
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/blog/2019/05/20/Handler%E8%BF%9B%E9%98%B6-%E4%B8%89-ThreadLocal/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">Handler进阶(三)ThreadLocal</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>19/05/20</li>
+                <li>13:02</li>
+                <li>Android</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+</div>
+
+    
+
+    <div id="giscus-wrap" class="trm-card trm-scroll-animation comment-container"></div>
+<script data-swup-reload-script>
+    function loadGiscus() {
+        let nowTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+        const config = {
+            src: 'https://giscus.app/client.js',
+            "data-repo": '2322222223/blog',
+            "data-repo-id": 'R_kgDOMCoZ8w',
+            "data-category": 'Announcements',
+            "data-category-id": 'DIC_kwDOMCoZ884Cfxl-',
+            "data-mapping": 'pathname',
+            "data-reactions-enabled": '1',
+            "data-emit-metadata": '1',
+            "data-theme": nowTheme,
+            "data-lang": 'zh-CN',
+            crossorigin: "anonymous",
+            async: true
+        }
+        let ele = document.createElement('script')
+        for (let key in config) {
+            ele.setAttribute(key, config[key])
+        }
+        document.getElementById('giscus-wrap').insertAdjacentElement('afterbegin', ele)
+    }
+
+    function changeGiscusTheme() {
+        let theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+
+        function sendMessage(message) {
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (!iframe) return;
+            iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+
+        sendMessage({
+            setConfig: {
+                theme: theme
+            }
+        });
+    }
+
+    loadGiscus();
+</script>
+
+
+
+                    <div class="trm-divider footer-divider"></div>
+
+                    <!-- footer -->
+                    <footer class="trm-footer-card trm-scroll-animation">
+
+    
+
+    
+        <div class="trm-footer-item">
+            <span>© 2020- 2024</span>
+            <span class="footer-separator"data-separator=" · "></span>
+            <span class="trm-accent-color">R.linzhou</span>
+        </div>
+    
+
+      
+
+     
+
+     
+</footer>
+                    <!-- footer end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            <!-- body end -->
+
+            
+
+            
+<div class="trm-fixed-container">
+    
+    
+        <div class="trm-fixed-btn" data-title="阅读模式" onclick="asyncFun.switchReadMode()">
+            <i class="iconfont fas fa-book-reader"></i>
+        </div>
+    
+    
+        <div class="trm-fixed-btn hidden-md" data-title="单栏和双栏切换" onclick="asyncFun.switchSingleColumn()">
+            <i class="iconfont fas fa-arrows-alt-h"></i>
+        </div>
+    
+    <div id="trm-back-top" class="trm-fixed-btn" data-title="回到顶部">
+        <i class="iconfont fas fa-arrow-up"></i>
+    </div>
+</div>
+        </div>
+      </div>
+      <!-- scroll container end -->
+  </div>
+  <!-- app wrapper end -->
+
+  
+  <!-- Plugin -->
+
+
+
+
+    
+    
+<script src="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+
+    
+
+    
+        <script src="/blog/js/plugins/typing.js?v=2.2.2"></script>
+    
+
+    
+
+    <!-- 数学公式 -->
+    
+
+    <!-- 评论插件 -->
+    
+        
+
+        
+    
+
+		
+
+
+
+
+    <!-- Service Worker -->
+    
+    <script>
+        "serviceWorker" in navigator ?
+        navigator.serviceWorker.register('/blog/sw.js').then(function () {
+            navigator.serviceWorker.controller ? 
+             console.log("Assets cached by the controlling service worker.") :
+             console.log("Please reload this page to allow the service worker to handle network operations.")
+        }).catch(function (e) {
+            console.log("ERROR: " + e)
+        }) : console.log("Service workers are not supported in the current browser.")
+    </script>
+
+    <!-- baidu push -->
+    
+
+
+<script id="async-script" src="/blog/js/main.js?v=2.2.2"></script>
+
+<!-- CDN -->
+
+
+    
+
+    
+
+    
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="x5-fullscreen" content="true">
+<meta name="full-screen" content="yes">
+<meta name="theme-color" content="#317EFB" />
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0" name="viewport">
+<meta name="description" content="Android Binder机制详解1. 简介Binder是Android系统中最重要的进程间通信（IPC）机制。它提供了高效、安全的通信方式，使得不同进程之间可以进行可靠的消息传递和方法调用。Binder机制在Android系统中扮演着核心角色，被广泛应用于各种系统服务和应用之间的交互。 2. 设计思想Binder机制的设计思想可以归纳为以下几点：  高效性：通过共享内存来传递数据，减少数据复制">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android-Framework(一)Binder">
+<meta property="og:url" content="https://2322222223.github.io/blog/2020/05/12/Android-Framework-%E4%B8%80-Binder/index.html">
+<meta property="og:site_name" content="Rlz Blog">
+<meta property="og:description" content="Android Binder机制详解1. 简介Binder是Android系统中最重要的进程间通信（IPC）机制。它提供了高效、安全的通信方式，使得不同进程之间可以进行可靠的消息传递和方法调用。Binder机制在Android系统中扮演着核心角色，被广泛应用于各种系统服务和应用之间的交互。 2. 设计思想Binder机制的设计思想可以归纳为以下几点：  高效性：通过共享内存来传递数据，减少数据复制">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-05-12T03:48:38.000Z">
+<meta property="article:modified_time" content="2024-06-30T08:04:06.732Z">
+<meta property="article:author" content="R.linzhou">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="Binder">
+<meta name="twitter:card" content="summary">
+
+
+<title >Android-Framework(一)Binder</title>
+
+<!-- Favicon -->
+
+    <link href='/blog/img/logo.svg?v=2.2.2' rel='icon' type='image/png' sizes='16x16' ></link>
+
+
+    <link href='/blog/img/logo.svg?v=2.2.2' rel='icon' type='image/png' sizes='32x32' ></link>
+
+
+
+
+<!-- Plugin -->
+
+
+
+
+    
+<link rel="stylesheet" href="/blog/css/plugins/bootstrap.row.css">
+
+    
+<link rel="stylesheet" href="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.css">
+
+    
+    
+
+
+
+
+<!-- Icon -->
+
+    
+<link rel="stylesheet" href="/blog/css/plugins/font-awesome.min.css">
+
+
+
+
+<!-- Variable -->
+<script>window.ASYNC_CONFIG = {"hostname":"2322222223.github.io","author":"R.linzhou","root":"/blog/","typed_text":["Mobile development"],"theme_version":"2.2.2","theme":{"switch":true,"default":"style-light"},"favicon":{"logo":"/img/logo.svg","icon16":"/img/logo.svg","icon32":"/img/logo.svg","apple_touch_icon":null,"webmanifest":null,"visibilitychange":false,"hidden":"/ogo.svg","show_text":"R.linzhou Blog","hide_text":"R.linzhou Blog"},"i18n":{"placeholder":"搜索文章...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）","author":"本文作者：","copyright_link":"本文链接：","copyright_license_title":"版权声明：","copyright_license_content":"本博客所有文章除特别声明外，均默认采用 undefined 许可协议。","copy_success":"复制成功","copy_failure":"复制失败","open_read_mode":"进入阅读模式","exit_read_mode":"退出阅读模式","notice_outdate_message":"距离上次更新已经 undefined 天了, 文章内容可能已经过时。","sticky":"置顶","just":"刚刚","min":"分钟前","hour":"小时前","day":"天前","month":"个月前"},"swup":false,"plugin":{"flickr_justified_gallery":"https://unpkg.com/flickr-justified-gallery@latest/dist/fjGallery.min.js"},"icons":{"sun":"far fa-sun","moon":"far fa-moon","play":"fas fa-play","email":"far fa-envelope","next":"fas fa-arrow-right","calendar":"far fa-calendar-alt","clock":"far fa-clock","user":"far fa-user","back_top":"fas fa-arrow-up","close":"fas fa-times","search":"fas fa-search","reward":"fas fa-hand-holding-usd","user_tag":"fas fa-user-alt","toc_tag":"fas fa-th-list","read":"fas fa-book-reader","arrows":"fas fa-arrows-alt-h","double_arrows":"fas fa-angle-double-down","copy":"fas fa-copy"},"icontype":"font","highlight":{"plugin":"highlighjs","theme":true,"copy":true,"lang":false,"title":"default","height_limit":200},"toc":{"post_title":true},"live_time":{"start_time":"","prefix":"博客已萌萌哒运行 undefined 天"},"danmu":{"enable":false,"el":".trm-banner"},"creative_commons":{"license":"by-nc-sa","language":"deed.zh"}};</script>
+<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2024-06-30 16:04:06"};</script>
+
+<!-- Theme mode css -->
+<link data-swup-theme rel="stylesheet" href="/blog/css/index.css?v=2.2.2" id="trm-switch-style">
+<script>
+    let defaultMode = ASYNC_CONFIG.theme.default !=='auto' ?  ASYNC_CONFIG.theme.default : (window.matchMedia("(prefers-color-scheme: light)").matches ? 'style-light' : 'style-dark')
+    let catchMode = localStorage.getItem('theme-mode') || defaultMode;
+    let type = catchMode === 'style-dark' ? 'add' : 'remove';
+    document.documentElement.classList[type]('dark')
+</script>
+
+<!-- CDN -->
+
+
+    
+    
+
+
+
+<!-- Site Analytics -->
+
+ 
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+<body>
+
+  <!-- app wrapper -->
+  <div class="trm-app-frame">
+
+    <!-- page preloader -->
+    <div class="trm-preloader">
+    <div class="trm-holder">
+        <div class="preloader">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+</div>
+    <!-- page preloader end -->
+
+    <!-- change mode preloader -->
+    <div class="trm-mode-swich-animation-frame">
+    <div class="trm-mode-swich-animation">
+        <i class="i-sun"><i class="iconfont far fa-sun"></i></i>
+        <div class="trm-horizon"></div>
+        <i class="i-moon"><i class="iconfont far fa-moon"></i></i>
+    </div>
+</div>
+    <!-- change mode preloader end -->
+
+      <!-- scroll container -->
+      <div id="trm-dynamic-content" class="trm-swup-animation">
+        <div id="trm-scroll-container" class="trm-scroll-container" style="opacity: 0">
+            <!-- top bar -->
+            <header class="trm-top-bar">
+	<div class="container">
+		<div class="trm-left-side">
+			<!-- logo -->
+<a href="/blog/" class="trm-logo-frame trm-anima-link">
+    
+        <img alt="logo" src="/blog/img/logo.svg">
+    
+    
+        <div class="trm-logo-text">
+            Blog<span></span>
+        </div>
+    
+</a>
+<!-- logo end -->
+		</div>
+		<div class="trm-right-side">
+			<!-- menu -->
+<div class="trm-menu">
+    <nav>
+        <ul>
+            
+            <li class="menu-item-has-children ">
+                <a  href="/blog/" target="">
+                    home
+                </a>
+                
+            </li>
+            
+            <li class="menu-item-has-children ">
+                <a data-no-swup href="/blog/archives/" target="">
+                    archives
+                </a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+</div>
+<!-- menu end -->
+			
+    <!-- mode switcher place -->
+    <div class="trm-mode-switcher-place">
+        <div class="trm-mode-switcher">
+            <i class="iconfont far fa-sun"></i>
+            <input class="tgl tgl-light" id="trm-swich" type="checkbox">
+            <label class="trm-swich" for="trm-swich"></label>
+            <i class="iconfont far fa-moon"></i>
+        </div>
+    </div>
+    <!-- mode switcher place end -->
+
+			
+		</div>
+		<div class="trm-menu-btn">
+			<span></span>
+		</div>
+	</div>
+</header>
+            <!-- top bar end -->
+
+            <!-- body -->
+            
+<div class="trm-content-start">
+    <!-- banner -->
+    <div class="trm-banner">
+    
+    <!-- banner cover -->
+    <img style="object-position:top;object-fit:cover;" alt="banner" class="trm-banner-cover" src="/blog/img/banner.png">
+    <!-- banner cover end -->
+    
+
+    <!-- banner content -->
+    <div class="trm-banner-content trm-overlay">
+        <div class="container">
+            <div class="row">
+                
+                <div class="col-lg-4"></div>
+                
+                <div class="col-lg-8">
+
+                    <!-- banner title -->
+                    <div class="trm-banner-text ">
+                        <div class="trm-label trm-mb-20">
+                            NEWS LETTER
+                        </div>
+                        <h1 class="trm-mb-30 trm-hsmb-font">
+                            Android-Framework(一)Binder
+                        </h1>
+
+                        
+                            <ul class="trm-breadcrumbs trm-label">
+                                <li>
+                                    <a href="/blog/" class="trm-anima-link">Home</a>
+                                </li>
+                                <li>
+                                    <span>
+                                        2020
+                                    </span>
+                                </li>
+                            </ul>
+                        
+                    </div>
+                    <!-- banner title end -->
+
+                    <!-- scroll hint -->
+                    <span id="scroll-triger" class="trm-scroll-hint-frame">
+                        <div class="trm-scroll-hint"></div>
+                        <span class="trm-label">Scroll down</span>
+                    </span>
+                    <!-- scroll hint end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- banner content end -->
+</div>
+    <!-- banner end -->
+    <div class="container">
+        <div class="row">
+            
+                <div class="trm-page-sidebar col-lg-4 hidden-sm">
+                    <!-- main card -->
+                    <div class="trm-main-card-frame trm-sidebar">
+    <div class="trm-main-card"> 
+        <!-- card header -->
+<div class="trm-mc-header">
+    <div class="trm-avatar-frame trm-mb-20">
+        <img alt="Avatar" class="trm-avatar" src="/blog/img/avatar.png">
+    </div>
+    <h5 class="trm-name trm-mb-15">
+        R.linzhou
+    </h5>
+    
+        <div class="trm-label">
+            I&#39;m
+            <span class="trm-typed-text">
+                <!-- Words for theme.user.typedText -->
+            </span>
+        </div>
+    
+</div>
+<!-- card header end -->
+        <!-- sidebar social -->
+
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<div class="trm-social">
+    
+        <a href="https://github.com/2322222223" title="Github" rel="nofollow" target="_blank">
+            <i class="iconfont fab fa-github"></i>
+        </a>
+    
+        <a href="http://2322222223.com" title="Resume" rel="nofollow" target="_blank">
+            <i class="iconfont far fa-smile"></i>
+        </a>
+    
+</div>
+
+<!-- sidebar social end -->
+        <!-- info -->
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<ul class="trm-table trm-mb-20">
+    
+        <li>
+            <div class="trm-label">
+                地址:
+            </div>
+            <div class="trm-label trm-label-light">
+                Beijing
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                年龄:
+            </div>
+            <div class="trm-label trm-label-light">
+                32
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                邮箱:
+            </div>
+            <div class="trm-label trm-label-light">
+                g2322222223@gmail.com
+            </div>
+        </li>
+    
+</ul>
+<!-- info end -->
+
+        
+    <div class="trm-divider trm-mb-40 trm-mt-40"></div>
+    <!-- action button -->
+    <div class="text-center">
+        <a href="mailto:g2322222223@gmail.com" class="trm-btn">
+            联系我
+            <i class="iconfont far fa-envelope"></i>
+        </a>
+    </div>
+    <!-- action button end -->
+
+    </div>
+</div>
+                    <!-- main card end -->
+                </div>
+            
+            <div class="trm-page-content col-lg-8">
+                <div id="trm-content" class="trm-content">
+                    <div class="trm-post-info row hidden-sm">
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-calendar-alt trm-icon"></i><br>
+            05/12
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-clock trm-icon"></i><br>
+            11:48
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div id="post-author" class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-user trm-icon"></i><br>
+            R.linzhou
+        </div>
+    </div>
+</div>
+<div class="trm-card ">
+    <article id="article-container" class="trm-publication">
+    <h3 id="Android-Binder机制详解"><a href="#Android-Binder机制详解" class="headerlink" title="Android Binder机制详解"></a>Android Binder机制详解</h3><h4 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h4><p>Binder是Android系统中最重要的进程间通信（IPC）机制。它提供了高效、安全的通信方式，使得不同进程之间可以进行可靠的消息传递和方法调用。Binder机制在Android系统中扮演着核心角色，被广泛应用于各种系统服务和应用之间的交互。</p>
+<h4 id="2-设计思想"><a href="#2-设计思想" class="headerlink" title="2. 设计思想"></a>2. 设计思想</h4><p>Binder机制的设计思想可以归纳为以下几点：</p>
+<ol>
+<li><strong>高效性</strong>：通过共享内存来传递数据，减少数据复制，提高通信效率。</li>
+<li><strong>安全性</strong>：内核级别的身份验证，确保只有授权的进程才能进行通信。</li>
+<li><strong>简化开发</strong>：提供统一的接口，使得开发者可以方便地进行进程间通信编程。</li>
+</ol>
+<h4 id="3-Binder的基本原理"><a href="#3-Binder的基本原理" class="headerlink" title="3. Binder的基本原理"></a>3. Binder的基本原理</h4><p>Binder机制包括用户空间和内核空间两部分：</p>
+<ul>
+<li><strong>用户空间</strong>：包括Binder、ServiceManager、BpBinder、BinderProxy等类，用于定义和调用应用层接口。</li>
+<li><strong>内核空间</strong>：包括Binder驱动，负责跨进程通信的数据传递和身份验证。</li>
+</ul>
+<h5 id="3-1-Binder通信模型"><a href="#3-1-Binder通信模型" class="headerlink" title="3.1 Binder通信模型"></a>3.1 Binder通信模型</h5><p>Binder通信模型由以下几部分组成：</p>
+<ul>
+<li><strong>Client</strong>：发起请求的进程。</li>
+<li><strong>Server</strong>：处理请求的进程。</li>
+<li><strong>ServiceManager</strong>：服务管理进程，负责管理系统中的各种服务。</li>
+<li><strong>Binder驱动</strong>：内核驱动模块，负责实际的数据传输和身份验证。</li>
+</ul>
+<h4 id="4-Binder的实现流程"><a href="#4-Binder的实现流程" class="headerlink" title="4. Binder的实现流程"></a>4. Binder的实现流程</h4><p>Binder的实现可以分为以下几个步骤：</p>
+<ol>
+<li><strong>Service注册</strong>：Server通过ServiceManager注册服务。</li>
+<li><strong>获取Service</strong>：Client通过ServiceManager获取服务代理。</li>
+<li><strong>发起请求</strong>：Client通过服务代理发起请求。</li>
+<li><strong>处理请求</strong>：Server接收请求并进行处理。</li>
+<li><strong>返回结果</strong>：Server将结果返回给Client。</li>
+</ol>
+<h5 id="4-1-Service注册"><a href="#4-1-Service注册" class="headerlink" title="4.1 Service注册"></a>4.1 Service注册</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">registerService</span><span class="params">(String name, IBinder service)</span> &#123;</span><br><span class="line">    ServiceManager.addService(name, service);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在ServiceManager中，服务通过<code>addService</code>方法注册，服务名与<code>IBinder</code>对象关联。</p>
+<h5 id="4-2-获取Service"><a href="#4-2-获取Service" class="headerlink" title="4.2 获取Service"></a>4.2 获取Service</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> IBinder <span class="title function_">getService</span><span class="params">(String name)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> ServiceManager.getService(name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Client通过<code>getService</code>方法获取服务代理，即通过服务名获取<code>IBinder</code>对象。</p>
+<h5 id="4-3-发起请求"><a href="#4-3-发起请求" class="headerlink" title="4.3 发起请求"></a>4.3 发起请求</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">transact</span><span class="params">(<span class="type">int</span> code, Parcel data, Parcel reply, <span class="type">int</span> flags)</span> <span class="keyword">throws</span> RemoteException &#123;</span><br><span class="line">    mRemote.transact(code, data, reply, flags);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Client通过<code>transact</code>方法将请求发送到服务端，<code>Parcel</code>对象用于封装请求数据和返回数据。</p>
+<h5 id="4-4-处理请求"><a href="#4-4-处理请求" class="headerlink" title="4.4 处理请求"></a>4.4 处理请求</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">onTransact</span><span class="params">(<span class="type">int</span> code, Parcel data, Parcel reply, <span class="type">int</span> flags)</span> &#123;</span><br><span class="line">    <span class="comment">// 处理请求</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Server通过<code>onTransact</code>方法接收并处理请求，根据<code>code</code>区分不同的请求类型。</p>
+<h4 id="5-Binder源码分析"><a href="#5-Binder源码分析" class="headerlink" title="5. Binder源码分析"></a>5. Binder源码分析</h4><p>Binder的核心实现包含在Binder驱动和用户空间的Binder相关类中。以下将从源码角度详细分析Binder机制的实现。</p>
+<h5 id="5-1-Binder驱动"><a href="#5-1-Binder驱动" class="headerlink" title="5.1 Binder驱动"></a>5.1 Binder驱动</h5><p>Binder驱动位于内核中，主要负责数据传输和身份验证。其核心代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// binder.c</span></span><br><span class="line"><span class="type">static</span> <span class="type">long</span> <span class="title function_">binder_ioctl</span><span class="params">(<span class="keyword">struct</span> file *filp, <span class="type">unsigned</span> <span class="type">int</span> cmd, <span class="type">unsigned</span> <span class="type">long</span> arg)</span> &#123;</span><br><span class="line">    <span class="keyword">switch</span> (cmd) &#123;</span><br><span class="line">        <span class="keyword">case</span> BINDER_WRITE_READ:</span><br><span class="line">            <span class="keyword">return</span> binder_thread_write_read(filp, cmd, arg);</span><br><span class="line">        <span class="comment">// 其他case省略</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>binder_ioctl</code>方法处理Binder的所有I&#x2F;O控制命令，其中<code>BINDER_WRITE_READ</code>命令用于处理读写操作。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">binder_thread_write_read</span><span class="params">(<span class="keyword">struct</span> file *filp, <span class="type">unsigned</span> <span class="type">int</span> cmd, <span class="type">unsigned</span> <span class="type">long</span> arg)</span> &#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">binder_proc</span> *<span class="title">proc</span> =</span> filp-&gt;private_data;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">binder_thread</span> *<span class="title">thread</span> =</span> binder_get_thread(proc);</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">binder_write_read</span> <span class="title">bwr</span>;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (copy_from_user(&amp;bwr, (<span class="type">void</span> __user *)arg, <span class="keyword">sizeof</span>(bwr)))</span><br><span class="line">        <span class="keyword">return</span> -EFAULT;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (bwr.write_size &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        binder_transaction(proc, thread, (<span class="type">void</span> __user *)(<span class="type">uintptr_t</span>)bwr.write_buffer, bwr.write_size);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (bwr.read_size &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        binder_thread_read(proc, thread, (<span class="type">void</span> __user *)(<span class="type">uintptr_t</span>)bwr.read_buffer, bwr.read_size);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>binder_thread_write_read</code>方法处理Binder线程的读写请求，通过<code>binder_transaction</code>方法进行事务处理，通过<code>binder_thread_read</code>方法读取响应。</p>
+<h5 id="5-2-用户空间"><a href="#5-2-用户空间" class="headerlink" title="5.2 用户空间"></a>5.2 用户空间</h5><p>用户空间的Binder相关类包括<code>BpBinder</code>、<code>BinderProxy</code>等，负责具体的IPC调用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">BpBinder</span> <span class="keyword">extends</span> <span class="title class_">IBinder</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">int</span> mHandle;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">BpBinder</span><span class="params">(<span class="type">int</span> handle)</span> &#123;</span><br><span class="line">        mHandle = handle;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">transact</span><span class="params">(<span class="type">int</span> code, Parcel data, Parcel reply, <span class="type">int</span> flags)</span> <span class="keyword">throws</span> RemoteException &#123;</span><br><span class="line">        <span class="comment">// 具体的transact实现</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>BpBinder</code>类表示远程Binder对象，通过<code>transact</code>方法发起跨进程调用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BinderProxy</span> <span class="keyword">implements</span> <span class="title class_">IBinder</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">long</span> mObject;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">transact</span><span class="params">(<span class="type">int</span> code, Parcel data, Parcel reply, <span class="type">int</span> flags)</span> <span class="keyword">throws</span> RemoteException &#123;</span><br><span class="line">        <span class="comment">// 调用native方法进行跨进程通信</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>BinderProxy</code>类是Binder引用的代理，通过本地方法进行实际的跨进程通信。</p>
+<h4 id="6-Binder机制的好处"><a href="#6-Binder机制的好处" class="headerlink" title="6. Binder机制的好处"></a>6. Binder机制的好处</h4><ol>
+<li><strong>高效</strong>：Binder通过共享内存传输数据，减少了数据复制，性能优越。</li>
+<li><strong>安全</strong>：Binder机制内置了身份验证，确保通信的安全性。</li>
+<li><strong>稳定</strong>：Binder作为Android系统的核心IPC机制，经过了大量的测试和优化，稳定性高。</li>
+<li><strong>简化开发</strong>：提供统一的接口，开发者可以方便地进行进程间通信编程。</li>
+</ol>
+<h4 id="7-Binder机制的设计思想"><a href="#7-Binder机制的设计思想" class="headerlink" title="7. Binder机制的设计思想"></a>7. Binder机制的设计思想</h4><p>Binder机制的设计思想主要体现在以下几个方面：</p>
+<ol>
+<li><strong>统一接口</strong>：通过AIDL（Android Interface Definition Language）提供统一的接口定义，使得开发者可以方便地定义和调用跨进程服务。</li>
+<li><strong>高效传输</strong>：使用共享内存进行数据传输，减少了数据复制，提高了通信效率。</li>
+<li><strong>安全机制</strong>：通过内核级别的身份验证和访问控制，确保进程间通信的安全性。</li>
+<li><strong>灵活扩展</strong>：Binder机制支持多种类型的数据传输，包括基本数据类型、对象和文件描述符等，具有很强的灵活性和扩展性。</li>
+</ol>
+<h4 id="8-详细的流程分析"><a href="#8-详细的流程分析" class="headerlink" title="8. 详细的流程分析"></a>8. 详细的流程分析</h4><h5 id="8-1-服务注册流程"><a href="#8-1-服务注册流程" class="headerlink" title="8.1 服务注册流程"></a>8.1 服务注册流程</h5><p>服务注册是指服务端将自身的服务注册到ServiceManager，使得其他进程可以通过ServiceManager访问该服务。以下是服务注册的详细流程：</p>
+<ol>
+<li><p><strong>服务端创建Binder对象</strong>：服务端创建一个Binder对象，该对象实现了IBinder接口。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyService</span> <span class="keyword">extends</span> <span class="title class_">Binder</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="type">boolean</span> <span class="title function_">onTransact</span><span class="params">(<span class="type">int</span> code, Parcel data, Parcel reply, <span class="type">int</span> flags)</span> <span class="keyword">throws</span> RemoteException &#123;</span><br><span class="line">        <span class="comment">// 处理客户端请求</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>将Binder对象注册到ServiceManager</strong>：服务端通过ServiceManager将Binder对象注册到系统中。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">ServiceManager.addService(<span class="string">&quot;MyService&quot;</span>, <span class="keyword">new</span> <span class="title class_">MyService</span>());</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>ServiceManager保存服务信息</strong>：ServiceManager接收到服务注册请求后，将服务名和Binder对象保存到服务列表中。</p>
+</li>
+</ol>
+<h5 id="8-2-服务获取流程"><a href="#8-2-服务获取流程" class="headerlink" title="8.2 服务获取流程"></a>8.2 服务获取流程</h5><p>服务获取是指客户端通过ServiceManager获取服务端的Binder对象，从而进行跨进程调用。以下是服务获取的详细流程：</p>
+<ol>
+<li><p><strong>客户端向ServiceManager请求服务</strong>：客户端通过ServiceManager获取服务端的Binder对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">IBinder</span> <span class="variable">binder</span> <span class="operator">=</span> ServiceManager.getService(<span class="string">&quot;MyService&quot;</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>ServiceManager返回Binder对象</strong>：ServiceManager根据服务名查找对应的Binder对象，并返回给客户端。</p>
+</li>
+<li><p><strong>客户端通过Binder对象进行通信</strong>：客户端获取到Binder对象后，通过transact方法进行跨进程调用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">Parcel</span> <span class="variable">data</span> <span class="operator">=</span> Parcel.obtain();</span><br><span class="line"><span class="type">Parcel</span> <span class="variable">reply</span> <span class="operator">=</span> Parcel.obtain();</span><br><span class="line">binder.transact(<span class="number">0</span>, data, reply, <span class="number">0</span>);</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h5 id="8-3-跨进程通信流程"><a href="#8-3-跨进程通信流程" class="headerlink" title="8.3 跨进程通信流程"></a>8.3 跨进程通信流程</h5><p>跨进程通信是指客户端通过Binder对象向服务端发送请求，服务端处理请求后将结果返回给客户端。以下是跨进程通信的详细流程：</p>
+<ol>
+<li><p><strong>客户端发起请求</strong>：客户端通过Binder对象的transact方法发起请求。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">Parcel</span> <span class="variable">data</span> <span class="operator">=</span> Parcel.obtain();</span><br><span class="line"><span class="type">Parcel</span> <span class="variable">reply</span> <span class="operator">=</span> Parcel.obtain();</span><br><span class="line">binder.transact(<span class="number">0</span>, data, reply, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>Binder驱动接收请求</strong>：Binder驱动接收到客户端的请求后，将请求数据传递给服务端。</p>
+</li>
+<li><p><strong>服务端处理请求</strong>：服务端通过onTransact方法处理客户端请求，并将处理结果返回给Binder驱动。</p>
+</li>
+<li><p><strong>Binder驱动返回结果</strong>：Binder驱动将服务端的处理结果传递给客户端。</p>
+</li>
+<li><p><strong>客户端接收结果</strong>：客户端通过Parcel对象接收服务端的处理结果。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="variable">result</span> <span class="operator">=</span> reply.readInt();</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="9-源码分析"><a href="#9-源码分析" class="headerlink" title="9. 源码分析"></a>9. 源码分析</h4><h5 id="9-1-ServiceManager源码分析"><a href="#9-1-ServiceManager源码分析" class="headerlink" title="9.1 ServiceManager源码分析"></a>9.1 ServiceManager源码分析</h5><p>ServiceManager是Binder机制中的核心组件，负责管理系统中的各种服务。以下是ServiceManager的部分源码及其注释：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">ServiceManager</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> IServiceManager sServiceManager;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取ServiceManager对象</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> IServiceManager <span class="title function_">getServiceManager</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (sServiceManager != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> sServiceManager;</span><br><span class="line">        &#125;</span><br><span class="line">        sServiceManager = ServiceManagerNative.asInterface(BinderInternal.getContextObject());</span><br><span class="line">        <span class="keyword">return</span> sServiceManager;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 添加服务</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">addService</span><span class="params">(String name, IBinder service)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            getServiceManager().addService(name, service, <span class="literal">false</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">            Log.e(TAG, <span class="string">&quot;addService failed&quot;</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取服务</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> IBinder <span class="title function_">getService</span><span class="params">(String name)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> getServiceManager().getService(name);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">            Log.e(TAG, <span class="string">&quot;getService failed&quot;</span>, e);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="9-2-BpBinder源码分析"><a href="#9-2-BpBinder源码分析" class="headerlink" title="9.2 BpBinder源码分析"></a>9.2 BpBinder源码分析</h5><p>BpBinder是Binder机制中的代理类，表示远程的Binder对象。以下是BpBinder的部分源码及其注释：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">BpBinder</span> <span class="keyword">extends</span> <span class="title class_">IBinder</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">int</span> mHandle;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">BpBinder</span><span class="params">(<span class="type">int</span> handle)</span> &#123;</span><br><span class="line">        mHandle = handle;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">transact</span><span class="params">(<span class="type">int</span> code, Parcel data, Parcel reply, <span class="type">int</span> flags)</span> <span class="keyword">throws</span> RemoteException &#123;</span><br><span class="line">        <span class="comment">// 调用本地方法进行跨进程通信</span></span><br><span class="line">        <span class="keyword">return</span> transactNative(code, data, reply, flags);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 本地方法声明</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">native</span> <span class="type">boolean</span> <span class="title function_">transactNative</span><span class="params">(<span class="type">int</span> code, Parcel data, Parcel reply, <span class="type">int</span> flags)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="9-3-BinderProxy源码分析"><a href="#9-3-BinderProxy源码分析" class="headerlink" title="9.3 BinderProxy源码分析"></a>9.3 BinderProxy源码分析</h5><p>BinderProxy是Binder机制中的代理类，通过本地方法进行实际的跨进程通信。以下是BinderProxy的部分源码及其注释：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BinderProxy</span> <span class="keyword">implements</span> <span class="title class_">IBinder</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">long</span> mObject;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">transact</span><span class="params">(<span class="type">int</span> code, Parcel data, Parcel reply, <span class="type">int</span> flags)</span> <span class="keyword">throws</span> RemoteException &#123;</span><br><span class="line">        <span class="comment">// 调用本地方法进行跨进程通信</span></span><br><span class="line">        <span class="keyword">return</span> transactNative(code, data, reply, flags);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 本地方法声明</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">native</span> <span class="type">boolean</span> <span class="title function_">transactNative</span><span class="params">(<span class="type">int</span> code, Parcel data, Parcel reply, <span class="type">int</span> flags)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="9-4-Binder驱动源码分析"><a href="#9-4-Binder驱动源码分析" class="headerlink" title="9.4 Binder驱动源码分析"></a>9.4 Binder驱动源码分析</h5><p>Binder驱动位于内核中，主要负责数据传输和身份验证。以下是Binder驱动的部分源码及其注释：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// binder.c</span></span><br><span class="line"><span class="type">static</span> <span class="type">long</span> <span class="title function_">binder_ioctl</span><span class="params">(<span class="keyword">struct</span> file *filp, <span class="type">unsigned</span> <span class="type">int</span> cmd, <span class="type">unsigned</span> <span class="type">long</span> arg)</span> &#123;</span><br><span class="line">    <span class="keyword">switch</span> (cmd) &#123;</span><br><span class="line">        <span class="keyword">case</span> BINDER_WRITE_READ:</span><br><span class="line">            <span class="keyword">return</span> binder_thread_write_read(filp, cmd, arg);</span><br><span class="line">        <span class="comment">// 其他case省略</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">binder_thread_write_read</span><span class="params">(<span class="keyword">struct</span> file *filp, <span class="type">unsigned</span> <span class="type">int</span> cmd, <span class="type">unsigned</span> <span class="type">long</span> arg)</span> &#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">binder_proc</span> *<span class="title">proc</span> =</span> filp-&gt;private_data;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">binder_thread</span> *<span class="title">thread</span> =</span> binder_get_thread(proc);</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">binder_write_read</span> <span class="title">bwr</span>;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (copy_from_user(&amp;bwr, (<span class="type">void</span> __user *)arg, <span class="keyword">sizeof</span>(bwr)))</span><br><span class="line">        <span class="keyword">return</span> -EFAULT;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (bwr.write_size &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        binder_transaction(proc, thread, (<span class="type">void</span> __user *)(<span class="type">uintptr_t</span>)bwr.write_buffer, bwr.write_size);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (bwr.read_size &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        binder_thread_read(proc, thread, (<span class="type">void</span> __user *)(<span class="type">uintptr_t</span>)bwr.read_buffer, bwr.read_size);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="10-结论"><a href="#10-结论" class="headerlink" title="10. 结论"></a>10. 结论</h4><p>通过本文的详细分析，我们深入了解了Android Binder机制的设计思想、实现流程、源码细节以及其在Android系统中的重要作用。Binder机制通过高效、安全的进程间通信，为Android系统提供了稳定可靠的基础设施，使得应用程序之间可以方便地进行互操作。理解Binder机制对于编写高效、稳定的Android应用具有重要意义。</p>
+
+</article>
+    
+    
+
+</div>
+<div class="trm-post-next-prev row">
+    <div class="col-lg-12">
+        <!-- title -->
+        <h5 class="trm-title-with-divider">
+            其他文章
+            <span data-number="02"></span>
+        </h5>
+    </div>
+    
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/blog/2020/06/06/Android-Framework-%E4%BA%8C-Zygote/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">Android-Framework(二)Zygote</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>20/06/06</li>
+                <li>09:56</li>
+                <li>Android</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+    
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/blog/2020/04/22/%E5%9F%BA%E6%9C%AC%E7%9A%84SQL%E6%93%8D%E4%BD%9C-Postgre/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">基本的SQL操作-Postgre</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>20/04/22</li>
+                <li>19:47</li>
+                <li>SQL</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+</div>
+
+    
+
+    <div id="giscus-wrap" class="trm-card trm-scroll-animation comment-container"></div>
+<script data-swup-reload-script>
+    function loadGiscus() {
+        let nowTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+        const config = {
+            src: 'https://giscus.app/client.js',
+            "data-repo": '2322222223/blog',
+            "data-repo-id": 'R_kgDOMCoZ8w',
+            "data-category": 'Announcements',
+            "data-category-id": 'DIC_kwDOMCoZ884Cfxl-',
+            "data-mapping": 'pathname',
+            "data-reactions-enabled": '1',
+            "data-emit-metadata": '1',
+            "data-theme": nowTheme,
+            "data-lang": 'zh-CN',
+            crossorigin: "anonymous",
+            async: true
+        }
+        let ele = document.createElement('script')
+        for (let key in config) {
+            ele.setAttribute(key, config[key])
+        }
+        document.getElementById('giscus-wrap').insertAdjacentElement('afterbegin', ele)
+    }
+
+    function changeGiscusTheme() {
+        let theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+
+        function sendMessage(message) {
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (!iframe) return;
+            iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+
+        sendMessage({
+            setConfig: {
+                theme: theme
+            }
+        });
+    }
+
+    loadGiscus();
+</script>
+
+
+
+                    <div class="trm-divider footer-divider"></div>
+
+                    <!-- footer -->
+                    <footer class="trm-footer-card trm-scroll-animation">
+
+    
+
+    
+        <div class="trm-footer-item">
+            <span>© 2020- 2024</span>
+            <span class="footer-separator"data-separator=" · "></span>
+            <span class="trm-accent-color">R.linzhou</span>
+        </div>
+    
+
+      
+
+     
+
+     
+</footer>
+                    <!-- footer end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            <!-- body end -->
+
+            
+
+            
+<div class="trm-fixed-container">
+    
+    
+        <div class="trm-fixed-btn" data-title="阅读模式" onclick="asyncFun.switchReadMode()">
+            <i class="iconfont fas fa-book-reader"></i>
+        </div>
+    
+    
+        <div class="trm-fixed-btn hidden-md" data-title="单栏和双栏切换" onclick="asyncFun.switchSingleColumn()">
+            <i class="iconfont fas fa-arrows-alt-h"></i>
+        </div>
+    
+    <div id="trm-back-top" class="trm-fixed-btn" data-title="回到顶部">
+        <i class="iconfont fas fa-arrow-up"></i>
+    </div>
+</div>
+        </div>
+      </div>
+      <!-- scroll container end -->
+  </div>
+  <!-- app wrapper end -->
+
+  
+  <!-- Plugin -->
+
+
+
+
+    
+    
+<script src="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+
+    
+
+    
+        <script src="/blog/js/plugins/typing.js?v=2.2.2"></script>
+    
+
+    
+
+    <!-- 数学公式 -->
+    
+
+    <!-- 评论插件 -->
+    
+        
+
+        
+    
+
+		
+
+
+
+
+    <!-- Service Worker -->
+    
+    <script>
+        "serviceWorker" in navigator ?
+        navigator.serviceWorker.register('/blog/sw.js').then(function () {
+            navigator.serviceWorker.controller ? 
+             console.log("Assets cached by the controlling service worker.") :
+             console.log("Please reload this page to allow the service worker to handle network operations.")
+        }).catch(function (e) {
+            console.log("ERROR: " + e)
+        }) : console.log("Service workers are not supported in the current browser.")
+    </script>
+
+    <!-- baidu push -->
+    
+
+
+<script id="async-script" src="/blog/js/main.js?v=2.2.2"></script>
+
+<!-- CDN -->
+
+
+    
+
+    
+
+    
+
+
+
+</body>
+
+</html>

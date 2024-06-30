@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="x5-fullscreen" content="true">
+<meta name="full-screen" content="yes">
+<meta name="theme-color" content="#317EFB" />
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0" name="viewport">
+<meta name="description" content="网络通信详解：HTTP、HTTPS、TCP&#x2F;IP、Socket通信及三次握手和四次挥手1. 简介网络通信是现代计算机网络的核心，通过各种协议和技术实现数据在网络中的传输。本文将详细介绍HTTP、HTTPS、TCP&#x2F;IP、Socket通信以及TCP协议中的三次握手和四次挥手过程，并提供相关代码示例和流程图。 2. HTTP与HTTPS2.1 HTTPHTTP（HyperText">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTP、HTTPS、TCP&#x2F;IP、Socket通信">
+<meta property="og:url" content="https://2322222223.github.io/blog/2019/04/12/HTTP%E3%80%81HTTPS%E3%80%81TCP-IP%E3%80%81Socket%E9%80%9A%E4%BF%A1/index.html">
+<meta property="og:site_name" content="Rlz Blog">
+<meta property="og:description" content="网络通信详解：HTTP、HTTPS、TCP&#x2F;IP、Socket通信及三次握手和四次挥手1. 简介网络通信是现代计算机网络的核心，通过各种协议和技术实现数据在网络中的传输。本文将详细介绍HTTP、HTTPS、TCP&#x2F;IP、Socket通信以及TCP协议中的三次握手和四次挥手过程，并提供相关代码示例和流程图。 2. HTTP与HTTPS2.1 HTTPHTTP（HyperText">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-04-12T12:56:35.000Z">
+<meta property="article:modified_time" content="2024-06-30T08:04:06.736Z">
+<meta property="article:author" content="R.linzhou">
+<meta name="twitter:card" content="summary">
+
+
+<title >HTTP、HTTPS、TCP/IP、Socket通信</title>
+
+<!-- Favicon -->
+
+    <link href='/blog/img/logo.svg?v=2.2.2' rel='icon' type='image/png' sizes='16x16' ></link>
+
+
+    <link href='/blog/img/logo.svg?v=2.2.2' rel='icon' type='image/png' sizes='32x32' ></link>
+
+
+
+
+<!-- Plugin -->
+
+
+
+
+    
+<link rel="stylesheet" href="/blog/css/plugins/bootstrap.row.css">
+
+    
+<link rel="stylesheet" href="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.css">
+
+    
+    
+
+
+
+
+<!-- Icon -->
+
+    
+<link rel="stylesheet" href="/blog/css/plugins/font-awesome.min.css">
+
+
+
+
+<!-- Variable -->
+<script>window.ASYNC_CONFIG = {"hostname":"2322222223.github.io","author":"R.linzhou","root":"/blog/","typed_text":["Mobile development"],"theme_version":"2.2.2","theme":{"switch":true,"default":"style-light"},"favicon":{"logo":"/img/logo.svg","icon16":"/img/logo.svg","icon32":"/img/logo.svg","apple_touch_icon":null,"webmanifest":null,"visibilitychange":false,"hidden":"/ogo.svg","show_text":"R.linzhou Blog","hide_text":"R.linzhou Blog"},"i18n":{"placeholder":"搜索文章...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）","author":"本文作者：","copyright_link":"本文链接：","copyright_license_title":"版权声明：","copyright_license_content":"本博客所有文章除特别声明外，均默认采用 undefined 许可协议。","copy_success":"复制成功","copy_failure":"复制失败","open_read_mode":"进入阅读模式","exit_read_mode":"退出阅读模式","notice_outdate_message":"距离上次更新已经 undefined 天了, 文章内容可能已经过时。","sticky":"置顶","just":"刚刚","min":"分钟前","hour":"小时前","day":"天前","month":"个月前"},"swup":false,"plugin":{"flickr_justified_gallery":"https://unpkg.com/flickr-justified-gallery@latest/dist/fjGallery.min.js"},"icons":{"sun":"far fa-sun","moon":"far fa-moon","play":"fas fa-play","email":"far fa-envelope","next":"fas fa-arrow-right","calendar":"far fa-calendar-alt","clock":"far fa-clock","user":"far fa-user","back_top":"fas fa-arrow-up","close":"fas fa-times","search":"fas fa-search","reward":"fas fa-hand-holding-usd","user_tag":"fas fa-user-alt","toc_tag":"fas fa-th-list","read":"fas fa-book-reader","arrows":"fas fa-arrows-alt-h","double_arrows":"fas fa-angle-double-down","copy":"fas fa-copy"},"icontype":"font","highlight":{"plugin":"highlighjs","theme":true,"copy":true,"lang":false,"title":"default","height_limit":200},"toc":{"post_title":true},"live_time":{"start_time":"","prefix":"博客已萌萌哒运行 undefined 天"},"danmu":{"enable":false,"el":".trm-banner"},"creative_commons":{"license":"by-nc-sa","language":"deed.zh"}};</script>
+<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2024-06-30 16:04:06"};</script>
+
+<!-- Theme mode css -->
+<link data-swup-theme rel="stylesheet" href="/blog/css/index.css?v=2.2.2" id="trm-switch-style">
+<script>
+    let defaultMode = ASYNC_CONFIG.theme.default !=='auto' ?  ASYNC_CONFIG.theme.default : (window.matchMedia("(prefers-color-scheme: light)").matches ? 'style-light' : 'style-dark')
+    let catchMode = localStorage.getItem('theme-mode') || defaultMode;
+    let type = catchMode === 'style-dark' ? 'add' : 'remove';
+    document.documentElement.classList[type]('dark')
+</script>
+
+<!-- CDN -->
+
+
+    
+    
+
+
+
+<!-- Site Analytics -->
+
+ 
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+<body>
+
+  <!-- app wrapper -->
+  <div class="trm-app-frame">
+
+    <!-- page preloader -->
+    <div class="trm-preloader">
+    <div class="trm-holder">
+        <div class="preloader">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+</div>
+    <!-- page preloader end -->
+
+    <!-- change mode preloader -->
+    <div class="trm-mode-swich-animation-frame">
+    <div class="trm-mode-swich-animation">
+        <i class="i-sun"><i class="iconfont far fa-sun"></i></i>
+        <div class="trm-horizon"></div>
+        <i class="i-moon"><i class="iconfont far fa-moon"></i></i>
+    </div>
+</div>
+    <!-- change mode preloader end -->
+
+      <!-- scroll container -->
+      <div id="trm-dynamic-content" class="trm-swup-animation">
+        <div id="trm-scroll-container" class="trm-scroll-container" style="opacity: 0">
+            <!-- top bar -->
+            <header class="trm-top-bar">
+	<div class="container">
+		<div class="trm-left-side">
+			<!-- logo -->
+<a href="/blog/" class="trm-logo-frame trm-anima-link">
+    
+        <img alt="logo" src="/blog/img/logo.svg">
+    
+    
+        <div class="trm-logo-text">
+            Blog<span></span>
+        </div>
+    
+</a>
+<!-- logo end -->
+		</div>
+		<div class="trm-right-side">
+			<!-- menu -->
+<div class="trm-menu">
+    <nav>
+        <ul>
+            
+            <li class="menu-item-has-children ">
+                <a  href="/blog/" target="">
+                    home
+                </a>
+                
+            </li>
+            
+            <li class="menu-item-has-children ">
+                <a data-no-swup href="/blog/archives/" target="">
+                    archives
+                </a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+</div>
+<!-- menu end -->
+			
+    <!-- mode switcher place -->
+    <div class="trm-mode-switcher-place">
+        <div class="trm-mode-switcher">
+            <i class="iconfont far fa-sun"></i>
+            <input class="tgl tgl-light" id="trm-swich" type="checkbox">
+            <label class="trm-swich" for="trm-swich"></label>
+            <i class="iconfont far fa-moon"></i>
+        </div>
+    </div>
+    <!-- mode switcher place end -->
+
+			
+		</div>
+		<div class="trm-menu-btn">
+			<span></span>
+		</div>
+	</div>
+</header>
+            <!-- top bar end -->
+
+            <!-- body -->
+            
+<div class="trm-content-start">
+    <!-- banner -->
+    <div class="trm-banner">
+    
+    <!-- banner cover -->
+    <img style="object-position:top;object-fit:cover;" alt="banner" class="trm-banner-cover" src="/blog/img/banner.png">
+    <!-- banner cover end -->
+    
+
+    <!-- banner content -->
+    <div class="trm-banner-content trm-overlay">
+        <div class="container">
+            <div class="row">
+                
+                <div class="col-lg-4"></div>
+                
+                <div class="col-lg-8">
+
+                    <!-- banner title -->
+                    <div class="trm-banner-text ">
+                        <div class="trm-label trm-mb-20">
+                            NEWS LETTER
+                        </div>
+                        <h1 class="trm-mb-30 trm-hsmb-font">
+                            HTTP、HTTPS、TCP/IP、Socket通信
+                        </h1>
+
+                        
+                            <ul class="trm-breadcrumbs trm-label">
+                                <li>
+                                    <a href="/blog/" class="trm-anima-link">Home</a>
+                                </li>
+                                <li>
+                                    <span>
+                                        2019
+                                    </span>
+                                </li>
+                            </ul>
+                        
+                    </div>
+                    <!-- banner title end -->
+
+                    <!-- scroll hint -->
+                    <span id="scroll-triger" class="trm-scroll-hint-frame">
+                        <div class="trm-scroll-hint"></div>
+                        <span class="trm-label">Scroll down</span>
+                    </span>
+                    <!-- scroll hint end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- banner content end -->
+</div>
+    <!-- banner end -->
+    <div class="container">
+        <div class="row">
+            
+                <div class="trm-page-sidebar col-lg-4 hidden-sm">
+                    <!-- main card -->
+                    <div class="trm-main-card-frame trm-sidebar">
+    <div class="trm-main-card"> 
+        <!-- card header -->
+<div class="trm-mc-header">
+    <div class="trm-avatar-frame trm-mb-20">
+        <img alt="Avatar" class="trm-avatar" src="/blog/img/avatar.png">
+    </div>
+    <h5 class="trm-name trm-mb-15">
+        R.linzhou
+    </h5>
+    
+        <div class="trm-label">
+            I&#39;m
+            <span class="trm-typed-text">
+                <!-- Words for theme.user.typedText -->
+            </span>
+        </div>
+    
+</div>
+<!-- card header end -->
+        <!-- sidebar social -->
+
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<div class="trm-social">
+    
+        <a href="https://github.com/2322222223" title="Github" rel="nofollow" target="_blank">
+            <i class="iconfont fab fa-github"></i>
+        </a>
+    
+        <a href="http://2322222223.com" title="Resume" rel="nofollow" target="_blank">
+            <i class="iconfont far fa-smile"></i>
+        </a>
+    
+</div>
+
+<!-- sidebar social end -->
+        <!-- info -->
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<ul class="trm-table trm-mb-20">
+    
+        <li>
+            <div class="trm-label">
+                地址:
+            </div>
+            <div class="trm-label trm-label-light">
+                Beijing
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                年龄:
+            </div>
+            <div class="trm-label trm-label-light">
+                32
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                邮箱:
+            </div>
+            <div class="trm-label trm-label-light">
+                g2322222223@gmail.com
+            </div>
+        </li>
+    
+</ul>
+<!-- info end -->
+
+        
+    <div class="trm-divider trm-mb-40 trm-mt-40"></div>
+    <!-- action button -->
+    <div class="text-center">
+        <a href="mailto:g2322222223@gmail.com" class="trm-btn">
+            联系我
+            <i class="iconfont far fa-envelope"></i>
+        </a>
+    </div>
+    <!-- action button end -->
+
+    </div>
+</div>
+                    <!-- main card end -->
+                </div>
+            
+            <div class="trm-page-content col-lg-8">
+                <div id="trm-content" class="trm-content">
+                    <div class="trm-post-info row hidden-sm">
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-calendar-alt trm-icon"></i><br>
+            04/12
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-clock trm-icon"></i><br>
+            20:56
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div id="post-author" class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-user trm-icon"></i><br>
+            R.linzhou
+        </div>
+    </div>
+</div>
+<div class="trm-card ">
+    <article id="article-container" class="trm-publication">
+    <h3 id="网络通信详解：HTTP、HTTPS、TCP-IP、Socket通信及三次握手和四次挥手"><a href="#网络通信详解：HTTP、HTTPS、TCP-IP、Socket通信及三次握手和四次挥手" class="headerlink" title="网络通信详解：HTTP、HTTPS、TCP&#x2F;IP、Socket通信及三次握手和四次挥手"></a>网络通信详解：HTTP、HTTPS、TCP&#x2F;IP、Socket通信及三次握手和四次挥手</h3><h4 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h4><p>网络通信是现代计算机网络的核心，通过各种协议和技术实现数据在网络中的传输。本文将详细介绍HTTP、HTTPS、TCP&#x2F;IP、Socket通信以及TCP协议中的三次握手和四次挥手过程，并提供相关代码示例和流程图。</p>
+<h4 id="2-HTTP与HTTPS"><a href="#2-HTTP与HTTPS" class="headerlink" title="2. HTTP与HTTPS"></a>2. HTTP与HTTPS</h4><h5 id="2-1-HTTP"><a href="#2-1-HTTP" class="headerlink" title="2.1 HTTP"></a>2.1 HTTP</h5><p>HTTP（HyperText Transfer Protocol，超文本传输协议）是用于传输超文本的应用层协议。它是无状态的，基于请求-响应模式，主要用于客户端和服务器之间的数据交换。</p>
+<h6 id="HTTP通信流程"><a href="#HTTP通信流程" class="headerlink" title="HTTP通信流程"></a>HTTP通信流程</h6><ol>
+<li>客户端向服务器发送HTTP请求。</li>
+<li>服务器处理请求并返回HTTP响应。</li>
+</ol>
+<h6 id="HTTP请求示例"><a href="#HTTP请求示例" class="headerlink" title="HTTP请求示例"></a>HTTP请求示例</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">GET /index.html HTTP/1.1</span><br><span class="line">Host: www.example.com</span><br><span class="line">User-Agent: Mozilla/5.0</span><br><span class="line">Accept: text/html</span><br></pre></td></tr></table></figure>
+
+<h6 id="HTTP响应示例"><a href="#HTTP响应示例" class="headerlink" title="HTTP响应示例"></a>HTTP响应示例</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Content-Type: text/html</span><br><span class="line">Content-Length: 137</span><br><span class="line"></span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;h1&gt;Welcome to Example.com!&lt;/h1&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-2-HTTPS"><a href="#2-2-HTTPS" class="headerlink" title="2.2 HTTPS"></a>2.2 HTTPS</h5><p>HTTPS（HyperText Transfer Protocol Secure，安全超文本传输协议）是HTTP的安全版本，通过SSL&#x2F;TLS协议加密数据，确保数据传输的安全性。</p>
+<h6 id="HTTPS通信流程"><a href="#HTTPS通信流程" class="headerlink" title="HTTPS通信流程"></a>HTTPS通信流程</h6><ol>
+<li>客户端向服务器发送HTTPS请求。</li>
+<li>服务器返回证书，客户端验证证书。</li>
+<li>客户端和服务器通过SSL&#x2F;TLS协议协商生成对称密钥。</li>
+<li>使用对称密钥加密数据进行通信。</li>
+</ol>
+<h6 id="HTTPS请求与响应的加密过程"><a href="#HTTPS请求与响应的加密过程" class="headerlink" title="HTTPS请求与响应的加密过程"></a>HTTPS请求与响应的加密过程</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">plaintext</span><br><span class="line"></span><br><span class="line">+-------------+       +-------------+</span><br><span class="line">|   Client    |       |   Server    |</span><br><span class="line">+-------------+       +-------------+</span><br><span class="line">      |                     |</span><br><span class="line">      |&lt;--- HTTPS Request --| </span><br><span class="line">      |                     |</span><br><span class="line">      |--- Server Certificate --&gt;|</span><br><span class="line">      |                     |</span><br><span class="line">      |--- Verify Certificate --&gt;|</span><br><span class="line">      |                     |</span><br><span class="line">      |--- SSL/TLS Handshake --&gt;|</span><br><span class="line">      |                     |</span><br><span class="line">      |--- Encrypted Data --&gt;|</span><br><span class="line">      |                     |</span><br><span class="line">      |&lt;--- Encrypted Data --|</span><br><span class="line">      |                     |</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-TCP-IP协议"><a href="#3-TCP-IP协议" class="headerlink" title="3. TCP&#x2F;IP协议"></a>3. TCP&#x2F;IP协议</h4><h5 id="3-1-TCP-IP概述"><a href="#3-1-TCP-IP概述" class="headerlink" title="3.1 TCP&#x2F;IP概述"></a>3.1 TCP&#x2F;IP概述</h5><p>TCP&#x2F;IP（Transmission Control Protocol&#x2F;Internet Protocol，传输控制协议&#x2F;互联网协议）是互联网的基础协议，包含了多个层次的协议栈，包括应用层、传输层、网络层和链路层。</p>
+<h5 id="3-2-TCP-IP模型"><a href="#3-2-TCP-IP模型" class="headerlink" title="3.2 TCP&#x2F;IP模型"></a>3.2 TCP&#x2F;IP模型</h5><ol>
+<li><strong>应用层</strong>：HTTP、HTTPS、FTP等协议。</li>
+<li><strong>传输层</strong>：TCP、UDP协议。</li>
+<li><strong>网络层</strong>：IP协议。</li>
+<li><strong>链路层</strong>：以太网协议。</li>
+</ol>
+<h6 id="TCP-IP协议栈示意图"><a href="#TCP-IP协议栈示意图" class="headerlink" title="TCP&#x2F;IP协议栈示意图"></a>TCP&#x2F;IP协议栈示意图</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">plaintext</span><br><span class="line"></span><br><span class="line">+---------------------+</span><br><span class="line">|    应用层           |</span><br><span class="line">|  HTTP, FTP, SMTP    |</span><br><span class="line">+---------------------+</span><br><span class="line">|    传输层           |</span><br><span class="line">|  TCP, UDP           |</span><br><span class="line">+---------------------+</span><br><span class="line">|    网络层           |</span><br><span class="line">|  IP, ICMP           |</span><br><span class="line">+---------------------+</span><br><span class="line">|    链路层           |</span><br><span class="line">|  Ethernet, WiFi     |</span><br><span class="line">+---------------------+</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-Socket通信"><a href="#4-Socket通信" class="headerlink" title="4. Socket通信"></a>4. Socket通信</h4><p>Socket是网络通信的端点，通过Socket编程，可以实现不同计算机之间的数据传输。</p>
+<h5 id="4-1-Socket编程示例"><a href="#4-1-Socket编程示例" class="headerlink" title="4.1 Socket编程示例"></a>4.1 Socket编程示例</h5><h6 id="服务器端"><a href="#服务器端" class="headerlink" title="服务器端"></a>服务器端</h6><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建Socket对象</span></span><br><span class="line">server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line"><span class="comment"># 绑定IP地址和端口</span></span><br><span class="line">server_socket.bind((<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">8080</span>))</span><br><span class="line"><span class="comment"># 监听连接</span></span><br><span class="line">server_socket.listen(<span class="number">5</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Server listening on port 8080&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    <span class="comment"># 接受客户端连接</span></span><br><span class="line">    client_socket, addr = server_socket.accept()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Connection from <span class="subst">&#123;addr&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="comment"># 接收数据</span></span><br><span class="line">    data = client_socket.recv(<span class="number">1024</span>).decode()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Received: <span class="subst">&#123;data&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="comment"># 发送数据</span></span><br><span class="line">    client_socket.send(<span class="string">&quot;Hello, Client!&quot;</span>.encode())</span><br><span class="line">    client_socket.close()</span><br></pre></td></tr></table></figure>
+
+<h6 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h6><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建Socket对象</span></span><br><span class="line">client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line"><span class="comment"># 连接服务器</span></span><br><span class="line">client_socket.connect((<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">8080</span>))</span><br><span class="line"><span class="comment"># 发送数据</span></span><br><span class="line">client_socket.send(<span class="string">&quot;Hello, Server!&quot;</span>.encode())</span><br><span class="line"><span class="comment"># 接收数据</span></span><br><span class="line">data = client_socket.recv(<span class="number">1024</span>).decode()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Received: <span class="subst">&#123;data&#125;</span>&quot;</span>)</span><br><span class="line">client_socket.close()</span><br></pre></td></tr></table></figure>
+
+<h5 id="4-2-Socket通信流程图"><a href="#4-2-Socket通信流程图" class="headerlink" title="4.2 Socket通信流程图"></a>4.2 Socket通信流程图</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">plaintext</span><br><span class="line"></span><br><span class="line">+-------------+       +-------------+</span><br><span class="line">|   Client    |       |   Server    |</span><br><span class="line">+-------------+       +-------------+</span><br><span class="line">      |                     |</span><br><span class="line">      |--- Connect to Server --&gt;|</span><br><span class="line">      |                     |</span><br><span class="line">      |&lt;--- Accept Connection --| </span><br><span class="line">      |                     |</span><br><span class="line">      |--- Send Data: &quot;Hello, Server!&quot; --&gt;|</span><br><span class="line">      |                     |</span><br><span class="line">      |&lt;--- Receive Data: &quot;Hello, Client!&quot; --|</span><br><span class="line">      |                     |</span><br><span class="line">      |--- Close Connection --&gt;|</span><br><span class="line">      |                     |</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-三次握手与四次挥手"><a href="#5-三次握手与四次挥手" class="headerlink" title="5. 三次握手与四次挥手"></a>5. 三次握手与四次挥手</h4><h5 id="5-1-三次握手"><a href="#5-1-三次握手" class="headerlink" title="5.1 三次握手"></a>5.1 三次握手</h5><p>TCP的三次握手用于建立可靠的连接，确保客户端和服务器都准备好发送和接收数据。</p>
+<h6 id="三次握手步骤"><a href="#三次握手步骤" class="headerlink" title="三次握手步骤"></a>三次握手步骤</h6><ol>
+<li><strong>第一次握手</strong>：客户端发送SYN（同步序列号）报文。</li>
+<li><strong>第二次握手</strong>：服务器收到SYN报文，返回SYN-ACK（确认同步序列号）报文。</li>
+<li><strong>第三次握手</strong>：客户端收到SYN-ACK报文，返回ACK（确认序列号）报文，连接建立。</li>
+</ol>
+<h6 id="三次握手流程图"><a href="#三次握手流程图" class="headerlink" title="三次握手流程图"></a>三次握手流程图</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">plaintext</span><br><span class="line"></span><br><span class="line">+-------------+       +-------------+</span><br><span class="line">|   Client    |       |   Server    |</span><br><span class="line">+-------------+       +-------------+</span><br><span class="line">      |                     |</span><br><span class="line">      |--- SYN ---&gt;         |</span><br><span class="line">      |                     |</span><br><span class="line">      |&lt;--- SYN-ACK ---     |</span><br><span class="line">      |                     |</span><br><span class="line">      |--- ACK ---&gt;         |</span><br><span class="line">      |                     |</span><br><span class="line">  Connection Established</span><br></pre></td></tr></table></figure>
+
+<h5 id="5-2-四次挥手"><a href="#5-2-四次挥手" class="headerlink" title="5.2 四次挥手"></a>5.2 四次挥手</h5><p>TCP的四次挥手用于终止连接，确保双方都完成数据传输。</p>
+<h6 id="四次挥手步骤"><a href="#四次挥手步骤" class="headerlink" title="四次挥手步骤"></a>四次挥手步骤</h6><ol>
+<li><strong>第一次挥手</strong>：客户端发送FIN（结束）报文，表示不再发送数据。</li>
+<li><strong>第二次挥手</strong>：服务器收到FIN报文，返回ACK报文。</li>
+<li><strong>第三次挥手</strong>：服务器发送FIN报文，表示不再发送数据。</li>
+<li><strong>第四次挥手</strong>：客户端收到FIN报文，返回ACK报文，连接关闭。</li>
+</ol>
+<h6 id="四次挥手流程图"><a href="#四次挥手流程图" class="headerlink" title="四次挥手流程图"></a>四次挥手流程图</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">plaintext</span><br><span class="line"></span><br><span class="line">+-------------+       +-------------+</span><br><span class="line">|   Client    |       |   Server    |</span><br><span class="line">+-------------+       +-------------+</span><br><span class="line">      |                     |</span><br><span class="line">      |--- FIN ---&gt;         |</span><br><span class="line">      |                     |</span><br><span class="line">      |&lt;--- ACK ---         |</span><br><span class="line">      |                     |</span><br><span class="line">      |                     |</span><br><span class="line">      |&lt;--- FIN ---         |</span><br><span class="line">      |                     |</span><br><span class="line">      |--- ACK ---&gt;         |</span><br><span class="line">      |                     |</span><br><span class="line">   Connection Closed</span><br></pre></td></tr></table></figure>
+
+<h4 id="6-结论"><a href="#6-结论" class="headerlink" title="6. 结论"></a>6. 结论</h4><p>以上就是关于HTTP、HTTPS、TCP&#x2F;IP、Socket通信以及TCP协议中的三次握手和四次挥手过程。</p>
+
+</article>
+    
+    
+
+</div>
+<div class="trm-post-next-prev row">
+    <div class="col-lg-12">
+        <!-- title -->
+        <h5 class="trm-title-with-divider">
+            其他文章
+            <span data-number="02"></span>
+        </h5>
+    </div>
+    
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/blog/2019/04/14/Handler%E8%BF%9B%E9%98%B6-%E4%BA%8C-%E6%9C%BA%E5%88%B6%E8%A7%A3%E6%9E%90/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">Handler进阶(二)机制解析</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>19/04/14</li>
+                <li>19:02</li>
+                <li>Android</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+    
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/blog/2019/04/08/Android-%E8%87%AA%E5%AE%9A%E4%B9%89View%E5%9F%BA%E7%A1%80/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">Android-自定义View基础</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>19/04/08</li>
+                <li>21:08</li>
+                <li>Android</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+</div>
+
+    
+
+    <div id="giscus-wrap" class="trm-card trm-scroll-animation comment-container"></div>
+<script data-swup-reload-script>
+    function loadGiscus() {
+        let nowTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+        const config = {
+            src: 'https://giscus.app/client.js',
+            "data-repo": '2322222223/blog',
+            "data-repo-id": 'R_kgDOMCoZ8w',
+            "data-category": 'Announcements',
+            "data-category-id": 'DIC_kwDOMCoZ884Cfxl-',
+            "data-mapping": 'pathname',
+            "data-reactions-enabled": '1',
+            "data-emit-metadata": '1',
+            "data-theme": nowTheme,
+            "data-lang": 'zh-CN',
+            crossorigin: "anonymous",
+            async: true
+        }
+        let ele = document.createElement('script')
+        for (let key in config) {
+            ele.setAttribute(key, config[key])
+        }
+        document.getElementById('giscus-wrap').insertAdjacentElement('afterbegin', ele)
+    }
+
+    function changeGiscusTheme() {
+        let theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+
+        function sendMessage(message) {
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (!iframe) return;
+            iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+
+        sendMessage({
+            setConfig: {
+                theme: theme
+            }
+        });
+    }
+
+    loadGiscus();
+</script>
+
+
+
+                    <div class="trm-divider footer-divider"></div>
+
+                    <!-- footer -->
+                    <footer class="trm-footer-card trm-scroll-animation">
+
+    
+
+    
+        <div class="trm-footer-item">
+            <span>© 2020- 2024</span>
+            <span class="footer-separator"data-separator=" · "></span>
+            <span class="trm-accent-color">R.linzhou</span>
+        </div>
+    
+
+      
+
+     
+
+     
+</footer>
+                    <!-- footer end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            <!-- body end -->
+
+            
+
+            
+<div class="trm-fixed-container">
+    
+    
+        <div class="trm-fixed-btn" data-title="阅读模式" onclick="asyncFun.switchReadMode()">
+            <i class="iconfont fas fa-book-reader"></i>
+        </div>
+    
+    
+        <div class="trm-fixed-btn hidden-md" data-title="单栏和双栏切换" onclick="asyncFun.switchSingleColumn()">
+            <i class="iconfont fas fa-arrows-alt-h"></i>
+        </div>
+    
+    <div id="trm-back-top" class="trm-fixed-btn" data-title="回到顶部">
+        <i class="iconfont fas fa-arrow-up"></i>
+    </div>
+</div>
+        </div>
+      </div>
+      <!-- scroll container end -->
+  </div>
+  <!-- app wrapper end -->
+
+  
+  <!-- Plugin -->
+
+
+
+
+    
+    
+<script src="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+
+    
+
+    
+        <script src="/blog/js/plugins/typing.js?v=2.2.2"></script>
+    
+
+    
+
+    <!-- 数学公式 -->
+    
+
+    <!-- 评论插件 -->
+    
+        
+
+        
+    
+
+		
+
+
+
+
+    <!-- Service Worker -->
+    
+    <script>
+        "serviceWorker" in navigator ?
+        navigator.serviceWorker.register('/blog/sw.js').then(function () {
+            navigator.serviceWorker.controller ? 
+             console.log("Assets cached by the controlling service worker.") :
+             console.log("Please reload this page to allow the service worker to handle network operations.")
+        }).catch(function (e) {
+            console.log("ERROR: " + e)
+        }) : console.log("Service workers are not supported in the current browser.")
+    </script>
+
+    <!-- baidu push -->
+    
+
+
+<script id="async-script" src="/blog/js/main.js?v=2.2.2"></script>
+
+<!-- CDN -->
+
+
+    
+
+    
+
+    
+
+
+
+</body>
+
+</html>

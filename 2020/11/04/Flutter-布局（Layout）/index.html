@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="x5-fullscreen" content="true">
+<meta name="full-screen" content="yes">
+<meta name="theme-color" content="#317EFB" />
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0" name="viewport">
+<meta name="description" content="hi，Flutter爱好者们！今天我们来点有趣的，聊聊Flutter中最神奇的部分之一——布局（Layout）过程和布局约束。准备好了吗？让我们一起深入探究这片神奇的世界，看看Widget是如何在屏幕上找到它们的最佳位置的。 一、布局过程简介在Flutter中，布局是一个双向过程。父Widget会将约束（constraints）传递给子Widget，子Widget会根据这些约束来确定自己的大小和位">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flutter-布局（Layout）">
+<meta property="og:url" content="https://2322222223.github.io/blog/2020/11/04/Flutter-%E5%B8%83%E5%B1%80%EF%BC%88Layout%EF%BC%89/index.html">
+<meta property="og:site_name" content="Rlz Blog">
+<meta property="og:description" content="hi，Flutter爱好者们！今天我们来点有趣的，聊聊Flutter中最神奇的部分之一——布局（Layout）过程和布局约束。准备好了吗？让我们一起深入探究这片神奇的世界，看看Widget是如何在屏幕上找到它们的最佳位置的。 一、布局过程简介在Flutter中，布局是一个双向过程。父Widget会将约束（constraints）传递给子Widget，子Widget会根据这些约束来确定自己的大小和位">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-11-04T12:13:45.000Z">
+<meta property="article:modified_time" content="2024-06-30T08:04:06.736Z">
+<meta property="article:author" content="R.linzhou">
+<meta property="article:tag" content="Flutter">
+<meta property="article:tag" content="Layout">
+<meta name="twitter:card" content="summary">
+
+
+<title >Flutter-布局（Layout）</title>
+
+<!-- Favicon -->
+
+    <link href='/blog/img/logo.svg?v=2.2.2' rel='icon' type='image/png' sizes='16x16' ></link>
+
+
+    <link href='/blog/img/logo.svg?v=2.2.2' rel='icon' type='image/png' sizes='32x32' ></link>
+
+
+
+
+<!-- Plugin -->
+
+
+
+
+    
+<link rel="stylesheet" href="/blog/css/plugins/bootstrap.row.css">
+
+    
+<link rel="stylesheet" href="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.css">
+
+    
+    
+
+
+
+
+<!-- Icon -->
+
+    
+<link rel="stylesheet" href="/blog/css/plugins/font-awesome.min.css">
+
+
+
+
+<!-- Variable -->
+<script>window.ASYNC_CONFIG = {"hostname":"2322222223.github.io","author":"R.linzhou","root":"/blog/","typed_text":["Mobile development"],"theme_version":"2.2.2","theme":{"switch":true,"default":"style-light"},"favicon":{"logo":"/img/logo.svg","icon16":"/img/logo.svg","icon32":"/img/logo.svg","apple_touch_icon":null,"webmanifest":null,"visibilitychange":false,"hidden":"/ogo.svg","show_text":"R.linzhou Blog","hide_text":"R.linzhou Blog"},"i18n":{"placeholder":"搜索文章...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）","author":"本文作者：","copyright_link":"本文链接：","copyright_license_title":"版权声明：","copyright_license_content":"本博客所有文章除特别声明外，均默认采用 undefined 许可协议。","copy_success":"复制成功","copy_failure":"复制失败","open_read_mode":"进入阅读模式","exit_read_mode":"退出阅读模式","notice_outdate_message":"距离上次更新已经 undefined 天了, 文章内容可能已经过时。","sticky":"置顶","just":"刚刚","min":"分钟前","hour":"小时前","day":"天前","month":"个月前"},"swup":false,"plugin":{"flickr_justified_gallery":"https://unpkg.com/flickr-justified-gallery@latest/dist/fjGallery.min.js"},"icons":{"sun":"far fa-sun","moon":"far fa-moon","play":"fas fa-play","email":"far fa-envelope","next":"fas fa-arrow-right","calendar":"far fa-calendar-alt","clock":"far fa-clock","user":"far fa-user","back_top":"fas fa-arrow-up","close":"fas fa-times","search":"fas fa-search","reward":"fas fa-hand-holding-usd","user_tag":"fas fa-user-alt","toc_tag":"fas fa-th-list","read":"fas fa-book-reader","arrows":"fas fa-arrows-alt-h","double_arrows":"fas fa-angle-double-down","copy":"fas fa-copy"},"icontype":"font","highlight":{"plugin":"highlighjs","theme":true,"copy":true,"lang":false,"title":"default","height_limit":200},"toc":{"post_title":true},"live_time":{"start_time":"","prefix":"博客已萌萌哒运行 undefined 天"},"danmu":{"enable":false,"el":".trm-banner"},"creative_commons":{"license":"by-nc-sa","language":"deed.zh"}};</script>
+<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2024-06-30 16:04:06"};</script>
+
+<!-- Theme mode css -->
+<link data-swup-theme rel="stylesheet" href="/blog/css/index.css?v=2.2.2" id="trm-switch-style">
+<script>
+    let defaultMode = ASYNC_CONFIG.theme.default !=='auto' ?  ASYNC_CONFIG.theme.default : (window.matchMedia("(prefers-color-scheme: light)").matches ? 'style-light' : 'style-dark')
+    let catchMode = localStorage.getItem('theme-mode') || defaultMode;
+    let type = catchMode === 'style-dark' ? 'add' : 'remove';
+    document.documentElement.classList[type]('dark')
+</script>
+
+<!-- CDN -->
+
+
+    
+    
+
+
+
+<!-- Site Analytics -->
+
+ 
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+<body>
+
+  <!-- app wrapper -->
+  <div class="trm-app-frame">
+
+    <!-- page preloader -->
+    <div class="trm-preloader">
+    <div class="trm-holder">
+        <div class="preloader">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+</div>
+    <!-- page preloader end -->
+
+    <!-- change mode preloader -->
+    <div class="trm-mode-swich-animation-frame">
+    <div class="trm-mode-swich-animation">
+        <i class="i-sun"><i class="iconfont far fa-sun"></i></i>
+        <div class="trm-horizon"></div>
+        <i class="i-moon"><i class="iconfont far fa-moon"></i></i>
+    </div>
+</div>
+    <!-- change mode preloader end -->
+
+      <!-- scroll container -->
+      <div id="trm-dynamic-content" class="trm-swup-animation">
+        <div id="trm-scroll-container" class="trm-scroll-container" style="opacity: 0">
+            <!-- top bar -->
+            <header class="trm-top-bar">
+	<div class="container">
+		<div class="trm-left-side">
+			<!-- logo -->
+<a href="/blog/" class="trm-logo-frame trm-anima-link">
+    
+        <img alt="logo" src="/blog/img/logo.svg">
+    
+    
+        <div class="trm-logo-text">
+            Blog<span></span>
+        </div>
+    
+</a>
+<!-- logo end -->
+		</div>
+		<div class="trm-right-side">
+			<!-- menu -->
+<div class="trm-menu">
+    <nav>
+        <ul>
+            
+            <li class="menu-item-has-children ">
+                <a  href="/blog/" target="">
+                    home
+                </a>
+                
+            </li>
+            
+            <li class="menu-item-has-children ">
+                <a data-no-swup href="/blog/archives/" target="">
+                    archives
+                </a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+</div>
+<!-- menu end -->
+			
+    <!-- mode switcher place -->
+    <div class="trm-mode-switcher-place">
+        <div class="trm-mode-switcher">
+            <i class="iconfont far fa-sun"></i>
+            <input class="tgl tgl-light" id="trm-swich" type="checkbox">
+            <label class="trm-swich" for="trm-swich"></label>
+            <i class="iconfont far fa-moon"></i>
+        </div>
+    </div>
+    <!-- mode switcher place end -->
+
+			
+		</div>
+		<div class="trm-menu-btn">
+			<span></span>
+		</div>
+	</div>
+</header>
+            <!-- top bar end -->
+
+            <!-- body -->
+            
+<div class="trm-content-start">
+    <!-- banner -->
+    <div class="trm-banner">
+    
+    <!-- banner cover -->
+    <img style="object-position:top;object-fit:cover;" alt="banner" class="trm-banner-cover" src="/blog/img/banner.png">
+    <!-- banner cover end -->
+    
+
+    <!-- banner content -->
+    <div class="trm-banner-content trm-overlay">
+        <div class="container">
+            <div class="row">
+                
+                <div class="col-lg-4"></div>
+                
+                <div class="col-lg-8">
+
+                    <!-- banner title -->
+                    <div class="trm-banner-text ">
+                        <div class="trm-label trm-mb-20">
+                            NEWS LETTER
+                        </div>
+                        <h1 class="trm-mb-30 trm-hsmb-font">
+                            Flutter-布局（Layout）
+                        </h1>
+
+                        
+                            <ul class="trm-breadcrumbs trm-label">
+                                <li>
+                                    <a href="/blog/" class="trm-anima-link">Home</a>
+                                </li>
+                                <li>
+                                    <span>
+                                        2020
+                                    </span>
+                                </li>
+                            </ul>
+                        
+                    </div>
+                    <!-- banner title end -->
+
+                    <!-- scroll hint -->
+                    <span id="scroll-triger" class="trm-scroll-hint-frame">
+                        <div class="trm-scroll-hint"></div>
+                        <span class="trm-label">Scroll down</span>
+                    </span>
+                    <!-- scroll hint end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- banner content end -->
+</div>
+    <!-- banner end -->
+    <div class="container">
+        <div class="row">
+            
+                <div class="trm-page-sidebar col-lg-4 hidden-sm">
+                    <!-- main card -->
+                    <div class="trm-main-card-frame trm-sidebar">
+    <div class="trm-main-card"> 
+        <!-- card header -->
+<div class="trm-mc-header">
+    <div class="trm-avatar-frame trm-mb-20">
+        <img alt="Avatar" class="trm-avatar" src="/blog/img/avatar.png">
+    </div>
+    <h5 class="trm-name trm-mb-15">
+        R.linzhou
+    </h5>
+    
+        <div class="trm-label">
+            I&#39;m
+            <span class="trm-typed-text">
+                <!-- Words for theme.user.typedText -->
+            </span>
+        </div>
+    
+</div>
+<!-- card header end -->
+        <!-- sidebar social -->
+
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<div class="trm-social">
+    
+        <a href="https://github.com/2322222223" title="Github" rel="nofollow" target="_blank">
+            <i class="iconfont fab fa-github"></i>
+        </a>
+    
+        <a href="http://2322222223.com" title="Resume" rel="nofollow" target="_blank">
+            <i class="iconfont far fa-smile"></i>
+        </a>
+    
+</div>
+
+<!-- sidebar social end -->
+        <!-- info -->
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<ul class="trm-table trm-mb-20">
+    
+        <li>
+            <div class="trm-label">
+                地址:
+            </div>
+            <div class="trm-label trm-label-light">
+                Beijing
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                年龄:
+            </div>
+            <div class="trm-label trm-label-light">
+                32
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                邮箱:
+            </div>
+            <div class="trm-label trm-label-light">
+                g2322222223@gmail.com
+            </div>
+        </li>
+    
+</ul>
+<!-- info end -->
+
+        
+    <div class="trm-divider trm-mb-40 trm-mt-40"></div>
+    <!-- action button -->
+    <div class="text-center">
+        <a href="mailto:g2322222223@gmail.com" class="trm-btn">
+            联系我
+            <i class="iconfont far fa-envelope"></i>
+        </a>
+    </div>
+    <!-- action button end -->
+
+    </div>
+</div>
+                    <!-- main card end -->
+                </div>
+            
+            <div class="trm-page-content col-lg-8">
+                <div id="trm-content" class="trm-content">
+                    <div class="trm-post-info row hidden-sm">
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-calendar-alt trm-icon"></i><br>
+            11/04
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-clock trm-icon"></i><br>
+            20:13
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div id="post-author" class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-user trm-icon"></i><br>
+            R.linzhou
+        </div>
+    </div>
+</div>
+<div class="trm-card ">
+    <article id="article-container" class="trm-publication">
+    <p>hi，Flutter爱好者们！今天我们来点有趣的，聊聊Flutter中最神奇的部分之一——布局（Layout）过程和布局约束。准备好了吗？让我们一起深入探究这片神奇的世界，看看Widget是如何在屏幕上找到它们的最佳位置的。</p>
+<h3 id="一、布局过程简介"><a href="#一、布局过程简介" class="headerlink" title="一、布局过程简介"></a>一、布局过程简介</h3><p>在Flutter中，布局是一个双向过程。父Widget会将约束（constraints）传递给子Widget，子Widget会根据这些约束来确定自己的大小和位置，然后返回给父Widget。这个过程听起来有点像是在玩一场捉迷藏，对吧？</p>
+<h3 id="二、布局约束（Constraints）"><a href="#二、布局约束（Constraints）" class="headerlink" title="二、布局约束（Constraints）"></a>二、布局约束（Constraints）</h3><p>布局约束是Widget在布局过程中收到的一组规则，决定了它可以有多大或多小。约束有四种边界：</p>
+<ol>
+<li>最小宽度（minWidth）</li>
+<li>最大宽度（maxWidth）</li>
+<li>最小高度（minHeight）</li>
+<li>最大高度（maxHeight）</li>
+</ol>
+<h4 id="案例：使用Constraints"><a href="#案例：使用Constraints" class="headerlink" title="案例：使用Constraints"></a>案例：使用Constraints</h4><p>让我们来看一个简单的例子，了解约束是如何工作的。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyConstrainedBox</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> ConstrainedBox(</span><br><span class="line">      constraints: BoxConstraints(</span><br><span class="line">        minWidth: <span class="number">100</span>,</span><br><span class="line">        maxWidth: <span class="number">200</span>,</span><br><span class="line">        minHeight: <span class="number">50</span>,</span><br><span class="line">        maxHeight: <span class="number">100</span>,</span><br><span class="line">      ),</span><br><span class="line">      child: Container(</span><br><span class="line">        color: Colors.blue,</span><br><span class="line">      ),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，我们使用<code>ConstrainedBox</code>来限制<code>Container</code>的大小。这个小蓝盒子会根据我们设置的约束，找到一个合适的尺寸。</p>
+<h3 id="三、布局过程（Layout-Process）"><a href="#三、布局过程（Layout-Process）" class="headerlink" title="三、布局过程（Layout Process）"></a>三、布局过程（Layout Process）</h3><p>Flutter的布局过程分为两个阶段：测量（measure）和布局（layout）。</p>
+<h4 id="3-1-测量（Measure）"><a href="#3-1-测量（Measure）" class="headerlink" title="3.1 测量（Measure）"></a>3.1 测量（Measure）</h4><p>在测量阶段，父Widget将约束传递给子Widget，子Widget根据这些约束来测量自己的大小。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line"><span class="meta">@override</span></span><br><span class="line"><span class="keyword">void</span> performLayout() &#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">final</span> BoxConstraints constraints = <span class="keyword">this</span>.constraints;</span><br><span class="line">  child.layout(constraints);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-布局（Layout）"><a href="#3-2-布局（Layout）" class="headerlink" title="3.2 布局（Layout）"></a>3.2 布局（Layout）</h4><p>在布局阶段，父Widget根据子Widget的测量结果，确定子Widget的位置，并将其放置在合适的地方。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line"><span class="meta">@override</span></span><br><span class="line"><span class="keyword">void</span> performLayout() &#123;</span><br><span class="line">  <span class="comment">// 布置子窗口小部件</span></span><br><span class="line">  <span class="keyword">final</span> BoxConstraints constraints = <span class="keyword">this</span>.constraints;</span><br><span class="line">  child.layout(constraints, parentUsesSize: <span class="keyword">true</span>);</span><br><span class="line">  size = child.size;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="四、源码解析"><a href="#四、源码解析" class="headerlink" title="四、源码解析"></a>四、源码解析</h3><p>让我们深入一下<code>RenderBox</code>，这是Flutter布局系统的核心类之一。</p>
+<h4 id="4-1-RenderBox"><a href="#4-1-RenderBox" class="headerlink" title="4.1 RenderBox"></a>4.1 RenderBox</h4><p><code>RenderBox</code>是所有可布局的对象的基类。它负责实现布局协议，并定义了如何进行测量和布局。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">RenderBox</span> <span class="keyword">extends</span> <span class="title">RenderObject</span> </span>&#123;</span><br><span class="line">  <span class="comment">// Perform layout</span></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  <span class="keyword">void</span> layout(Constraints constraints, &#123; <span class="built_in">bool</span> parentUsesSize = <span class="keyword">false</span> &#125;) &#123;</span><br><span class="line">    <span class="comment">// 如果约束没有更改，并且父对象仍然可以使用</span></span><br><span class="line">    <span class="comment">//此框的当前大小，则我们不需要重新布局此框。</span></span><br><span class="line">    <span class="keyword">if</span> (!_needsLayout &amp;&amp; constraints == _constraints &amp;&amp; parentUsesSize == _parentUsesSize)</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    _constraints = constraints;</span><br><span class="line">    _parentUsesSize = parentUsesSize;</span><br><span class="line">    performLayout();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Measure the size of the child</span></span><br><span class="line">  <span class="keyword">void</span> performLayout();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-2-BoxConstraints"><a href="#4-2-BoxConstraints" class="headerlink" title="4.2 BoxConstraints"></a>4.2 BoxConstraints</h4><p><code>BoxConstraints</code>是布局约束的具体实现，用于描述Widget在布局过程中的限制条件。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BoxConstraints</span> <span class="keyword">extends</span> <span class="title">Constraints</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> BoxConstraints(&#123;</span><br><span class="line">    <span class="keyword">this</span>.minWidth = <span class="number">0.0</span>,</span><br><span class="line">    <span class="keyword">this</span>.maxWidth = <span class="built_in">double</span>.infinity,</span><br><span class="line">    <span class="keyword">this</span>.minHeight = <span class="number">0.0</span>,</span><br><span class="line">    <span class="keyword">this</span>.maxHeight = <span class="built_in">double</span>.infinity,</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">double</span> minWidth;</span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">double</span> maxWidth;</span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">double</span> minHeight;</span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">double</span> maxHeight;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  <span class="built_in">bool</span> isSatisfiedBy(Size size) &#123;</span><br><span class="line">    <span class="keyword">return</span> (size.width &gt;= minWidth &amp;&amp; size.width &lt;= maxWidth) &amp;&amp;</span><br><span class="line">           (size.height &gt;= minHeight &amp;&amp; size.height &lt;= maxHeight);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="五、布局示例"><a href="#五、布局示例" class="headerlink" title="五、布局示例"></a>五、布局示例</h3><h4 id="5-1-自定义布局Widget"><a href="#5-1-自定义布局Widget" class="headerlink" title="5.1 自定义布局Widget"></a>5.1 自定义布局Widget</h4><p>我们可以创建一个自定义的布局Widget，通过实现<code>RenderBox</code>的<code>performLayout</code>方法来定义自己的布局逻辑。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CustomLayout</span> <span class="keyword">extends</span> <span class="title">SingleChildRenderObjectWidget</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> CustomLayout(&#123;Key? key, Widget? child&#125;) : <span class="keyword">super</span>(key: key, child: child);</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  RenderObject createRenderObject(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> _CustomLayoutRenderBox();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_CustomLayoutRenderBox</span> <span class="keyword">extends</span> <span class="title">RenderBox</span> <span class="title">with</span> <span class="title">RenderObjectWithChildMixin</span>&lt;<span class="title">RenderBox</span>&gt; </span>&#123;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  <span class="keyword">void</span> performLayout() &#123;</span><br><span class="line">    <span class="keyword">if</span> (child != <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="comment">// 为子项设置约束</span></span><br><span class="line">      child!.layout(constraints, parentUsesSize: <span class="keyword">true</span>);</span><br><span class="line">      <span class="comment">// 根据子对象的大小设置父对象的大小</span></span><br><span class="line">      size = constraints.constrain(Size(child!.size.width, child!.size.height));</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      size = constraints.smallest;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h3><p>好了，今天的内容就分享到这里了！希望这篇文章能让你对Flutter中的布局过程和布局约束有更深入的了解。如果你想了解更多，别忘了查看<a target="_blank" rel="noopener" href="https://docs.flutter.dev/">Flutter官方文档</a>哦！</p>
+<p>记住，布局就像是一场魔法秀，了解其中的奥秘会让你的Flutter开发更加得心应手。有什么问题或者想法，欢迎在评论区分享！Happy Coding! 🎉</p>
+
+</article>
+    
+    
+
+</div>
+<div class="trm-post-next-prev row">
+    <div class="col-lg-12">
+        <!-- title -->
+        <h5 class="trm-title-with-divider">
+            其他文章
+            <span data-number="02"></span>
+        </h5>
+    </div>
+    
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/blog/2020/11/07/Flutter-%E5%85%B3%E4%BA%8ESliver%E7%BB%84%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">Flutter-关于Sliver组件的使用</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>20/11/07</li>
+                <li>22:23</li>
+                <li>Flutter</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+    
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/blog/2020/11/01/Flutter-Key%E7%9A%84%E4%BD%9C%E7%94%A8%E4%BA%8E%E6%A1%88%E4%BE%8B/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">Flutter-Key的作用于案例</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>20/11/01</li>
+                <li>17:43</li>
+                <li>Flutter</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+</div>
+
+    
+
+    <div id="giscus-wrap" class="trm-card trm-scroll-animation comment-container"></div>
+<script data-swup-reload-script>
+    function loadGiscus() {
+        let nowTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+        const config = {
+            src: 'https://giscus.app/client.js',
+            "data-repo": '2322222223/blog',
+            "data-repo-id": 'R_kgDOMCoZ8w',
+            "data-category": 'Announcements',
+            "data-category-id": 'DIC_kwDOMCoZ884Cfxl-',
+            "data-mapping": 'pathname',
+            "data-reactions-enabled": '1',
+            "data-emit-metadata": '1',
+            "data-theme": nowTheme,
+            "data-lang": 'zh-CN',
+            crossorigin: "anonymous",
+            async: true
+        }
+        let ele = document.createElement('script')
+        for (let key in config) {
+            ele.setAttribute(key, config[key])
+        }
+        document.getElementById('giscus-wrap').insertAdjacentElement('afterbegin', ele)
+    }
+
+    function changeGiscusTheme() {
+        let theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+
+        function sendMessage(message) {
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (!iframe) return;
+            iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+
+        sendMessage({
+            setConfig: {
+                theme: theme
+            }
+        });
+    }
+
+    loadGiscus();
+</script>
+
+
+
+                    <div class="trm-divider footer-divider"></div>
+
+                    <!-- footer -->
+                    <footer class="trm-footer-card trm-scroll-animation">
+
+    
+
+    
+        <div class="trm-footer-item">
+            <span>© 2020- 2024</span>
+            <span class="footer-separator"data-separator=" · "></span>
+            <span class="trm-accent-color">R.linzhou</span>
+        </div>
+    
+
+      
+
+     
+
+     
+</footer>
+                    <!-- footer end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            <!-- body end -->
+
+            
+
+            
+<div class="trm-fixed-container">
+    
+    
+        <div class="trm-fixed-btn" data-title="阅读模式" onclick="asyncFun.switchReadMode()">
+            <i class="iconfont fas fa-book-reader"></i>
+        </div>
+    
+    
+        <div class="trm-fixed-btn hidden-md" data-title="单栏和双栏切换" onclick="asyncFun.switchSingleColumn()">
+            <i class="iconfont fas fa-arrows-alt-h"></i>
+        </div>
+    
+    <div id="trm-back-top" class="trm-fixed-btn" data-title="回到顶部">
+        <i class="iconfont fas fa-arrow-up"></i>
+    </div>
+</div>
+        </div>
+      </div>
+      <!-- scroll container end -->
+  </div>
+  <!-- app wrapper end -->
+
+  
+  <!-- Plugin -->
+
+
+
+
+    
+    
+<script src="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+
+    
+
+    
+        <script src="/blog/js/plugins/typing.js?v=2.2.2"></script>
+    
+
+    
+
+    <!-- 数学公式 -->
+    
+
+    <!-- 评论插件 -->
+    
+        
+
+        
+    
+
+		
+
+
+
+
+    <!-- Service Worker -->
+    
+    <script>
+        "serviceWorker" in navigator ?
+        navigator.serviceWorker.register('/blog/sw.js').then(function () {
+            navigator.serviceWorker.controller ? 
+             console.log("Assets cached by the controlling service worker.") :
+             console.log("Please reload this page to allow the service worker to handle network operations.")
+        }).catch(function (e) {
+            console.log("ERROR: " + e)
+        }) : console.log("Service workers are not supported in the current browser.")
+    </script>
+
+    <!-- baidu push -->
+    
+
+
+<script id="async-script" src="/blog/js/main.js?v=2.2.2"></script>
+
+<!-- CDN -->
+
+
+    
+
+    
+
+    
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="x5-fullscreen" content="true">
+<meta name="full-screen" content="yes">
+<meta name="theme-color" content="#317EFB" />
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0" name="viewport">
+<meta name="description" content="声明下，虽然我觉得HotReload这个功能确实方便强大，但是我并不想去研究它的原理，无奈发现现在好多人都在讨论，所以就查下资料记录下。接下来进入正题。 一、什么是Hot Reload？Hot Reload是Flutter提供的一项开发功能，允许开发者在不丢失应用状态的情况下，立即看到代码的更改结果。这对于UI开发和调试非常有用，因为可以快速迭代并查看效果。 二、Hot Reload的实现原理Ho">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flutter-Hot Reload功能">
+<meta property="og:url" content="https://2322222223.github.io/blog/2020/11/12/Flutter-Hot-Reload%E5%8A%9F%E8%83%BD/index.html">
+<meta property="og:site_name" content="Rlz Blog">
+<meta property="og:description" content="声明下，虽然我觉得HotReload这个功能确实方便强大，但是我并不想去研究它的原理，无奈发现现在好多人都在讨论，所以就查下资料记录下。接下来进入正题。 一、什么是Hot Reload？Hot Reload是Flutter提供的一项开发功能，允许开发者在不丢失应用状态的情况下，立即看到代码的更改结果。这对于UI开发和调试非常有用，因为可以快速迭代并查看效果。 二、Hot Reload的实现原理Ho">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-11-12T11:22:10.000Z">
+<meta property="article:modified_time" content="2024-06-30T08:04:06.732Z">
+<meta property="article:author" content="R.linzhou">
+<meta property="article:tag" content="Flutter">
+<meta property="article:tag" content="Hot Reload">
+<meta name="twitter:card" content="summary">
+
+
+<title >Flutter-Hot Reload功能</title>
+
+<!-- Favicon -->
+
+    <link href='/blog/img/logo.svg?v=2.2.2' rel='icon' type='image/png' sizes='16x16' ></link>
+
+
+    <link href='/blog/img/logo.svg?v=2.2.2' rel='icon' type='image/png' sizes='32x32' ></link>
+
+
+
+
+<!-- Plugin -->
+
+
+
+
+    
+<link rel="stylesheet" href="/blog/css/plugins/bootstrap.row.css">
+
+    
+<link rel="stylesheet" href="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.css">
+
+    
+    
+
+
+
+
+<!-- Icon -->
+
+    
+<link rel="stylesheet" href="/blog/css/plugins/font-awesome.min.css">
+
+
+
+
+<!-- Variable -->
+<script>window.ASYNC_CONFIG = {"hostname":"2322222223.github.io","author":"R.linzhou","root":"/blog/","typed_text":["Mobile development"],"theme_version":"2.2.2","theme":{"switch":true,"default":"style-light"},"favicon":{"logo":"/img/logo.svg","icon16":"/img/logo.svg","icon32":"/img/logo.svg","apple_touch_icon":null,"webmanifest":null,"visibilitychange":false,"hidden":"/ogo.svg","show_text":"R.linzhou Blog","hide_text":"R.linzhou Blog"},"i18n":{"placeholder":"搜索文章...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）","author":"本文作者：","copyright_link":"本文链接：","copyright_license_title":"版权声明：","copyright_license_content":"本博客所有文章除特别声明外，均默认采用 undefined 许可协议。","copy_success":"复制成功","copy_failure":"复制失败","open_read_mode":"进入阅读模式","exit_read_mode":"退出阅读模式","notice_outdate_message":"距离上次更新已经 undefined 天了, 文章内容可能已经过时。","sticky":"置顶","just":"刚刚","min":"分钟前","hour":"小时前","day":"天前","month":"个月前"},"swup":false,"plugin":{"flickr_justified_gallery":"https://unpkg.com/flickr-justified-gallery@latest/dist/fjGallery.min.js"},"icons":{"sun":"far fa-sun","moon":"far fa-moon","play":"fas fa-play","email":"far fa-envelope","next":"fas fa-arrow-right","calendar":"far fa-calendar-alt","clock":"far fa-clock","user":"far fa-user","back_top":"fas fa-arrow-up","close":"fas fa-times","search":"fas fa-search","reward":"fas fa-hand-holding-usd","user_tag":"fas fa-user-alt","toc_tag":"fas fa-th-list","read":"fas fa-book-reader","arrows":"fas fa-arrows-alt-h","double_arrows":"fas fa-angle-double-down","copy":"fas fa-copy"},"icontype":"font","highlight":{"plugin":"highlighjs","theme":true,"copy":true,"lang":false,"title":"default","height_limit":200},"toc":{"post_title":true},"live_time":{"start_time":"","prefix":"博客已萌萌哒运行 undefined 天"},"danmu":{"enable":false,"el":".trm-banner"},"creative_commons":{"license":"by-nc-sa","language":"deed.zh"}};</script>
+<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2024-06-30 16:04:06"};</script>
+
+<!-- Theme mode css -->
+<link data-swup-theme rel="stylesheet" href="/blog/css/index.css?v=2.2.2" id="trm-switch-style">
+<script>
+    let defaultMode = ASYNC_CONFIG.theme.default !=='auto' ?  ASYNC_CONFIG.theme.default : (window.matchMedia("(prefers-color-scheme: light)").matches ? 'style-light' : 'style-dark')
+    let catchMode = localStorage.getItem('theme-mode') || defaultMode;
+    let type = catchMode === 'style-dark' ? 'add' : 'remove';
+    document.documentElement.classList[type]('dark')
+</script>
+
+<!-- CDN -->
+
+
+    
+    
+
+
+
+<!-- Site Analytics -->
+
+ 
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+<body>
+
+  <!-- app wrapper -->
+  <div class="trm-app-frame">
+
+    <!-- page preloader -->
+    <div class="trm-preloader">
+    <div class="trm-holder">
+        <div class="preloader">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+</div>
+    <!-- page preloader end -->
+
+    <!-- change mode preloader -->
+    <div class="trm-mode-swich-animation-frame">
+    <div class="trm-mode-swich-animation">
+        <i class="i-sun"><i class="iconfont far fa-sun"></i></i>
+        <div class="trm-horizon"></div>
+        <i class="i-moon"><i class="iconfont far fa-moon"></i></i>
+    </div>
+</div>
+    <!-- change mode preloader end -->
+
+      <!-- scroll container -->
+      <div id="trm-dynamic-content" class="trm-swup-animation">
+        <div id="trm-scroll-container" class="trm-scroll-container" style="opacity: 0">
+            <!-- top bar -->
+            <header class="trm-top-bar">
+	<div class="container">
+		<div class="trm-left-side">
+			<!-- logo -->
+<a href="/blog/" class="trm-logo-frame trm-anima-link">
+    
+        <img alt="logo" src="/blog/img/logo.svg">
+    
+    
+        <div class="trm-logo-text">
+            Blog<span></span>
+        </div>
+    
+</a>
+<!-- logo end -->
+		</div>
+		<div class="trm-right-side">
+			<!-- menu -->
+<div class="trm-menu">
+    <nav>
+        <ul>
+            
+            <li class="menu-item-has-children ">
+                <a  href="/blog/" target="">
+                    home
+                </a>
+                
+            </li>
+            
+            <li class="menu-item-has-children ">
+                <a data-no-swup href="/blog/archives/" target="">
+                    archives
+                </a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+</div>
+<!-- menu end -->
+			
+    <!-- mode switcher place -->
+    <div class="trm-mode-switcher-place">
+        <div class="trm-mode-switcher">
+            <i class="iconfont far fa-sun"></i>
+            <input class="tgl tgl-light" id="trm-swich" type="checkbox">
+            <label class="trm-swich" for="trm-swich"></label>
+            <i class="iconfont far fa-moon"></i>
+        </div>
+    </div>
+    <!-- mode switcher place end -->
+
+			
+		</div>
+		<div class="trm-menu-btn">
+			<span></span>
+		</div>
+	</div>
+</header>
+            <!-- top bar end -->
+
+            <!-- body -->
+            
+<div class="trm-content-start">
+    <!-- banner -->
+    <div class="trm-banner">
+    
+    <!-- banner cover -->
+    <img style="object-position:top;object-fit:cover;" alt="banner" class="trm-banner-cover" src="/blog/img/banner.png">
+    <!-- banner cover end -->
+    
+
+    <!-- banner content -->
+    <div class="trm-banner-content trm-overlay">
+        <div class="container">
+            <div class="row">
+                
+                <div class="col-lg-4"></div>
+                
+                <div class="col-lg-8">
+
+                    <!-- banner title -->
+                    <div class="trm-banner-text ">
+                        <div class="trm-label trm-mb-20">
+                            NEWS LETTER
+                        </div>
+                        <h1 class="trm-mb-30 trm-hsmb-font">
+                            Flutter-Hot Reload功能
+                        </h1>
+
+                        
+                            <ul class="trm-breadcrumbs trm-label">
+                                <li>
+                                    <a href="/blog/" class="trm-anima-link">Home</a>
+                                </li>
+                                <li>
+                                    <span>
+                                        2020
+                                    </span>
+                                </li>
+                            </ul>
+                        
+                    </div>
+                    <!-- banner title end -->
+
+                    <!-- scroll hint -->
+                    <span id="scroll-triger" class="trm-scroll-hint-frame">
+                        <div class="trm-scroll-hint"></div>
+                        <span class="trm-label">Scroll down</span>
+                    </span>
+                    <!-- scroll hint end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- banner content end -->
+</div>
+    <!-- banner end -->
+    <div class="container">
+        <div class="row">
+            
+                <div class="trm-page-sidebar col-lg-4 hidden-sm">
+                    <!-- main card -->
+                    <div class="trm-main-card-frame trm-sidebar">
+    <div class="trm-main-card"> 
+        <!-- card header -->
+<div class="trm-mc-header">
+    <div class="trm-avatar-frame trm-mb-20">
+        <img alt="Avatar" class="trm-avatar" src="/blog/img/avatar.png">
+    </div>
+    <h5 class="trm-name trm-mb-15">
+        R.linzhou
+    </h5>
+    
+        <div class="trm-label">
+            I&#39;m
+            <span class="trm-typed-text">
+                <!-- Words for theme.user.typedText -->
+            </span>
+        </div>
+    
+</div>
+<!-- card header end -->
+        <!-- sidebar social -->
+
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<div class="trm-social">
+    
+        <a href="https://github.com/2322222223" title="Github" rel="nofollow" target="_blank">
+            <i class="iconfont fab fa-github"></i>
+        </a>
+    
+        <a href="http://2322222223.com" title="Resume" rel="nofollow" target="_blank">
+            <i class="iconfont far fa-smile"></i>
+        </a>
+    
+</div>
+
+<!-- sidebar social end -->
+        <!-- info -->
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<ul class="trm-table trm-mb-20">
+    
+        <li>
+            <div class="trm-label">
+                地址:
+            </div>
+            <div class="trm-label trm-label-light">
+                Beijing
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                年龄:
+            </div>
+            <div class="trm-label trm-label-light">
+                32
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                邮箱:
+            </div>
+            <div class="trm-label trm-label-light">
+                g2322222223@gmail.com
+            </div>
+        </li>
+    
+</ul>
+<!-- info end -->
+
+        
+    <div class="trm-divider trm-mb-40 trm-mt-40"></div>
+    <!-- action button -->
+    <div class="text-center">
+        <a href="mailto:g2322222223@gmail.com" class="trm-btn">
+            联系我
+            <i class="iconfont far fa-envelope"></i>
+        </a>
+    </div>
+    <!-- action button end -->
+
+    </div>
+</div>
+                    <!-- main card end -->
+                </div>
+            
+            <div class="trm-page-content col-lg-8">
+                <div id="trm-content" class="trm-content">
+                    <div class="trm-post-info row hidden-sm">
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-calendar-alt trm-icon"></i><br>
+            11/12
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-clock trm-icon"></i><br>
+            19:22
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div id="post-author" class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-user trm-icon"></i><br>
+            R.linzhou
+        </div>
+    </div>
+</div>
+<div class="trm-card ">
+    <article id="article-container" class="trm-publication">
+    <p>声明下，虽然我觉得HotReload这个功能确实方便强大，但是我并不想去研究它的原理，无奈发现现在好多人都在讨论，所以就查下资料记录下。接下来进入正题。</p>
+<h3 id="一、什么是Hot-Reload？"><a href="#一、什么是Hot-Reload？" class="headerlink" title="一、什么是Hot Reload？"></a>一、什么是Hot Reload？</h3><p>Hot Reload是Flutter提供的一项开发功能，允许开发者在不丢失应用状态的情况下，立即看到代码的更改结果。这对于UI开发和调试非常有用，因为可以快速迭代并查看效果。</p>
+<h3 id="二、Hot-Reload的实现原理"><a href="#二、Hot-Reload的实现原理" class="headerlink" title="二、Hot Reload的实现原理"></a>二、Hot Reload的实现原理</h3><p>Hot Reload的核心是Dart虚拟机（Dart VM）的热重载功能。Flutter应用运行在Dart VM上，Dart VM支持在运行时加载新的代码，并将其应用到现有的应用状态中。以下是Hot Reload的实现过程：</p>
+<h4 id="1-源代码修改与保存"><a href="#1-源代码修改与保存" class="headerlink" title="1. 源代码修改与保存"></a>1. 源代码修改与保存</h4><p>当开发者在IDE（如VS Code、Android Studio）中修改了Dart源代码并保存时，IDE会检测到文件的变化。</p>
+<h4 id="2-触发Hot-Reload命令"><a href="#2-触发Hot-Reload命令" class="headerlink" title="2. 触发Hot Reload命令"></a>2. 触发Hot Reload命令</h4><p>IDE通过Flutter工具（<code>flutter_tools</code>）触发Hot Reload命令。Flutter工具是一个命令行工具，用于管理Flutter应用的构建、运行和调试。</p>
+<h4 id="3-Flutter工具与Dart-VM通信"><a href="#3-Flutter工具与Dart-VM通信" class="headerlink" title="3. Flutter工具与Dart VM通信"></a>3. Flutter工具与Dart VM通信</h4><p>Flutter工具通过Dart VM的服务协议（VM Service Protocol）与运行中的Flutter应用通信。这个协议允许Flutter工具向Dart VM发送命令和请求数据。</p>
+<h4 id="4-发送源代码变化"><a href="#4-发送源代码变化" class="headerlink" title="4. 发送源代码变化"></a>4. 发送源代码变化</h4><p>Flutter工具将修改的源代码发送给Dart VM。Dart VM接收到新的代码后，解析并编译成中间表示（Intermediate Representation）。</p>
+<h4 id="5-更新代码与热重载"><a href="#5-更新代码与热重载" class="headerlink" title="5. 更新代码与热重载"></a>5. 更新代码与热重载</h4><p>Dart VM将新的中间表示替换现有的代码。对于已存在的类和函数，Dart VM会更新它们的实现。如果新代码中包含新增的类或函数，Dart VM会将它们添加到运行时环境中。</p>
+<h4 id="6-重建Widget树"><a href="#6-重建Widget树" class="headerlink" title="6. 重建Widget树"></a>6. 重建Widget树</h4><p>在Dart VM完成代码更新后，Flutter框架会触发应用的重建过程。通常是通过调用根Widget的<code>reassemble</code>方法来实现的。</p>
+<h3 id="三、源码解析"><a href="#三、源码解析" class="headerlink" title="三、源码解析"></a>三、源码解析</h3><p>接下来，我们从源码的角度详细解析Hot Reload的实现过程。</p>
+<h4 id="3-1-Flutter工具的Hot-Reload实现"><a href="#3-1-Flutter工具的Hot-Reload实现" class="headerlink" title="3.1 Flutter工具的Hot Reload实现"></a>3.1 Flutter工具的Hot Reload实现</h4><p>Flutter工具中管理Hot Reload的代码位于<code>flutter_tools</code>包中，具体在<code>lib/src/run_hot.dart</code>文件中。以下是部分关键代码：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line">Future&lt;OperationResult&gt; _reloadSources(</span><br><span class="line">  &#123;<span class="built_in">bool</span> pause = <span class="keyword">false</span>,</span><br><span class="line">  <span class="built_in">String</span> reason = <span class="string">&#x27;manual&#x27;</span>&#125;) <span class="keyword">async</span> &#123;</span><br><span class="line">  <span class="comment">// 连接到Dart VM</span></span><br><span class="line">  <span class="keyword">final</span> vm_service.VmService vmService = <span class="keyword">await</span> connectToVmService();</span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">List</span>&lt;vm_service.IsolateRef&gt; isolates = <span class="keyword">await</span> vmService.getVM().then((vm) =&gt; vm.isolates!);</span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">Map</span>&lt;<span class="built_in">String</span>, Future&lt;vm_service.ReloadReport&gt;&gt; reloadReports = &lt;<span class="built_in">String</span>, Future&lt;vm_service.ReloadReport&gt;&gt;&#123;&#125;;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 遍历所有isolate并执行热重载</span></span><br><span class="line">  <span class="keyword">for</span> (vm_service.IsolateRef isolateRef <span class="keyword">in</span> isolates) &#123;</span><br><span class="line">    reloadReports[isolateRef.id!] = vmService.reloadSources(isolateRef.id!, pause: pause, reason: reason);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 等待所有热重载操作完成</span></span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">List</span>&lt;vm_service.ReloadReport&gt; reports = <span class="keyword">await</span> Future.wait(reloadReports.values);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 检查重载结果</span></span><br><span class="line">  <span class="keyword">for</span> (vm_service.ReloadReport report <span class="keyword">in</span> reports) &#123;</span><br><span class="line">    <span class="keyword">if</span> (report.success) &#123;</span><br><span class="line">      <span class="built_in">print</span>(<span class="string">&#x27;Hot Reload成功&#x27;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="built_in">print</span>(<span class="string">&#x27;Hot Reload失败&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> OperationResult.ok;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这段代码中，<code>_reloadSources</code>方法负责连接到Dart VM并触发热重载操作。它会遍历所有的isolate，并通过调用<code>reloadSources</code>方法来更新代码。</p>
+<h4 id="3-2-Dart-VM中的热重载实现"><a href="#3-2-Dart-VM中的热重载实现" class="headerlink" title="3.2 Dart VM中的热重载实现"></a>3.2 Dart VM中的热重载实现</h4><p>Dart VM的热重载功能实现位于Dart SDK中。以下是相关的C++代码实现：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">cpp</span><br><span class="line"> </span><br><span class="line">bool ReloadSources(Thread* thread,</span><br><span class="line">                   const String&amp; packages_url,</span><br><span class="line">                   const String&amp; root_lib_url,</span><br><span class="line">                   bool force_reload,</span><br><span class="line">                   JSONStream* js) &#123;</span><br><span class="line">  // 解析和编译新的源代码</span><br><span class="line">  Dart_SourceFile* source_files = ParseSourceFiles(packages_url, root_lib_url);</span><br><span class="line">  if (source_files == nullptr) &#123;</span><br><span class="line">    return false;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // 更新类和函数的实现</span><br><span class="line">  UpdateClassesAndFunctions(source_files);</span><br><span class="line"></span><br><span class="line">  // 释放资源</span><br><span class="line">  FreeSourceFiles(source_files);</span><br><span class="line">  return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这段代码中，<code>ReloadSources</code>函数负责解析和编译新的源代码，并更新类和函数的实现。这个过程是Hot Reload的核心。</p>
+<h4 id="3-3-Flutter框架中的重建过程"><a href="#3-3-Flutter框架中的重建过程" class="headerlink" title="3.3 Flutter框架中的重建过程"></a>3.3 Flutter框架中的重建过程</h4><p>在Dart VM完成代码更新后，Flutter框架会触发应用的重建过程。以下是<code>reassemble</code>方法的实现：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">State</span>&lt;<span class="title">T</span> <span class="keyword">extends</span> <span class="title">StatefulWidget</span>&gt; <span class="keyword">extends</span> <span class="title">Diagnosticable</span> </span>&#123;</span><br><span class="line">  <span class="keyword">void</span> reassemble() &#123;</span><br><span class="line">    <span class="comment">// 通知框架Widget需要重建</span></span><br><span class="line">    rebuildElement();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在<code>reassemble</code>方法中，<code>rebuildElement</code>方法被调用，这会导致Widget树重新构建，从而应用新的代码变化。</p>
+<h3 id="四、Hot-Reload的优势与局限"><a href="#四、Hot-Reload的优势与局限" class="headerlink" title="四、Hot Reload的优势与局限"></a>四、Hot Reload的优势与局限</h3><h4 id="4-1-优势"><a href="#4-1-优势" class="headerlink" title="4.1 优势"></a>4.1 优势</h4><ol>
+<li><strong>快速迭代</strong>：开发者可以立即看到代码变化的效果，极大提高了开发效率。</li>
+<li><strong>保持状态</strong>：在大多数情况下，Hot Reload不会丢失应用状态，使得调试更加方便。</li>
+<li><strong>便捷调试</strong>：通过Hot Reload，开发者可以快速尝试不同的代码实现，找到最佳方案。</li>
+</ol>
+<h4 id="4-2-局限"><a href="#4-2-局限" class="headerlink" title="4.2 局限"></a>4.2 局限</h4><ol>
+<li><strong>不适用于所有代码变化</strong>：某些代码变化（如新增库或全局状态变化）需要完全重启应用才能生效。</li>
+<li><strong>可能引发不一致状态</strong>：在某些情况下，Hot Reload可能导致应用状态不一致，需要手动处理。</li>
+</ol>
+<h3 id="五、使用Hot-Reload"><a href="#五、使用Hot-Reload" class="headerlink" title="五、使用Hot Reload"></a>五、使用Hot Reload</h3><p>在使用Flutter开发时，Hot Reload已经内置在主流IDE中。通过快捷键即可触发：</p>
+<ul>
+<li><strong>VS Code</strong>：<code>Ctrl + S</code>（Windows&#x2F;Linux）或 <code>Cmd + S</code>（Mac）</li>
+<li><strong>Android Studio</strong>：点击工具栏上的闪电图标或使用快捷键 <code>Ctrl + S</code>（Windows&#x2F;Linux）或 <code>Cmd + S</code>（Mac）</li>
+</ul>
+<h3 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h3><p>好了，今天的分享就到这里啦！希望以上文章能帮助到各位Flutter爱好者。</p>
+
+</article>
+    
+    
+
+</div>
+<div class="trm-post-next-prev row">
+    <div class="col-lg-12">
+        <!-- title -->
+        <h5 class="trm-title-with-divider">
+            其他文章
+            <span data-number="02"></span>
+        </h5>
+    </div>
+    
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/blog/2021/02/05/Flutter-%E5%8A%A8%E7%94%BB%E4%B9%8B-%E5%9F%BA%E7%A1%80%E5%8A%A8%E7%94%BB/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">Flutter-动画之-基础动画</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>21/02/05</li>
+                <li>12:03</li>
+                <li>Flutter</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+    
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/blog/2020/11/07/Flutter-%E5%85%B3%E4%BA%8ESliver%E7%BB%84%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">Flutter-关于Sliver组件的使用</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>20/11/07</li>
+                <li>22:23</li>
+                <li>Flutter</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+</div>
+
+    
+
+    <div id="giscus-wrap" class="trm-card trm-scroll-animation comment-container"></div>
+<script data-swup-reload-script>
+    function loadGiscus() {
+        let nowTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+        const config = {
+            src: 'https://giscus.app/client.js',
+            "data-repo": '2322222223/blog',
+            "data-repo-id": 'R_kgDOMCoZ8w',
+            "data-category": 'Announcements',
+            "data-category-id": 'DIC_kwDOMCoZ884Cfxl-',
+            "data-mapping": 'pathname',
+            "data-reactions-enabled": '1',
+            "data-emit-metadata": '1',
+            "data-theme": nowTheme,
+            "data-lang": 'zh-CN',
+            crossorigin: "anonymous",
+            async: true
+        }
+        let ele = document.createElement('script')
+        for (let key in config) {
+            ele.setAttribute(key, config[key])
+        }
+        document.getElementById('giscus-wrap').insertAdjacentElement('afterbegin', ele)
+    }
+
+    function changeGiscusTheme() {
+        let theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+
+        function sendMessage(message) {
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (!iframe) return;
+            iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+
+        sendMessage({
+            setConfig: {
+                theme: theme
+            }
+        });
+    }
+
+    loadGiscus();
+</script>
+
+
+
+                    <div class="trm-divider footer-divider"></div>
+
+                    <!-- footer -->
+                    <footer class="trm-footer-card trm-scroll-animation">
+
+    
+
+    
+        <div class="trm-footer-item">
+            <span>© 2020- 2024</span>
+            <span class="footer-separator"data-separator=" · "></span>
+            <span class="trm-accent-color">R.linzhou</span>
+        </div>
+    
+
+      
+
+     
+
+     
+</footer>
+                    <!-- footer end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            <!-- body end -->
+
+            
+
+            
+<div class="trm-fixed-container">
+    
+    
+        <div class="trm-fixed-btn" data-title="阅读模式" onclick="asyncFun.switchReadMode()">
+            <i class="iconfont fas fa-book-reader"></i>
+        </div>
+    
+    
+        <div class="trm-fixed-btn hidden-md" data-title="单栏和双栏切换" onclick="asyncFun.switchSingleColumn()">
+            <i class="iconfont fas fa-arrows-alt-h"></i>
+        </div>
+    
+    <div id="trm-back-top" class="trm-fixed-btn" data-title="回到顶部">
+        <i class="iconfont fas fa-arrow-up"></i>
+    </div>
+</div>
+        </div>
+      </div>
+      <!-- scroll container end -->
+  </div>
+  <!-- app wrapper end -->
+
+  
+  <!-- Plugin -->
+
+
+
+
+    
+    
+<script src="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+
+    
+
+    
+        <script src="/blog/js/plugins/typing.js?v=2.2.2"></script>
+    
+
+    
+
+    <!-- 数学公式 -->
+    
+
+    <!-- 评论插件 -->
+    
+        
+
+        
+    
+
+		
+
+
+
+
+    <!-- Service Worker -->
+    
+    <script>
+        "serviceWorker" in navigator ?
+        navigator.serviceWorker.register('/blog/sw.js').then(function () {
+            navigator.serviceWorker.controller ? 
+             console.log("Assets cached by the controlling service worker.") :
+             console.log("Please reload this page to allow the service worker to handle network operations.")
+        }).catch(function (e) {
+            console.log("ERROR: " + e)
+        }) : console.log("Service workers are not supported in the current browser.")
+    </script>
+
+    <!-- baidu push -->
+    
+
+
+<script id="async-script" src="/blog/js/main.js?v=2.2.2"></script>
+
+<!-- CDN -->
+
+
+    
+
+    
+
+    
+
+
+
+</body>
+
+</html>

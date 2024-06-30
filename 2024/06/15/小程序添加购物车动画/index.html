@@ -18,7 +18,7 @@
 <meta property="og:image" content="https://2322222223.github.io/blog/img/404.jpg">
 <meta property="og:image" content="https://2322222223.github.io/blog/img/404.jpg">
 <meta property="article:published_time" content="2024-06-15T04:03:33.000Z">
-<meta property="article:modified_time" content="2024-06-15T04:18:08.986Z">
+<meta property="article:modified_time" content="2024-06-30T08:04:06.736Z">
 <meta property="article:author" content="R.linzhou">
 <meta property="article:tag" content="动画">
 <meta property="article:tag" content="小程序">
@@ -65,7 +65,7 @@
 
 <!-- Variable -->
 <script>window.ASYNC_CONFIG = {"hostname":"2322222223.github.io","author":"R.linzhou","root":"/blog/","typed_text":["Mobile development"],"theme_version":"2.2.2","theme":{"switch":true,"default":"style-light"},"favicon":{"logo":"/img/logo.svg","icon16":"/img/logo.svg","icon32":"/img/logo.svg","apple_touch_icon":null,"webmanifest":null,"visibilitychange":false,"hidden":"/ogo.svg","show_text":"R.linzhou Blog","hide_text":"R.linzhou Blog"},"i18n":{"placeholder":"搜索文章...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）","author":"本文作者：","copyright_link":"本文链接：","copyright_license_title":"版权声明：","copyright_license_content":"本博客所有文章除特别声明外，均默认采用 undefined 许可协议。","copy_success":"复制成功","copy_failure":"复制失败","open_read_mode":"进入阅读模式","exit_read_mode":"退出阅读模式","notice_outdate_message":"距离上次更新已经 undefined 天了, 文章内容可能已经过时。","sticky":"置顶","just":"刚刚","min":"分钟前","hour":"小时前","day":"天前","month":"个月前"},"swup":false,"plugin":{"flickr_justified_gallery":"https://unpkg.com/flickr-justified-gallery@latest/dist/fjGallery.min.js"},"icons":{"sun":"far fa-sun","moon":"far fa-moon","play":"fas fa-play","email":"far fa-envelope","next":"fas fa-arrow-right","calendar":"far fa-calendar-alt","clock":"far fa-clock","user":"far fa-user","back_top":"fas fa-arrow-up","close":"fas fa-times","search":"fas fa-search","reward":"fas fa-hand-holding-usd","user_tag":"fas fa-user-alt","toc_tag":"fas fa-th-list","read":"fas fa-book-reader","arrows":"fas fa-arrows-alt-h","double_arrows":"fas fa-angle-double-down","copy":"fas fa-copy"},"icontype":"font","highlight":{"plugin":"highlighjs","theme":true,"copy":true,"lang":false,"title":"default","height_limit":200},"toc":{"post_title":true},"live_time":{"start_time":"","prefix":"博客已萌萌哒运行 undefined 天"},"danmu":{"enable":false,"el":".trm-banner"},"creative_commons":{"license":"by-nc-sa","language":"deed.zh"}};</script>
-<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2024-06-15 12:18:08"};</script>
+<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2024-06-30 16:04:06"};</script>
 
 <!-- Theme mode css -->
 <link data-swup-theme rel="stylesheet" href="/blog/css/index.css?v=2.2.2" id="trm-switch-style">
@@ -362,18 +362,18 @@
 <div class="trm-card ">
     <article id="article-container" class="trm-publication">
     <p>因为最近在做一个添加购物车的页面,涉及到贝塞尔曲线绘制技术,在用户点击添加到购物车时，会出现一个小球从点击位置飞向购物车图标的位置，模拟商品被添加到购物车的动画效果。</p>
-<p><img src="2024-06-15_11.45.05.gif" alt="效果图"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
+<p><img src="/blog/2024-06-15_11.45.05.gif" alt="效果图"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
 <p>与是网上查阅资料,下面简单介绍下关于贝塞尔曲线的一些原理知识。</p>
 <p>贝塞尔曲线通过一组控制点来定义其形状。最常见的贝塞尔曲线是二次和三次贝塞尔曲线。下面通过图文介绍其原理。</p>
 <h4 id="1-二次贝塞尔曲线"><a href="#1-二次贝塞尔曲线" class="headerlink" title="1. 二次贝塞尔曲线"></a>1. 二次贝塞尔曲线</h4><p>二次贝塞尔曲线由三个点定义：起点 P0、控制点 P1 和终点 P2。曲线的方程如下：</p>
 <p>B(t)&#x3D;(1−t)2P0+2(1−t)tP1+t2P2B(t) &#x3D; (1 - t)^2 P0 + 2(1 - t)t P1 + t^2 P2B(t)&#x3D;(1−t)2P0+2(1−t)tP1+t2P2</p>
 <p>其中 ttt 是一个从 0 到 1 的参数，控制曲线从 P0 移动到 P2。</p>
-<p><img src="b1.gif" alt="二次贝塞尔曲线"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
+<p><img src="/blog/b1.gif" alt="二次贝塞尔曲线"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
 <p><em>图1：二次贝塞尔曲线</em></p>
 <h4 id="2-三次贝塞尔曲线"><a href="#2-三次贝塞尔曲线" class="headerlink" title="2. 三次贝塞尔曲线"></a>2. 三次贝塞尔曲线</h4><p>三次贝塞尔曲线由四个点定义：起点 P0、两个控制点 P1 和 P2、以及终点 P3。曲线的方程如下：</p>
 <p>B(t)&#x3D;(1−t)3P0+3(1−t)2tP1+3(1−t)t2P2+t3P3B(t) &#x3D; (1 - t)^3 P0 + 3(1 - t)^2 t P1 + 3(1 - t) t^2 P2 + t^3 P3B(t)&#x3D;(1−t)3P0+3(1−t)2tP1+3(1−t)t2P2+t3P3</p>
 <p>同样，ttt 是一个从 0 到 1 的参数。</p>
-<p><img src="b2.gif" alt="三次贝塞尔曲线"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
+<p><img src="/blog/b2.gif" alt="三次贝塞尔曲线"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
 <p><em>图2：三次贝塞尔曲线</em></p>
 <h3 id="贝塞尔曲线的构建步骤"><a href="#贝塞尔曲线的构建步骤" class="headerlink" title="贝塞尔曲线的构建步骤"></a>贝塞尔曲线的构建步骤</h3><p>以三次贝塞尔曲线为例：</p>
 <ol>
@@ -448,17 +448,17 @@
     <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
         <div class="trm-older-publication">
             
-            <a class="trm-op-top trm-anima-link" href="/blog/2024/06/12/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E6%8C%96%E7%9F%BF%E7%97%85%E6%AF%92kdevtmpfsi%E7%9A%84%E5%A4%84%E7%90%86%E8%BF%87%E7%A8%8B/">
+            <a class="trm-op-top trm-anima-link" href="/blog/2024/06/14/Android-Framework-%E5%9B%9B-Activity%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">
                 <span class="trm-op-cover">
                     <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
                 </span>
-                <h6 class="trm-op-title">记录一次挖矿病毒kdevtmpfsi的处理过程</h6>
+                <h6 class="trm-op-title">Android-Framework(四)Activity启动流程</h6>
             </a>
             <div class="trm-divider trm-mb-15 trm-mt-20"></div>
             <ul class="trm-card-data trm-label">
-                <li>24/06/12</li>
-                <li>11:35</li>
-                <li>Other</li>
+                <li>24/06/14</li>
+                <li>10:02</li>
+                <li>Android</li>
             </ul>
         </div>
     </div>

@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="x5-fullscreen" content="true">
+<meta name="full-screen" content="yes">
+<meta name="theme-color" content="#317EFB" />
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0" name="viewport">
+<meta name="description" content="Flutter与原生Android、iOS的通信1. 简介Flutter提供了三种主要的通信方式：BasicMessageChannel、MethodChannel和EventChannel。本文将详细介绍Flutter如何与原生Android和iOS进行通信，并结合代码示例和详细解释这三种通信方式的原理。 2. Flutter与原生通信的基本流程 Flutter端：通过调用Flutter插件的通">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flutter中与原生Android、iOS进行通信">
+<meta property="og:url" content="https://2322222223.github.io/blog/2021/07/03/Flutter%E4%B8%AD%E4%B8%8E%E5%8E%9F%E7%94%9FAndroid%E3%80%81iOS%E8%BF%9B%E8%A1%8C%E9%80%9A%E4%BF%A1/index.html">
+<meta property="og:site_name" content="Rlz Blog">
+<meta property="og:description" content="Flutter与原生Android、iOS的通信1. 简介Flutter提供了三种主要的通信方式：BasicMessageChannel、MethodChannel和EventChannel。本文将详细介绍Flutter如何与原生Android和iOS进行通信，并结合代码示例和详细解释这三种通信方式的原理。 2. Flutter与原生通信的基本流程 Flutter端：通过调用Flutter插件的通">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-07-03T11:41:18.000Z">
+<meta property="article:modified_time" content="2024-06-30T08:04:06.736Z">
+<meta property="article:author" content="R.linzhou">
+<meta property="article:tag" content="Flutter">
+<meta name="twitter:card" content="summary">
+
+
+<title >Flutter中与原生Android、iOS进行通信</title>
+
+<!-- Favicon -->
+
+    <link href='/blog/img/logo.svg?v=2.2.2' rel='icon' type='image/png' sizes='16x16' ></link>
+
+
+    <link href='/blog/img/logo.svg?v=2.2.2' rel='icon' type='image/png' sizes='32x32' ></link>
+
+
+
+
+<!-- Plugin -->
+
+
+
+
+    
+<link rel="stylesheet" href="/blog/css/plugins/bootstrap.row.css">
+
+    
+<link rel="stylesheet" href="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.css">
+
+    
+    
+
+
+
+
+<!-- Icon -->
+
+    
+<link rel="stylesheet" href="/blog/css/plugins/font-awesome.min.css">
+
+
+
+
+<!-- Variable -->
+<script>window.ASYNC_CONFIG = {"hostname":"2322222223.github.io","author":"R.linzhou","root":"/blog/","typed_text":["Mobile development"],"theme_version":"2.2.2","theme":{"switch":true,"default":"style-light"},"favicon":{"logo":"/img/logo.svg","icon16":"/img/logo.svg","icon32":"/img/logo.svg","apple_touch_icon":null,"webmanifest":null,"visibilitychange":false,"hidden":"/ogo.svg","show_text":"R.linzhou Blog","hide_text":"R.linzhou Blog"},"i18n":{"placeholder":"搜索文章...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）","author":"本文作者：","copyright_link":"本文链接：","copyright_license_title":"版权声明：","copyright_license_content":"本博客所有文章除特别声明外，均默认采用 undefined 许可协议。","copy_success":"复制成功","copy_failure":"复制失败","open_read_mode":"进入阅读模式","exit_read_mode":"退出阅读模式","notice_outdate_message":"距离上次更新已经 undefined 天了, 文章内容可能已经过时。","sticky":"置顶","just":"刚刚","min":"分钟前","hour":"小时前","day":"天前","month":"个月前"},"swup":false,"plugin":{"flickr_justified_gallery":"https://unpkg.com/flickr-justified-gallery@latest/dist/fjGallery.min.js"},"icons":{"sun":"far fa-sun","moon":"far fa-moon","play":"fas fa-play","email":"far fa-envelope","next":"fas fa-arrow-right","calendar":"far fa-calendar-alt","clock":"far fa-clock","user":"far fa-user","back_top":"fas fa-arrow-up","close":"fas fa-times","search":"fas fa-search","reward":"fas fa-hand-holding-usd","user_tag":"fas fa-user-alt","toc_tag":"fas fa-th-list","read":"fas fa-book-reader","arrows":"fas fa-arrows-alt-h","double_arrows":"fas fa-angle-double-down","copy":"fas fa-copy"},"icontype":"font","highlight":{"plugin":"highlighjs","theme":true,"copy":true,"lang":false,"title":"default","height_limit":200},"toc":{"post_title":true},"live_time":{"start_time":"","prefix":"博客已萌萌哒运行 undefined 天"},"danmu":{"enable":false,"el":".trm-banner"},"creative_commons":{"license":"by-nc-sa","language":"deed.zh"}};</script>
+<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2024-06-30 16:04:06"};</script>
+
+<!-- Theme mode css -->
+<link data-swup-theme rel="stylesheet" href="/blog/css/index.css?v=2.2.2" id="trm-switch-style">
+<script>
+    let defaultMode = ASYNC_CONFIG.theme.default !=='auto' ?  ASYNC_CONFIG.theme.default : (window.matchMedia("(prefers-color-scheme: light)").matches ? 'style-light' : 'style-dark')
+    let catchMode = localStorage.getItem('theme-mode') || defaultMode;
+    let type = catchMode === 'style-dark' ? 'add' : 'remove';
+    document.documentElement.classList[type]('dark')
+</script>
+
+<!-- CDN -->
+
+
+    
+    
+
+
+
+<!-- Site Analytics -->
+
+ 
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+<body>
+
+  <!-- app wrapper -->
+  <div class="trm-app-frame">
+
+    <!-- page preloader -->
+    <div class="trm-preloader">
+    <div class="trm-holder">
+        <div class="preloader">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+</div>
+    <!-- page preloader end -->
+
+    <!-- change mode preloader -->
+    <div class="trm-mode-swich-animation-frame">
+    <div class="trm-mode-swich-animation">
+        <i class="i-sun"><i class="iconfont far fa-sun"></i></i>
+        <div class="trm-horizon"></div>
+        <i class="i-moon"><i class="iconfont far fa-moon"></i></i>
+    </div>
+</div>
+    <!-- change mode preloader end -->
+
+      <!-- scroll container -->
+      <div id="trm-dynamic-content" class="trm-swup-animation">
+        <div id="trm-scroll-container" class="trm-scroll-container" style="opacity: 0">
+            <!-- top bar -->
+            <header class="trm-top-bar">
+	<div class="container">
+		<div class="trm-left-side">
+			<!-- logo -->
+<a href="/blog/" class="trm-logo-frame trm-anima-link">
+    
+        <img alt="logo" src="/blog/img/logo.svg">
+    
+    
+        <div class="trm-logo-text">
+            Blog<span></span>
+        </div>
+    
+</a>
+<!-- logo end -->
+		</div>
+		<div class="trm-right-side">
+			<!-- menu -->
+<div class="trm-menu">
+    <nav>
+        <ul>
+            
+            <li class="menu-item-has-children ">
+                <a  href="/blog/" target="">
+                    home
+                </a>
+                
+            </li>
+            
+            <li class="menu-item-has-children ">
+                <a data-no-swup href="/blog/archives/" target="">
+                    archives
+                </a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+</div>
+<!-- menu end -->
+			
+    <!-- mode switcher place -->
+    <div class="trm-mode-switcher-place">
+        <div class="trm-mode-switcher">
+            <i class="iconfont far fa-sun"></i>
+            <input class="tgl tgl-light" id="trm-swich" type="checkbox">
+            <label class="trm-swich" for="trm-swich"></label>
+            <i class="iconfont far fa-moon"></i>
+        </div>
+    </div>
+    <!-- mode switcher place end -->
+
+			
+		</div>
+		<div class="trm-menu-btn">
+			<span></span>
+		</div>
+	</div>
+</header>
+            <!-- top bar end -->
+
+            <!-- body -->
+            
+<div class="trm-content-start">
+    <!-- banner -->
+    <div class="trm-banner">
+    
+    <!-- banner cover -->
+    <img style="object-position:top;object-fit:cover;" alt="banner" class="trm-banner-cover" src="/blog/img/banner.png">
+    <!-- banner cover end -->
+    
+
+    <!-- banner content -->
+    <div class="trm-banner-content trm-overlay">
+        <div class="container">
+            <div class="row">
+                
+                <div class="col-lg-4"></div>
+                
+                <div class="col-lg-8">
+
+                    <!-- banner title -->
+                    <div class="trm-banner-text ">
+                        <div class="trm-label trm-mb-20">
+                            NEWS LETTER
+                        </div>
+                        <h1 class="trm-mb-30 trm-hsmb-font">
+                            Flutter中与原生Android、iOS进行通信
+                        </h1>
+
+                        
+                            <ul class="trm-breadcrumbs trm-label">
+                                <li>
+                                    <a href="/blog/" class="trm-anima-link">Home</a>
+                                </li>
+                                <li>
+                                    <span>
+                                        2021
+                                    </span>
+                                </li>
+                            </ul>
+                        
+                    </div>
+                    <!-- banner title end -->
+
+                    <!-- scroll hint -->
+                    <span id="scroll-triger" class="trm-scroll-hint-frame">
+                        <div class="trm-scroll-hint"></div>
+                        <span class="trm-label">Scroll down</span>
+                    </span>
+                    <!-- scroll hint end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- banner content end -->
+</div>
+    <!-- banner end -->
+    <div class="container">
+        <div class="row">
+            
+                <div class="trm-page-sidebar col-lg-4 hidden-sm">
+                    <!-- main card -->
+                    <div class="trm-main-card-frame trm-sidebar">
+    <div class="trm-main-card"> 
+        <!-- card header -->
+<div class="trm-mc-header">
+    <div class="trm-avatar-frame trm-mb-20">
+        <img alt="Avatar" class="trm-avatar" src="/blog/img/avatar.png">
+    </div>
+    <h5 class="trm-name trm-mb-15">
+        R.linzhou
+    </h5>
+    
+        <div class="trm-label">
+            I&#39;m
+            <span class="trm-typed-text">
+                <!-- Words for theme.user.typedText -->
+            </span>
+        </div>
+    
+</div>
+<!-- card header end -->
+        <!-- sidebar social -->
+
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<div class="trm-social">
+    
+        <a href="https://github.com/2322222223" title="Github" rel="nofollow" target="_blank">
+            <i class="iconfont fab fa-github"></i>
+        </a>
+    
+        <a href="http://2322222223.com" title="Resume" rel="nofollow" target="_blank">
+            <i class="iconfont far fa-smile"></i>
+        </a>
+    
+</div>
+
+<!-- sidebar social end -->
+        <!-- info -->
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<ul class="trm-table trm-mb-20">
+    
+        <li>
+            <div class="trm-label">
+                地址:
+            </div>
+            <div class="trm-label trm-label-light">
+                Beijing
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                年龄:
+            </div>
+            <div class="trm-label trm-label-light">
+                32
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                邮箱:
+            </div>
+            <div class="trm-label trm-label-light">
+                g2322222223@gmail.com
+            </div>
+        </li>
+    
+</ul>
+<!-- info end -->
+
+        
+    <div class="trm-divider trm-mb-40 trm-mt-40"></div>
+    <!-- action button -->
+    <div class="text-center">
+        <a href="mailto:g2322222223@gmail.com" class="trm-btn">
+            联系我
+            <i class="iconfont far fa-envelope"></i>
+        </a>
+    </div>
+    <!-- action button end -->
+
+    </div>
+</div>
+                    <!-- main card end -->
+                </div>
+            
+            <div class="trm-page-content col-lg-8">
+                <div id="trm-content" class="trm-content">
+                    <div class="trm-post-info row hidden-sm">
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-calendar-alt trm-icon"></i><br>
+            07/03
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-clock trm-icon"></i><br>
+            19:41
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div id="post-author" class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-user trm-icon"></i><br>
+            R.linzhou
+        </div>
+    </div>
+</div>
+<div class="trm-card ">
+    <article id="article-container" class="trm-publication">
+    <h3 id="Flutter与原生Android、iOS的通信"><a href="#Flutter与原生Android、iOS的通信" class="headerlink" title="Flutter与原生Android、iOS的通信"></a>Flutter与原生Android、iOS的通信</h3><h4 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h4><p>Flutter提供了三种主要的通信方式：BasicMessageChannel、MethodChannel和EventChannel。本文将详细介绍Flutter如何与原生Android和iOS进行通信，并结合代码示例和详细解释这三种通信方式的原理。</p>
+<h4 id="2-Flutter与原生通信的基本流程"><a href="#2-Flutter与原生通信的基本流程" class="headerlink" title="2. Flutter与原生通信的基本流程"></a>2. Flutter与原生通信的基本流程</h4><ol>
+<li><strong>Flutter端</strong>：通过调用Flutter插件的通信通道（如MethodChannel）来发送消息或请求。</li>
+<li><strong>原生端</strong>：在相应的通信通道中接收消息或请求，并进行处理，然后将结果返回给Flutter端。</li>
+</ol>
+<h4 id="3-BasicMessageChannel"><a href="#3-BasicMessageChannel" class="headerlink" title="3. BasicMessageChannel"></a>3. BasicMessageChannel</h4><p>BasicMessageChannel用于传输文本消息和半结构化数据（如字符串和Map）。它是双向的，可以用于Flutter和原生之间的相互通信。</p>
+<h5 id="3-1-Flutter端代码示例"><a href="#3-1-Flutter端代码示例" class="headerlink" title="3.1 Flutter端代码示例"></a>3.1 Flutter端代码示例</h5><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:flutter/material.dart&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:flutter/services.dart&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> main() =&gt; runApp(MyApp());</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyApp</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">const</span> BasicMessageChannel&lt;<span class="built_in">String</span>&gt; _channel = BasicMessageChannel&lt;<span class="built_in">String</span>&gt;(<span class="string">&#x27;basic_channel&#x27;</span>, StringCodec());</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> MaterialApp(</span><br><span class="line">      home: Scaffold(</span><br><span class="line">        appBar: AppBar(title: Text(<span class="string">&#x27;BasicMessageChannel Example&#x27;</span>)),</span><br><span class="line">        body: Center(</span><br><span class="line">          child: ElevatedButton(</span><br><span class="line">            onPressed: () <span class="keyword">async</span> &#123;</span><br><span class="line">              <span class="built_in">String</span> reply = <span class="keyword">await</span> _channel.send(<span class="string">&#x27;Hello from Flutter!&#x27;</span>);</span><br><span class="line">              <span class="built_in">print</span>(<span class="string">&#x27;Received reply: <span class="subst">$reply</span>&#x27;</span>);</span><br><span class="line">            &#125;,</span><br><span class="line">            child: Text(<span class="string">&#x27;Send Message&#x27;</span>),</span><br><span class="line">          ),</span><br><span class="line">        ),</span><br><span class="line">      ),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-2-Android端代码示例"><a href="#3-2-Android端代码示例" class="headerlink" title="3.2 Android端代码示例"></a>3.2 Android端代码示例</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> android.os.Bundle;</span><br><span class="line"><span class="keyword">import</span> io.flutter.embedding.android.FlutterActivity;</span><br><span class="line"><span class="keyword">import</span> io.flutter.embedding.engine.FlutterEngine;</span><br><span class="line"><span class="keyword">import</span> io.flutter.plugin.common.BasicMessageChannel;</span><br><span class="line"><span class="keyword">import</span> io.flutter.plugin.common.StringCodec;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MainActivity</span> <span class="keyword">extends</span> <span class="title class_">FlutterActivity</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">configureFlutterEngine</span><span class="params">(FlutterEngine flutterEngine)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.configureFlutterEngine(flutterEngine);</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">BasicMessageChannel</span>&lt;&gt;(flutterEngine.getDartExecutor().getBinaryMessenger(), <span class="string">&quot;basic_channel&quot;</span>, StringCodec.INSTANCE)</span><br><span class="line">            .setMessageHandler((message, reply) -&gt; &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;Received message: &quot;</span> + message);</span><br><span class="line">                reply.reply(<span class="string">&quot;Hello from Android!&quot;</span>);</span><br><span class="line">            &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-3-iOS端代码示例"><a href="#3-3-iOS端代码示例" class="headerlink" title="3.3 iOS端代码示例"></a>3.3 iOS端代码示例</h5><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> UIKit</span><br><span class="line"><span class="keyword">import</span> Flutter</span><br><span class="line"></span><br><span class="line"><span class="keyword">@UIApplicationMain</span></span><br><span class="line"><span class="keyword">@objc</span> <span class="keyword">class</span> <span class="title class_">AppDelegate</span>: <span class="title class_">FlutterAppDelegate</span> &#123;</span><br><span class="line">  <span class="keyword">override</span> <span class="keyword">func</span> <span class="title function_">application</span>(</span><br><span class="line">    <span class="keyword">_</span> <span class="params">application</span>: <span class="type">UIApplication</span>,</span><br><span class="line">    <span class="params">didFinishLaunchingWithOptions</span> <span class="params">launchOptions</span>: [<span class="type">UIApplication</span>.<span class="params">LaunchOptionsKey</span>: <span class="keyword">Any</span>]<span class="operator">?</span></span><br><span class="line">  ) -&gt; <span class="type">Bool</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> controller <span class="operator">=</span> window<span class="operator">?</span>.rootViewController <span class="keyword">as!</span> <span class="type">FlutterViewController</span></span><br><span class="line">    <span class="keyword">let</span> channel <span class="operator">=</span> <span class="type">FlutterBasicMessageChannel</span>(name: <span class="string">&quot;basic_channel&quot;</span>, binaryMessenger: controller.binaryMessenger, codec: <span class="type">FlutterStringCodec</span>.sharedInstance())</span><br><span class="line"></span><br><span class="line">    channel.setMessageHandler &#123; (message, reply) <span class="keyword">in</span></span><br><span class="line">      <span class="built_in">print</span>(<span class="string">&quot;Received message: <span class="subst">\(message <span class="operator">??</span> <span class="string">&quot;&quot;</span>)</span>&quot;</span>)</span><br><span class="line">      reply(<span class="string">&quot;Hello from iOS!&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">super</span>.application(application, didFinishLaunchingWithOptions: launchOptions)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-MethodChannel"><a href="#4-MethodChannel" class="headerlink" title="4. MethodChannel"></a>4. MethodChannel</h4><p>MethodChannel用于传输方法调用，它是Flutter与原生代码通信的最常用方式。Flutter端调用原生方法，原生端执行相应操作并返回结果。</p>
+<h5 id="4-1-Flutter端代码示例"><a href="#4-1-Flutter端代码示例" class="headerlink" title="4.1 Flutter端代码示例"></a>4.1 Flutter端代码示例</h5><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:flutter/material.dart&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:flutter/services.dart&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> main() =&gt; runApp(MyApp());</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyApp</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">const</span> MethodChannel _channel = MethodChannel(<span class="string">&#x27;method_channel&#x27;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> MaterialApp(</span><br><span class="line">      home: Scaffold(</span><br><span class="line">        appBar: AppBar(title: Text(<span class="string">&#x27;MethodChannel Example&#x27;</span>)),</span><br><span class="line">        body: Center(</span><br><span class="line">          child: ElevatedButton(</span><br><span class="line">            onPressed: () <span class="keyword">async</span> &#123;</span><br><span class="line">              <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">final</span> <span class="built_in">String</span> result = <span class="keyword">await</span> _channel.invokeMethod(<span class="string">&#x27;getPlatformVersion&#x27;</span>);</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&#x27;Platform version: <span class="subst">$result</span>&#x27;</span>);</span><br><span class="line">              &#125; <span class="keyword">on</span> PlatformException <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&quot;Failed to get platform version: &#x27;<span class="subst">$&#123;e.message&#125;</span>&#x27;.&quot;</span>);</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            child: Text(<span class="string">&#x27;Get Platform Version&#x27;</span>),</span><br><span class="line">          ),</span><br><span class="line">        ),</span><br><span class="line">      ),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="4-2-Android端代码示例"><a href="#4-2-Android端代码示例" class="headerlink" title="4.2 Android端代码示例"></a>4.2 Android端代码示例</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> android.os.Build;</span><br><span class="line"><span class="keyword">import</span> io.flutter.embedding.android.FlutterActivity;</span><br><span class="line"><span class="keyword">import</span> io.flutter.embedding.engine.FlutterEngine;</span><br><span class="line"><span class="keyword">import</span> io.flutter.plugin.common.MethodCall;</span><br><span class="line"><span class="keyword">import</span> io.flutter.plugin.common.MethodChannel;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MainActivity</span> <span class="keyword">extends</span> <span class="title class_">FlutterActivity</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">CHANNEL</span> <span class="operator">=</span> <span class="string">&quot;method_channel&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">configureFlutterEngine</span><span class="params">(FlutterEngine flutterEngine)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.configureFlutterEngine(flutterEngine);</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">MethodChannel</span>(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL)</span><br><span class="line">            .setMethodCallHandler(</span><br><span class="line">                (MethodCall call, MethodChannel.Result result) -&gt; &#123;</span><br><span class="line">                    <span class="keyword">if</span> (call.method.equals(<span class="string">&quot;getPlatformVersion&quot;</span>)) &#123;</span><br><span class="line">                        result.success(<span class="string">&quot;Android &quot;</span> + Build.VERSION.RELEASE);</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        result.notImplemented();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="4-3-iOS端代码示例（本人没有写过IOS代码源于网络）"><a href="#4-3-iOS端代码示例（本人没有写过IOS代码源于网络）" class="headerlink" title="4.3 iOS端代码示例（本人没有写过IOS代码源于网络）"></a>4.3 iOS端代码示例（本人没有写过IOS代码源于网络）</h5><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> UIKit</span><br><span class="line"><span class="keyword">import</span> Flutter</span><br><span class="line"></span><br><span class="line"><span class="keyword">@UIApplicationMain</span></span><br><span class="line"><span class="keyword">@objc</span> <span class="keyword">class</span> <span class="title class_">AppDelegate</span>: <span class="title class_">FlutterAppDelegate</span> &#123;</span><br><span class="line">  <span class="keyword">override</span> <span class="keyword">func</span> <span class="title function_">application</span>(</span><br><span class="line">    <span class="keyword">_</span> <span class="params">application</span>: <span class="type">UIApplication</span>,</span><br><span class="line">    <span class="params">didFinishLaunchingWithOptions</span> <span class="params">launchOptions</span>: [<span class="type">UIApplication</span>.<span class="params">LaunchOptionsKey</span>: <span class="keyword">Any</span>]<span class="operator">?</span></span><br><span class="line">  ) -&gt; <span class="type">Bool</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> controller <span class="operator">=</span> window<span class="operator">?</span>.rootViewController <span class="keyword">as!</span> <span class="type">FlutterViewController</span></span><br><span class="line">    <span class="keyword">let</span> channel <span class="operator">=</span> <span class="type">FlutterMethodChannel</span>(name: <span class="string">&quot;method_channel&quot;</span>, binaryMessenger: controller.binaryMessenger)</span><br><span class="line"></span><br><span class="line">    channel.setMethodCallHandler &#123; (call, result) <span class="keyword">in</span></span><br><span class="line">      <span class="keyword">if</span> call.method <span class="operator">==</span> <span class="string">&quot;getPlatformVersion&quot;</span> &#123;</span><br><span class="line">        result(<span class="string">&quot;iOS &quot;</span> <span class="operator">+</span> <span class="type">UIDevice</span>.current.systemVersion)</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        result(<span class="type">FlutterMethodNotImplemented</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">super</span>.application(application, didFinishLaunchingWithOptions: launchOptions)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-EventChannel"><a href="#5-EventChannel" class="headerlink" title="5. EventChannel"></a>5. EventChannel</h4><p>EventChannel用于传输数据流（如传感器数据），它是单向的，通常用于从原生代码向Flutter传递持续的数据流。</p>
+<h5 id="5-1-Flutter端代码示例"><a href="#5-1-Flutter端代码示例" class="headerlink" title="5.1 Flutter端代码示例"></a>5.1 Flutter端代码示例</h5><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:flutter/material.dart&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:flutter/services.dart&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> main() =&gt; runApp(MyApp());</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyApp</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">const</span> EventChannel _channel = EventChannel(<span class="string">&#x27;event_channel&#x27;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> MaterialApp(</span><br><span class="line">      home: Scaffold(</span><br><span class="line">        appBar: AppBar(title: Text(<span class="string">&#x27;EventChannel Example&#x27;</span>)),</span><br><span class="line">        body: Center(</span><br><span class="line">          child: StreamBuilder(</span><br><span class="line">            stream: _channel.receiveBroadcastStream(),</span><br><span class="line">            builder: (context, snapshot) &#123;</span><br><span class="line">              <span class="keyword">if</span> (snapshot.hasData) &#123;</span><br><span class="line">                <span class="keyword">return</span> Text(<span class="string">&#x27;Received event: <span class="subst">$&#123;snapshot.data&#125;</span>&#x27;</span>);</span><br><span class="line">              &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> Text(<span class="string">&#x27;Waiting for events...&#x27;</span>);</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">          ),</span><br><span class="line">        ),</span><br><span class="line">      ),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="5-2-Android端代码示例"><a href="#5-2-Android端代码示例" class="headerlink" title="5.2 Android端代码示例"></a>5.2 Android端代码示例</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.flutter.embedding.android.FlutterActivity;</span><br><span class="line"><span class="keyword">import</span> io.flutter.embedding.engine.FlutterEngine;</span><br><span class="line"><span class="keyword">import</span> io.flutter.plugin.common.EventChannel;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MainActivity</span> <span class="keyword">extends</span> <span class="title class_">FlutterActivity</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">CHANNEL</span> <span class="operator">=</span> <span class="string">&quot;event_channel&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> EventChannel.EventSink eventSink;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">configureFlutterEngine</span><span class="params">(FlutterEngine flutterEngine)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.configureFlutterEngine(flutterEngine);</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">EventChannel</span>(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL)</span><br><span class="line">            .setStreamHandler(</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">EventChannel</span>.StreamHandler() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onListen</span><span class="params">(Object arguments, EventChannel.EventSink events)</span> &#123;</span><br><span class="line">                        eventSink = events;</span><br><span class="line">                        <span class="comment">// 模拟持续发送事件</span></span><br><span class="line">                        <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">                            <span class="keyword">try</span> &#123;</span><br><span class="line">                                <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">                                    eventSink.success(<span class="string">&quot;Event &quot;</span> + i);</span><br><span class="line">                                    Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">                                &#125;</span><br><span class="line">                            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                                eventSink.error(<span class="string">&quot;ERROR&quot;</span>, <span class="string">&quot;Interrupted&quot;</span>, <span class="literal">null</span>);</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;).start();</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onCancel</span><span class="params">(Object arguments)</span> &#123;</span><br><span class="line">                        eventSink = <span class="literal">null</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="5-3-iOS端代码示例"><a href="#5-3-iOS端代码示例" class="headerlink" title="5.3 iOS端代码示例"></a>5.3 iOS端代码示例</h5><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> UIKit</span><br><span class="line"><span class="keyword">import</span> Flutter</span><br><span class="line"></span><br><span class="line"><span class="keyword">@UIApplicationMain</span></span><br><span class="line"><span class="keyword">@objc</span> <span class="keyword">class</span> <span class="title class_">AppDelegate</span>: <span class="title class_">FlutterAppDelegate</span> &#123;</span><br><span class="line">  <span class="keyword">override</span> <span class="keyword">func</span> <span class="title function_">application</span>(</span><br><span class="line">    <span class="keyword">_</span> <span class="params">application</span>: <span class="type">UIApplication</span>,</span><br><span class="line">    <span class="params">didFinishLaunchingWithOptions</span> <span class="params">launchOptions</span>: [<span class="type">UIApplication</span>.<span class="params">LaunchOptionsKey</span>: <span class="keyword">Any</span>]<span class="operator">?</span></span><br><span class="line">  ) -&gt; <span class="type">Bool</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> controller <span class="operator">=</span> window<span class="operator">?</span>.rootViewController <span class="keyword">as!</span> <span class="type">FlutterViewController</span></span><br><span class="line">    <span class="keyword">let</span> channel <span class="operator">=</span> <span class="type">FlutterEventChannel</span>(name: <span class="string">&quot;event_channel&quot;</span>, binaryMessenger: controller.binaryMessenger)</span><br><span class="line"></span><br><span class="line">    channel.setStreamHandler(<span class="type">EventStreamHandler</span>())</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">super</span>.application(application, didFinishLaunchingWithOptions: launchOptions)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">EventStreamHandler</span>: <span class="title class_">NSObject</span>, <span class="title class_">FlutterStreamHandler</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">var</span> eventSink: <span class="type">FlutterEventSink</span>?</span><br><span class="line"></span><br><span class="line">  <span class="keyword">func</span> <span class="title function_">onListen</span>(<span class="params">withArguments</span> <span class="params">arguments</span>: <span class="keyword">Any</span><span class="operator">?</span>, <span class="params">eventSink</span> <span class="params">events</span>: <span class="keyword">@escaping</span> <span class="type">FlutterEventSink</span>) -&gt; <span class="type">FlutterError</span>? &#123;</span><br><span class="line">    <span class="keyword">self</span>.eventSink <span class="operator">=</span> events</span><br><span class="line">    <span class="comment">// 模拟持续发送事件</span></span><br><span class="line">    <span class="type">DispatchQueue</span>.global().async &#123;</span><br><span class="line">      <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span><span class="operator">..&lt;</span><span class="number">10</span> &#123;</span><br><span class="line">        <span class="keyword">self</span>.eventSink<span class="operator">?</span>(<span class="string">&quot;Event <span class="subst">\(i)</span>&quot;</span>)</span><br><span class="line">        sleep(<span class="number">1</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">func</span> <span class="title function_">onCancel</span>(<span class="params">withArguments</span> <span class="params">arguments</span>: <span class="keyword">Any</span><span class="operator">?</span>) -&gt; <span class="type">FlutterError</span>? &#123;</span><br><span class="line">    eventSink <span class="operator">=</span> <span class="literal">nil</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;  </span><br></pre></td></tr></table></figure>
+
+<p>本文主要介绍了三种主要的通信方式：BasicMessageChannel、MethodChannel和EventChannel，并通过示例代码展示了每种方式的具体实现。</p>
+
+</article>
+    
+    
+
+</div>
+<div class="trm-post-next-prev row">
+    <div class="col-lg-12">
+        <!-- title -->
+        <h5 class="trm-title-with-divider">
+            其他文章
+            <span data-number="02"></span>
+        </h5>
+    </div>
+    
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/blog/2021/11/07/Flutter%E4%B8%AD%E7%9A%84%E4%B8%89%E6%A3%B5%E6%A0%91/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">Flutter中的三棵树</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>21/11/07</li>
+                <li>19:35</li>
+                <li>Flutter</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+    
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/blog/2021/06/30/Flutter%E4%B8%AD%E7%9A%84%E5%8D%95%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B%E4%B8%8EIoslate/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">Flutter中的单线程模型与Ioslate</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>21/06/30</li>
+                <li>11:41</li>
+                <li>Flutter</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+</div>
+
+    
+
+    <div id="giscus-wrap" class="trm-card trm-scroll-animation comment-container"></div>
+<script data-swup-reload-script>
+    function loadGiscus() {
+        let nowTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+        const config = {
+            src: 'https://giscus.app/client.js',
+            "data-repo": '2322222223/blog',
+            "data-repo-id": 'R_kgDOMCoZ8w',
+            "data-category": 'Announcements',
+            "data-category-id": 'DIC_kwDOMCoZ884Cfxl-',
+            "data-mapping": 'pathname',
+            "data-reactions-enabled": '1',
+            "data-emit-metadata": '1',
+            "data-theme": nowTheme,
+            "data-lang": 'zh-CN',
+            crossorigin: "anonymous",
+            async: true
+        }
+        let ele = document.createElement('script')
+        for (let key in config) {
+            ele.setAttribute(key, config[key])
+        }
+        document.getElementById('giscus-wrap').insertAdjacentElement('afterbegin', ele)
+    }
+
+    function changeGiscusTheme() {
+        let theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+
+        function sendMessage(message) {
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (!iframe) return;
+            iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+
+        sendMessage({
+            setConfig: {
+                theme: theme
+            }
+        });
+    }
+
+    loadGiscus();
+</script>
+
+
+
+                    <div class="trm-divider footer-divider"></div>
+
+                    <!-- footer -->
+                    <footer class="trm-footer-card trm-scroll-animation">
+
+    
+
+    
+        <div class="trm-footer-item">
+            <span>© 2020- 2024</span>
+            <span class="footer-separator"data-separator=" · "></span>
+            <span class="trm-accent-color">R.linzhou</span>
+        </div>
+    
+
+      
+
+     
+
+     
+</footer>
+                    <!-- footer end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            <!-- body end -->
+
+            
+
+            
+<div class="trm-fixed-container">
+    
+    
+        <div class="trm-fixed-btn" data-title="阅读模式" onclick="asyncFun.switchReadMode()">
+            <i class="iconfont fas fa-book-reader"></i>
+        </div>
+    
+    
+        <div class="trm-fixed-btn hidden-md" data-title="单栏和双栏切换" onclick="asyncFun.switchSingleColumn()">
+            <i class="iconfont fas fa-arrows-alt-h"></i>
+        </div>
+    
+    <div id="trm-back-top" class="trm-fixed-btn" data-title="回到顶部">
+        <i class="iconfont fas fa-arrow-up"></i>
+    </div>
+</div>
+        </div>
+      </div>
+      <!-- scroll container end -->
+  </div>
+  <!-- app wrapper end -->
+
+  
+  <!-- Plugin -->
+
+
+
+
+    
+    
+<script src="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+
+    
+
+    
+        <script src="/blog/js/plugins/typing.js?v=2.2.2"></script>
+    
+
+    
+
+    <!-- 数学公式 -->
+    
+
+    <!-- 评论插件 -->
+    
+        
+
+        
+    
+
+		
+
+
+
+
+    <!-- Service Worker -->
+    
+    <script>
+        "serviceWorker" in navigator ?
+        navigator.serviceWorker.register('/blog/sw.js').then(function () {
+            navigator.serviceWorker.controller ? 
+             console.log("Assets cached by the controlling service worker.") :
+             console.log("Please reload this page to allow the service worker to handle network operations.")
+        }).catch(function (e) {
+            console.log("ERROR: " + e)
+        }) : console.log("Service workers are not supported in the current browser.")
+    </script>
+
+    <!-- baidu push -->
+    
+
+
+<script id="async-script" src="/blog/js/main.js?v=2.2.2"></script>
+
+<!-- CDN -->
+
+
+    
+
+    
+
+    
+
+
+
+</body>
+
+</html>

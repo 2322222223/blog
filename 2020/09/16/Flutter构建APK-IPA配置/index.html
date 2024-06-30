@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="x5-fullscreen" content="true">
+<meta name="full-screen" content="yes">
+<meta name="theme-color" content="#317EFB" />
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0" name="viewport">
+<meta name="description" content="Flutter编译安卓&#x2F;iOS命令一、Flutter打包编译命令Flutter 提供了简单而灵活的编译命令，能够编译安卓 APK、安卓 AppBundle 和 iOS IPA。以下是详细的编译命令和示例。 1、编译安卓 APK使用 flutter build apk 命令可以编译安卓 APK 文件。以下是一个编译 debug 版本的示例： 12flutter build apk --de">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flutter构建APK-IPA配置">
+<meta property="og:url" content="https://2322222223.github.io/blog/2020/09/16/Flutter%E6%9E%84%E5%BB%BAAPK-IPA%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="Rlz Blog">
+<meta property="og:description" content="Flutter编译安卓&#x2F;iOS命令一、Flutter打包编译命令Flutter 提供了简单而灵活的编译命令，能够编译安卓 APK、安卓 AppBundle 和 iOS IPA。以下是详细的编译命令和示例。 1、编译安卓 APK使用 flutter build apk 命令可以编译安卓 APK 文件。以下是一个编译 debug 版本的示例： 12flutter build apk --de">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-09-16T02:59:25.000Z">
+<meta property="article:modified_time" content="2024-06-30T08:04:06.736Z">
+<meta property="article:author" content="R.linzhou">
+<meta property="article:tag" content="Flutter">
+<meta property="article:tag" content="APK">
+<meta name="twitter:card" content="summary">
+
+
+<title >Flutter构建APK-IPA配置</title>
+
+<!-- Favicon -->
+
+    <link href='/blog/img/logo.svg?v=2.2.2' rel='icon' type='image/png' sizes='16x16' ></link>
+
+
+    <link href='/blog/img/logo.svg?v=2.2.2' rel='icon' type='image/png' sizes='32x32' ></link>
+
+
+
+
+<!-- Plugin -->
+
+
+
+
+    
+<link rel="stylesheet" href="/blog/css/plugins/bootstrap.row.css">
+
+    
+<link rel="stylesheet" href="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.css">
+
+    
+    
+
+
+
+
+<!-- Icon -->
+
+    
+<link rel="stylesheet" href="/blog/css/plugins/font-awesome.min.css">
+
+
+
+
+<!-- Variable -->
+<script>window.ASYNC_CONFIG = {"hostname":"2322222223.github.io","author":"R.linzhou","root":"/blog/","typed_text":["Mobile development"],"theme_version":"2.2.2","theme":{"switch":true,"default":"style-light"},"favicon":{"logo":"/img/logo.svg","icon16":"/img/logo.svg","icon32":"/img/logo.svg","apple_touch_icon":null,"webmanifest":null,"visibilitychange":false,"hidden":"/ogo.svg","show_text":"R.linzhou Blog","hide_text":"R.linzhou Blog"},"i18n":{"placeholder":"搜索文章...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）","author":"本文作者：","copyright_link":"本文链接：","copyright_license_title":"版权声明：","copyright_license_content":"本博客所有文章除特别声明外，均默认采用 undefined 许可协议。","copy_success":"复制成功","copy_failure":"复制失败","open_read_mode":"进入阅读模式","exit_read_mode":"退出阅读模式","notice_outdate_message":"距离上次更新已经 undefined 天了, 文章内容可能已经过时。","sticky":"置顶","just":"刚刚","min":"分钟前","hour":"小时前","day":"天前","month":"个月前"},"swup":false,"plugin":{"flickr_justified_gallery":"https://unpkg.com/flickr-justified-gallery@latest/dist/fjGallery.min.js"},"icons":{"sun":"far fa-sun","moon":"far fa-moon","play":"fas fa-play","email":"far fa-envelope","next":"fas fa-arrow-right","calendar":"far fa-calendar-alt","clock":"far fa-clock","user":"far fa-user","back_top":"fas fa-arrow-up","close":"fas fa-times","search":"fas fa-search","reward":"fas fa-hand-holding-usd","user_tag":"fas fa-user-alt","toc_tag":"fas fa-th-list","read":"fas fa-book-reader","arrows":"fas fa-arrows-alt-h","double_arrows":"fas fa-angle-double-down","copy":"fas fa-copy"},"icontype":"font","highlight":{"plugin":"highlighjs","theme":true,"copy":true,"lang":false,"title":"default","height_limit":200},"toc":{"post_title":true},"live_time":{"start_time":"","prefix":"博客已萌萌哒运行 undefined 天"},"danmu":{"enable":false,"el":".trm-banner"},"creative_commons":{"license":"by-nc-sa","language":"deed.zh"}};</script>
+<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2024-06-30 16:04:06"};</script>
+
+<!-- Theme mode css -->
+<link data-swup-theme rel="stylesheet" href="/blog/css/index.css?v=2.2.2" id="trm-switch-style">
+<script>
+    let defaultMode = ASYNC_CONFIG.theme.default !=='auto' ?  ASYNC_CONFIG.theme.default : (window.matchMedia("(prefers-color-scheme: light)").matches ? 'style-light' : 'style-dark')
+    let catchMode = localStorage.getItem('theme-mode') || defaultMode;
+    let type = catchMode === 'style-dark' ? 'add' : 'remove';
+    document.documentElement.classList[type]('dark')
+</script>
+
+<!-- CDN -->
+
+
+    
+    
+
+
+
+<!-- Site Analytics -->
+
+ 
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+<body>
+
+  <!-- app wrapper -->
+  <div class="trm-app-frame">
+
+    <!-- page preloader -->
+    <div class="trm-preloader">
+    <div class="trm-holder">
+        <div class="preloader">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+</div>
+    <!-- page preloader end -->
+
+    <!-- change mode preloader -->
+    <div class="trm-mode-swich-animation-frame">
+    <div class="trm-mode-swich-animation">
+        <i class="i-sun"><i class="iconfont far fa-sun"></i></i>
+        <div class="trm-horizon"></div>
+        <i class="i-moon"><i class="iconfont far fa-moon"></i></i>
+    </div>
+</div>
+    <!-- change mode preloader end -->
+
+      <!-- scroll container -->
+      <div id="trm-dynamic-content" class="trm-swup-animation">
+        <div id="trm-scroll-container" class="trm-scroll-container" style="opacity: 0">
+            <!-- top bar -->
+            <header class="trm-top-bar">
+	<div class="container">
+		<div class="trm-left-side">
+			<!-- logo -->
+<a href="/blog/" class="trm-logo-frame trm-anima-link">
+    
+        <img alt="logo" src="/blog/img/logo.svg">
+    
+    
+        <div class="trm-logo-text">
+            Blog<span></span>
+        </div>
+    
+</a>
+<!-- logo end -->
+		</div>
+		<div class="trm-right-side">
+			<!-- menu -->
+<div class="trm-menu">
+    <nav>
+        <ul>
+            
+            <li class="menu-item-has-children ">
+                <a  href="/blog/" target="">
+                    home
+                </a>
+                
+            </li>
+            
+            <li class="menu-item-has-children ">
+                <a data-no-swup href="/blog/archives/" target="">
+                    archives
+                </a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+</div>
+<!-- menu end -->
+			
+    <!-- mode switcher place -->
+    <div class="trm-mode-switcher-place">
+        <div class="trm-mode-switcher">
+            <i class="iconfont far fa-sun"></i>
+            <input class="tgl tgl-light" id="trm-swich" type="checkbox">
+            <label class="trm-swich" for="trm-swich"></label>
+            <i class="iconfont far fa-moon"></i>
+        </div>
+    </div>
+    <!-- mode switcher place end -->
+
+			
+		</div>
+		<div class="trm-menu-btn">
+			<span></span>
+		</div>
+	</div>
+</header>
+            <!-- top bar end -->
+
+            <!-- body -->
+            
+<div class="trm-content-start">
+    <!-- banner -->
+    <div class="trm-banner">
+    
+    <!-- banner cover -->
+    <img style="object-position:top;object-fit:cover;" alt="banner" class="trm-banner-cover" src="/blog/img/banner.png">
+    <!-- banner cover end -->
+    
+
+    <!-- banner content -->
+    <div class="trm-banner-content trm-overlay">
+        <div class="container">
+            <div class="row">
+                
+                <div class="col-lg-4"></div>
+                
+                <div class="col-lg-8">
+
+                    <!-- banner title -->
+                    <div class="trm-banner-text ">
+                        <div class="trm-label trm-mb-20">
+                            NEWS LETTER
+                        </div>
+                        <h1 class="trm-mb-30 trm-hsmb-font">
+                            Flutter构建APK-IPA配置
+                        </h1>
+
+                        
+                            <ul class="trm-breadcrumbs trm-label">
+                                <li>
+                                    <a href="/blog/" class="trm-anima-link">Home</a>
+                                </li>
+                                <li>
+                                    <span>
+                                        2020
+                                    </span>
+                                </li>
+                            </ul>
+                        
+                    </div>
+                    <!-- banner title end -->
+
+                    <!-- scroll hint -->
+                    <span id="scroll-triger" class="trm-scroll-hint-frame">
+                        <div class="trm-scroll-hint"></div>
+                        <span class="trm-label">Scroll down</span>
+                    </span>
+                    <!-- scroll hint end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- banner content end -->
+</div>
+    <!-- banner end -->
+    <div class="container">
+        <div class="row">
+            
+                <div class="trm-page-sidebar col-lg-4 hidden-sm">
+                    <!-- main card -->
+                    <div class="trm-main-card-frame trm-sidebar">
+    <div class="trm-main-card"> 
+        <!-- card header -->
+<div class="trm-mc-header">
+    <div class="trm-avatar-frame trm-mb-20">
+        <img alt="Avatar" class="trm-avatar" src="/blog/img/avatar.png">
+    </div>
+    <h5 class="trm-name trm-mb-15">
+        R.linzhou
+    </h5>
+    
+        <div class="trm-label">
+            I&#39;m
+            <span class="trm-typed-text">
+                <!-- Words for theme.user.typedText -->
+            </span>
+        </div>
+    
+</div>
+<!-- card header end -->
+        <!-- sidebar social -->
+
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<div class="trm-social">
+    
+        <a href="https://github.com/2322222223" title="Github" rel="nofollow" target="_blank">
+            <i class="iconfont fab fa-github"></i>
+        </a>
+    
+        <a href="http://2322222223.com" title="Resume" rel="nofollow" target="_blank">
+            <i class="iconfont far fa-smile"></i>
+        </a>
+    
+</div>
+
+<!-- sidebar social end -->
+        <!-- info -->
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<ul class="trm-table trm-mb-20">
+    
+        <li>
+            <div class="trm-label">
+                地址:
+            </div>
+            <div class="trm-label trm-label-light">
+                Beijing
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                年龄:
+            </div>
+            <div class="trm-label trm-label-light">
+                32
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                邮箱:
+            </div>
+            <div class="trm-label trm-label-light">
+                g2322222223@gmail.com
+            </div>
+        </li>
+    
+</ul>
+<!-- info end -->
+
+        
+    <div class="trm-divider trm-mb-40 trm-mt-40"></div>
+    <!-- action button -->
+    <div class="text-center">
+        <a href="mailto:g2322222223@gmail.com" class="trm-btn">
+            联系我
+            <i class="iconfont far fa-envelope"></i>
+        </a>
+    </div>
+    <!-- action button end -->
+
+    </div>
+</div>
+                    <!-- main card end -->
+                </div>
+            
+            <div class="trm-page-content col-lg-8">
+                <div id="trm-content" class="trm-content">
+                    <div class="trm-post-info row hidden-sm">
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-calendar-alt trm-icon"></i><br>
+            09/16
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-clock trm-icon"></i><br>
+            10:59
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div id="post-author" class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-user trm-icon"></i><br>
+            R.linzhou
+        </div>
+    </div>
+</div>
+<div class="trm-card ">
+    <article id="article-container" class="trm-publication">
+    <h1 id="Flutter编译安卓-iOS命令"><a href="#Flutter编译安卓-iOS命令" class="headerlink" title="Flutter编译安卓&#x2F;iOS命令"></a>Flutter编译安卓&#x2F;iOS命令</h1><h2 id="一、Flutter打包编译命令"><a href="#一、Flutter打包编译命令" class="headerlink" title="一、Flutter打包编译命令"></a>一、Flutter打包编译命令</h2><p>Flutter 提供了简单而灵活的编译命令，能够编译安卓 APK、安卓 AppBundle 和 iOS IPA。以下是详细的编译命令和示例。</p>
+<h3 id="1、编译安卓-APK"><a href="#1、编译安卓-APK" class="headerlink" title="1、编译安卓 APK"></a>1、编译安卓 APK</h3><p>使用 <code>flutter build apk</code> 命令可以编译安卓 APK 文件。以下是一个编译 debug 版本的示例：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">flutter build apk --debug --flavor beta --build-number=1 --build-name=0.1.0</span><br></pre></td></tr></table></figure>
+
+<h3 id="2、编译安卓-AppBundle"><a href="#2、编译安卓-AppBundle" class="headerlink" title="2、编译安卓 AppBundle"></a>2、编译安卓 AppBundle</h3><p>安卓 AppBundle 是一种新的应用发布格式，它能够更好地优化应用的大小和性能。使用 <code>flutter build appbundle</code> 命令可以编译安卓 AppBundle：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">flutter build appbundle --release --flavor production --build-number=1 --build-name=1.0.0</span><br></pre></td></tr></table></figure>
+
+<h3 id="3、编译iOS-IPA"><a href="#3、编译iOS-IPA" class="headerlink" title="3、编译iOS IPA"></a>3、编译iOS IPA</h3><p>编译 iOS 应用需要在 macOS 上进行，并且需要配置 Xcode。使用 <code>flutter build ios</code> 命令可以编译 iOS 应用：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">flutter build ios --release --no-codesign</span><br></pre></td></tr></table></figure>
+
+<h2 id="二、Flutter打包编译命令配合Jenkins使用"><a href="#二、Flutter打包编译命令配合Jenkins使用" class="headerlink" title="二、Flutter打包编译命令配合Jenkins使用"></a>二、Flutter打包编译命令配合Jenkins使用</h2><p>在实际开发中，常常需要将 Flutter 编译命令集成到 CI&#x2F;CD 流程中，例如 Jenkins。以下是一个简单的 Jenkins Pipeline 配置示例，用于自动化编译 Flutter 应用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">groovypipeline &#123;</span><br><span class="line">    agent any</span><br><span class="line">    stages &#123;</span><br><span class="line">        stage(&#x27;Checkout&#x27;) &#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                git &#x27;https://github.com/your-repository.git&#x27;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        stage(&#x27;Build APK&#x27;) &#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                sh &#x27;flutter clean&#x27;</span><br><span class="line">                sh &#x27;flutter pub get&#x27;</span><br><span class="line">                sh &#x27;flutter build apk --release&#x27;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        stage(&#x27;Build AppBundle&#x27;) &#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                sh &#x27;flutter clean&#x27;</span><br><span class="line">                sh &#x27;flutter pub get&#x27;</span><br><span class="line">                sh &#x27;flutter build appbundle --release&#x27;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        stage(&#x27;Build iOS&#x27;) &#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                sh &#x27;flutter clean&#x27;</span><br><span class="line">                sh &#x27;flutter pub get&#x27;</span><br><span class="line">                sh &#x27;flutter build ios --release --no-codesign&#x27;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="三、编译问题处理"><a href="#三、编译问题处理" class="headerlink" title="三、编译问题处理"></a>三、编译问题处理</h2><h3 id="1、处理build-apk时安卓应用版本versionCode自动加1000问题"><a href="#1、处理build-apk时安卓应用版本versionCode自动加1000问题" class="headerlink" title="1、处理build apk时安卓应用版本versionCode自动加1000问题"></a>1、处理build apk时安卓应用版本versionCode自动加1000问题</h3><p>在编译过程中，可能会遇到版本号自动增加的问题。以下是一个具体的案例及其解决方案。</p>
+<h4 id="1、编译的结果"><a href="#1、编译的结果" class="headerlink" title="1、编译的结果"></a>1、编译的结果</h4><p>编译命令为：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">flutter build apk --debug --flavor beta --build-number=1 --build-name=0.1.0</span><br></pre></td></tr></table></figure>
+
+<p>编译出来的结果发现 versionCode 加了 1000。</p>
+<h4 id="2、原因分析"><a href="#2、原因分析" class="headerlink" title="2、原因分析"></a>2、原因分析</h4><p>经过分析 Flutter 编译脚本 <code>android/app/build.gradle</code>，发现引入了下面的代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">gradleif (project.android.defaultConfig.versionCode == null) &#123;</span><br><span class="line">    project.android.defaultConfig.versionCode = project.flutter.versionCode + 1000</span><br><span class="line">&#125; else if (project.android.defaultConfig.versionCode == 1) &#123;</span><br><span class="line">    // Do not increment the version code if the default version code is 1</span><br><span class="line">    // This is the default value and it will be incremented by flutter as needed.</span><br><span class="line">&#125; else if (project.android.defaultConfig.versionCode &gt; project.flutter.versionCode) &#123;</span><br><span class="line">    project.logger.error(&quot;Warning! The &#x27;android.defaultConfig.versionCode&#x27; property is higher than &quot;</span><br><span class="line">        + &quot;&#x27;flutter.versionCode&#x27;. This is not recommended and might cause problems. See &quot;</span><br><span class="line">        + &quot;https://github.com/flutter/flutter/issues/53919 for more details.&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3、处理方案"><a href="#3、处理方案" class="headerlink" title="3、处理方案"></a>3、处理方案</h4><p>在 <code>android/app/build.gradle</code> 文件中，<code>android</code> 层级下，添加如下内容以覆盖自动增加的 <code>versionCode</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">gradleandroid &#123;</span><br><span class="line">    ...</span><br><span class="line">    applicationVariants.all &#123; variant -&gt;</span><br><span class="line">        variant.outputs.each &#123; output -&gt;</span><br><span class="line">            output.versionCodeOverride = variant.versionCode</span><br><span class="line">            println &quot;&gt; versionCode: $&#123;variant.versionCode&#125;, flutterVersionCode: $&#123;project.flutter.versionCode&#125;, versionCodeOverride: $&#123;output.versionCodeOverride&#125;&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置版本控制"><a href="#配置版本控制" class="headerlink" title="配置版本控制"></a>配置版本控制</h3><p>默认情况下，当 Gradle 生成多个 APK 时，每个 APK 都有相同的版本信息，该信息在模块级 <code>build.gradle</code> 文件中指定。由于 Google Play 商店不允许同一个应用的多个 APK 全都具有相同的版本信息，因此在上传到 Play 商店之前，需要确保每个 APK 都有自己唯一的 <code>versionCode</code>。</p>
+<p>可以配置模块级 <code>build.gradle</code> 文件以替换每个 APK 的 <code>versionCode</code>。通过创建一种映射关系来配置了多 APK 构建的每种 ABI 和密度分配一个唯一的数值，可以将输出版本代码替换为一个将在 <code>defaultConfig</code> 或 <code>productFlavors</code> 代码块中定义的版本代码与分配给相应密度或 ABI 的数值组合在一起的值。</p>
+<p>在以下示例中，<code>x86</code> ABI 的 APK 的 <code>versionCode</code> 将为 2004，<code>x86_64</code> ABI 的 APK 的版本代码将为 3004。如果以较大的增量（如 1000）分配版本代码，那么以后需要更新应用时，就可以分配唯一的版本代码。例如，如果 <code>defaultConfig.versionCode</code> 在后续更新中迭代到 5，那么 Gradle 为 <code>x86</code> APK 分配的 <code>versionCode</code> 将为 2005，为 <code>x86_64</code> APK 分配的版本代码将为 3005。</p>
+<p><strong>提示</strong>：如果 build 包含一个通用 APK，为其分配的 <code>versionCode</code> 应低于为其他任何 APK 分配的版本代码。由于 Google Play 商店会安装既与目标设备兼容又具有最高 <code>versionCode</code> 的应用版本，因此为通用 APK 分配一个较低的 <code>versionCode</code> 可以确保 Google Play 商店在回退到通用 APK 之前先尝试安装某个 APK。以下示例代码的处理方式是不替换通用 APK 的默认 <code>versionCode</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">gradleandroid &#123;</span><br><span class="line">    ...</span><br><span class="line">    defaultConfig &#123;</span><br><span class="line">        ...</span><br><span class="line">        versionCode 4</span><br><span class="line">    &#125;</span><br><span class="line">    splits &#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Map for the version code that gives each ABI a value.</span><br><span class="line">ext.abiCodes = [&#x27;armeabi-v7a&#x27;: 1, x86: 2, x86_64: 3]</span><br></pre></td></tr></table></figure>
+
+<p>如需查看备用版本代码方案的更多示例，请参阅<a target="_blank" rel="noopener" href="https://developer.android.com/google/play/publishing/multiple-apks?hl=zh-cn#VersionCodes">分配版本代码</a>。</p>
+<p>总结：Flutter 在打包的时候会通过以下代码来处理版本号：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">gradleif (project.android.defaultConfig.versionCode == null) &#123;</span><br><span class="line">    project.android.defaultConfig.versionCode = project.flutter.versionCode + 1000</span><br><span class="line">&#125; else if (project.android.defaultConfig.versionCode == 1) &#123;</span><br><span class="line">    // Do not increment the version code if the default version code is 1</span><br><span class="line">    // This is the default value and it will be incremented by flutter as needed.</span><br><span class="line">&#125; else if (project.android.defaultConfig.versionCode &gt; project.flutter.versionCode) &#123;</span><br><span class="line">    project.logger.error(&quot;Warning! The &#x27;android.defaultConfig.versionCode&#x27; property is higher than &quot;</span><br><span class="line">        + &quot;&#x27;flutter.versionCode&#x27;. This is not recommended and might cause problems. See &quot;</span><br><span class="line">        + &quot;https://github.com/flutter/flutter/issues/53919 for more details.&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果 <code>android.defaultConfig.versionCode</code> 未设置，那么 Flutter 会使用 <code>flutter.versionCode + 1000</code> 作为版本代码。 如果 <code>android.defaultConfig.versionCode</code> 设置为 1（默认值），则 Flutter 会按需自动增加它。 如果 <code>android.defaultConfig.versionCode</code> 大于 <code>flutter.versionCode</code>，则会输出一个警告。</p>
+<p>因此，如果当前是 arm32 位的包，会自动添加 1000 + version:1.0.0+1，即 1001 的版本号；如果是 arm64 位的包，会自动添加 2000 + version:1.0.0+1，即 2001 的版本号。如果打通用的包，最好要少于 arm32 最低版本号 1001。</p>
+<hr>
+<p>以上就是关于Flutter打包构建Android和IOS的包内容。希望本文对你有所帮助，如果有任何疑问或建议，欢迎在评论区交流讨论。</p>
+
+</article>
+    
+    
+
+</div>
+<div class="trm-post-next-prev row">
+    <div class="col-lg-12">
+        <!-- title -->
+        <h5 class="trm-title-with-divider">
+            其他文章
+            <span data-number="02"></span>
+        </h5>
+    </div>
+    
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/blog/2020/10/03/Flutter-Stream%E5%92%8CStreamBuilder/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">Flutter-Stream和StreamBuilder</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>20/10/03</li>
+                <li>20:23</li>
+                <li>Flutter</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+    
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/blog/2020/08/18/Flutter-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">Flutter 常用命令</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>20/08/18</li>
+                <li>14:50</li>
+                <li>Flutter</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+</div>
+
+    
+
+    <div id="giscus-wrap" class="trm-card trm-scroll-animation comment-container"></div>
+<script data-swup-reload-script>
+    function loadGiscus() {
+        let nowTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+        const config = {
+            src: 'https://giscus.app/client.js',
+            "data-repo": '2322222223/blog',
+            "data-repo-id": 'R_kgDOMCoZ8w',
+            "data-category": 'Announcements',
+            "data-category-id": 'DIC_kwDOMCoZ884Cfxl-',
+            "data-mapping": 'pathname',
+            "data-reactions-enabled": '1',
+            "data-emit-metadata": '1',
+            "data-theme": nowTheme,
+            "data-lang": 'zh-CN',
+            crossorigin: "anonymous",
+            async: true
+        }
+        let ele = document.createElement('script')
+        for (let key in config) {
+            ele.setAttribute(key, config[key])
+        }
+        document.getElementById('giscus-wrap').insertAdjacentElement('afterbegin', ele)
+    }
+
+    function changeGiscusTheme() {
+        let theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+
+        function sendMessage(message) {
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (!iframe) return;
+            iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+
+        sendMessage({
+            setConfig: {
+                theme: theme
+            }
+        });
+    }
+
+    loadGiscus();
+</script>
+
+
+
+                    <div class="trm-divider footer-divider"></div>
+
+                    <!-- footer -->
+                    <footer class="trm-footer-card trm-scroll-animation">
+
+    
+
+    
+        <div class="trm-footer-item">
+            <span>© 2020- 2024</span>
+            <span class="footer-separator"data-separator=" · "></span>
+            <span class="trm-accent-color">R.linzhou</span>
+        </div>
+    
+
+      
+
+     
+
+     
+</footer>
+                    <!-- footer end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            <!-- body end -->
+
+            
+
+            
+<div class="trm-fixed-container">
+    
+    
+        <div class="trm-fixed-btn" data-title="阅读模式" onclick="asyncFun.switchReadMode()">
+            <i class="iconfont fas fa-book-reader"></i>
+        </div>
+    
+    
+        <div class="trm-fixed-btn hidden-md" data-title="单栏和双栏切换" onclick="asyncFun.switchSingleColumn()">
+            <i class="iconfont fas fa-arrows-alt-h"></i>
+        </div>
+    
+    <div id="trm-back-top" class="trm-fixed-btn" data-title="回到顶部">
+        <i class="iconfont fas fa-arrow-up"></i>
+    </div>
+</div>
+        </div>
+      </div>
+      <!-- scroll container end -->
+  </div>
+  <!-- app wrapper end -->
+
+  
+  <!-- Plugin -->
+
+
+
+
+    
+    
+<script src="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+
+    
+
+    
+        <script src="/blog/js/plugins/typing.js?v=2.2.2"></script>
+    
+
+    
+
+    <!-- 数学公式 -->
+    
+
+    <!-- 评论插件 -->
+    
+        
+
+        
+    
+
+		
+
+
+
+
+    <!-- Service Worker -->
+    
+    <script>
+        "serviceWorker" in navigator ?
+        navigator.serviceWorker.register('/blog/sw.js').then(function () {
+            navigator.serviceWorker.controller ? 
+             console.log("Assets cached by the controlling service worker.") :
+             console.log("Please reload this page to allow the service worker to handle network operations.")
+        }).catch(function (e) {
+            console.log("ERROR: " + e)
+        }) : console.log("Service workers are not supported in the current browser.")
+    </script>
+
+    <!-- baidu push -->
+    
+
+
+<script id="async-script" src="/blog/js/main.js?v=2.2.2"></script>
+
+<!-- CDN -->
+
+
+    
+
+    
+
+    
+
+
+
+</body>
+
+</html>
