@@ -397,9 +397,9 @@
 <li><strong>安全性</strong>：通过在数据库层面实施角色划分与安全管控，RAG 有效强化了对数据使用的管理，相较于微调模型在数据权限管理上的潜在模糊性，展现出更高的安全性。</li>
 </ol>
 <h2 id="五、对比一下-RAG-和-SFT，说一下两者有哪些区别？"><a href="#五、对比一下-RAG-和-SFT，说一下两者有哪些区别？" class="headerlink" title="五、对比一下 RAG 和 SFT，说一下两者有哪些区别？"></a><strong>五、对比一下 RAG 和 SFT，说一下两者有哪些区别？</strong></h2><p>实际上，对于 LLM 存在的上述问题，SFT 是一个最常见最基本的解决办法，也是 LLM 实现应用的基础步骤。那么有必要在多个维度上比较一下两种方法：</p>
-<p><img src="/blog/image.png" alt="img"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
+<p><img src="image.png" alt="img"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
 <p>当然这两种方法并非非此即彼的，合理且必要的方式是结合业务需要与两种方法的优点，合理使用两种方法。</p>
-<p><img src="/blog/image1.png" alt="img"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
+<p><img src="image1.png" alt="img"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
 <h2 id="SimpleRAG-实战篇"><a href="#SimpleRAG-实战篇" class="headerlink" title="SimpleRAG 实战篇"></a><strong>SimpleRAG 实战篇</strong></h2><h2 id="模块一：版面分析"><a href="#模块一：版面分析" class="headerlink" title="模块一：版面分析"></a><strong>模块一：版面分析</strong></h2><h3 id="为什么-需要-版面分析？"><a href="#为什么-需要-版面分析？" class="headerlink" title="为什么 需要 版面分析？"></a><strong>为什么 需要 版面分析？</strong></h3><p>尽管RAG（检索增强生成）技术的核心价值在于其结合检索与生成手段以提升文本内容的精确度与连贯性，然而在一些具体应用领域，如文档解析、智能化写作及对话系统构建中，特别是在面对结构化或半结构化信息的处理需求时，其功能边界可能拓展至版面分析。这是由于此类信息往往嵌于特定的布局结构中，需要对页面元素及其相互关系进行深入理解。</p>
 <p>此外，当RAG模型面对包含丰富多媒体或多模态成分的数据源，诸如网页、PDF文件、富文本记录、Word文档、图像资料、语音片段、表格数据等复杂内容时，为了能高效地摄取并利用这些非文本信息，具备基本的版面分析能力变得至关重要。这种能力有助于模型精准解析各类信息单元，并成功将它们融合成有意义的整体解读。</p>
 <h3 id="step-1：本地知识文件获取"><a href="#step-1：本地知识文件获取" class="headerlink" title="step 1：本地知识文件获取"></a><strong>step 1：本地知识文件获取</strong></h3><h4 id="q1：如何进行-本地知识文件获取？"><a href="#q1：如何进行-本地知识文件获取？" class="headerlink" title="q1：如何进行 本地知识文件获取？"></a><strong>q1：如何进行 本地知识文件获取？</strong></h4><p>本地知识文件获取涉及从多种数据源（如.txt、.pdf、.html、.doc、.xlsx、.png、.jpg、音频文件等）提取信息的过程。针对不同类型的文件，需要采取特定的访问与解析策略来有效获取其中蕴含的知识。下面我们将介绍对于不同数据源数据的获取方式和难点。</p>
