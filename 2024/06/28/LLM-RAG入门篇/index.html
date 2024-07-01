@@ -18,9 +18,8 @@
 <meta property="og:image" content="https://2322222223.github.io/blog/img/404.jpg">
 <meta property="og:image" content="https://2322222223.github.io/blog/img/404.jpg">
 <meta property="og:image" content="https://2322222223.github.io/blog/img/404.jpg">
-<meta property="og:image" content="https://2322222223.github.io/blog/img/404.jpg">
 <meta property="article:published_time" content="2024-06-28T09:03:12.000Z">
-<meta property="article:modified_time" content="2024-07-01T09:36:26.945Z">
+<meta property="article:modified_time" content="2024-07-01T13:24:02.451Z">
 <meta property="article:author" content="R.linzhou">
 <meta property="article:tag" content="LLM">
 <meta property="article:tag" content="ARG">
@@ -67,7 +66,7 @@
 
 <!-- Variable -->
 <script>window.ASYNC_CONFIG = {"hostname":"2322222223.github.io","author":"R.linzhou","root":"/blog/","typed_text":["Mobile development"],"theme_version":"2.2.2","theme":{"switch":true,"default":"style-light"},"favicon":{"logo":"/img/logo.svg","icon16":"/img/logo.svg","icon32":"/img/logo.svg","apple_touch_icon":null,"webmanifest":null,"visibilitychange":false,"hidden":"/ogo.svg","show_text":"R.linzhou Blog","hide_text":"R.linzhou Blog"},"i18n":{"placeholder":"搜索文章...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）","author":"本文作者：","copyright_link":"本文链接：","copyright_license_title":"版权声明：","copyright_license_content":"本博客所有文章除特别声明外，均默认采用 undefined 许可协议。","copy_success":"复制成功","copy_failure":"复制失败","open_read_mode":"进入阅读模式","exit_read_mode":"退出阅读模式","notice_outdate_message":"距离上次更新已经 undefined 天了, 文章内容可能已经过时。","sticky":"置顶","just":"刚刚","min":"分钟前","hour":"小时前","day":"天前","month":"个月前"},"swup":false,"plugin":{"flickr_justified_gallery":"https://unpkg.com/flickr-justified-gallery@latest/dist/fjGallery.min.js"},"icons":{"sun":"far fa-sun","moon":"far fa-moon","play":"fas fa-play","email":"far fa-envelope","next":"fas fa-arrow-right","calendar":"far fa-calendar-alt","clock":"far fa-clock","user":"far fa-user","back_top":"fas fa-arrow-up","close":"fas fa-times","search":"fas fa-search","reward":"fas fa-hand-holding-usd","user_tag":"fas fa-user-alt","toc_tag":"fas fa-th-list","read":"fas fa-book-reader","arrows":"fas fa-arrows-alt-h","double_arrows":"fas fa-angle-double-down","copy":"fas fa-copy"},"icontype":"font","highlight":{"plugin":"highlighjs","theme":true,"copy":true,"lang":false,"title":"default","height_limit":200},"toc":{"post_title":true},"live_time":{"start_time":"","prefix":"博客已萌萌哒运行 undefined 天"},"danmu":{"enable":false,"el":".trm-banner"},"creative_commons":{"license":"by-nc-sa","language":"deed.zh"}};</script>
-<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2024-07-01 17:36:26"};</script>
+<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2024-07-01 21:24:02"};</script>
 
 <!-- Theme mode css -->
 <link data-swup-theme rel="stylesheet" href="/blog/css/index.css?v=2.2.2" id="trm-switch-style">
@@ -369,11 +368,7 @@
 <li><strong>时效性问题</strong>：随着 LLM 规模扩大，训练成本与周期相应增加。鉴于此，包含最新信息的数据难以融入模型训练过程，导致 LLM 在应对诸如“请推荐当前热门影片”等时间敏感性问题时力有未逮；</li>
 <li><strong>数据安全问题</strong>：通用的 LLM 没有企业内部数据和用户数据，那么企业想要在保证安全的前提下使用 LLM，最好的方式就是把数据全部放在本地，企业数据的业务计算全部在本地完成。而在线的大模型仅仅完成一个归纳的功能；</li>
 </ol>
-<h2 id="二、介绍一下-RAG"><a href="#二、介绍一下-RAG" class="headerlink" title="二、介绍一下 RAG?"></a><strong>二、介绍一下 RAG?</strong></h2><p>RAG（Retrieval Augmented Generation, 检索增强生成）是一种技术框架，其核心在于当 LLM 面对解答问题或创作文本任务时，首先会在大规模文档库中搜索并筛选出与任务紧密相关的素材，继而依据这些素材精准指导后续的回答生成或文本构造过程，旨在通过此种方式提升模型输出的准确性和可靠性。</p>
-<p><img src="https://article-images.zsxq.com/Fka_fSha4n2e0WUd-AhxhgYes9-b" alt="img"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
-<blockquote>
-<p>RAG 技术架构图</p>
-</blockquote>
+<h2 id="二、介绍一下-RAG"><a href="#二、介绍一下-RAG" class="headerlink" title="二、介绍一下 RAG"></a><strong>二、介绍一下 RAG</strong></h2><p>RAG（Retrieval Augmented Generation, 检索增强生成）是一种技术框架，其核心在于当 LLM 面对解答问题或创作文本任务时，首先会在大规模文档库中搜索并筛选出与任务紧密相关的素材，继而依据这些素材精准指导后续的回答生成或文本构造过程，旨在通过此种方式提升模型输出的准确性和可靠性。</p>
 <h2 id="三、RAG-主要包含哪些模块"><a href="#三、RAG-主要包含哪些模块" class="headerlink" title="三、RAG 主要包含哪些模块?"></a><strong>三、RAG 主要包含哪些模块?</strong></h2><ol>
 <li>模块一：版面分析</li>
 <li>本地知识文件读取（pdf、txt、html、doc、excel、png、jpg、语音等）</li>
@@ -404,9 +399,9 @@
 <li><strong>安全性</strong>：通过在数据库层面实施角色划分与安全管控，RAG 有效强化了对数据使用的管理，相较于微调模型在数据权限管理上的潜在模糊性，展现出更高的安全性。</li>
 </ol>
 <h2 id="五、对比一下-RAG-和-SFT，说一下两者有哪些区别？"><a href="#五、对比一下-RAG-和-SFT，说一下两者有哪些区别？" class="headerlink" title="五、对比一下 RAG 和 SFT，说一下两者有哪些区别？"></a><strong>五、对比一下 RAG 和 SFT，说一下两者有哪些区别？</strong></h2><p>实际上，对于 LLM 存在的上述问题，SFT 是一个最常见最基本的解决办法，也是 LLM 实现应用的基础步骤。那么有必要在多个维度上比较一下两种方法：</p>
-<p><img src="https://article-images.zsxq.com/FnjdYMAp0bvjWfMzpFVxgc6Sp0dZ" alt="img"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
+<p><img src="/blog/image.png" alt="img"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
 <p>当然这两种方法并非非此即彼的，合理且必要的方式是结合业务需要与两种方法的优点，合理使用两种方法。</p>
-<p><img src="https://article-images.zsxq.com/FhWAekdcV64YEMKXCt08Kurka5Ig" alt="img"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
+<p><img src="/blog/image1.png" alt="img"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
 <h2 id="SimpleRAG-实战篇"><a href="#SimpleRAG-实战篇" class="headerlink" title="SimpleRAG 实战篇"></a><strong>SimpleRAG 实战篇</strong></h2><ol>
 <li>实战技巧：</li>
 <li><strong><a target="_blank" rel="noopener" href="https://articles.zsxq.com/id_roqf2ge4c1b3.html">【RAG 实战——SimpleRAG篇】</a></strong></li>

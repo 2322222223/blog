@@ -15,7 +15,7 @@
 <meta property="og:description" content="大家好，今天给大家分享的是Flutter中Stream和StreamBuilder组件的使用及其源码解析。Stream在Flutter中用于处理异步数据流，而StreamBuilder则是一个用于监听Stream并根据最新的数据构建Widget的组件。这两个工具在处理动态数据更新时非常有用。 一、Stream和StreamBuilder的使用1.1 Stream的基本使用Stream是Dart中的">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-10-03T12:23:35.000Z">
-<meta property="article:modified_time" content="2024-07-01T09:36:26.941Z">
+<meta property="article:modified_time" content="2024-07-01T13:24:02.447Z">
 <meta property="article:author" content="R.linzhou">
 <meta property="article:tag" content="Flutter">
 <meta property="article:tag" content="Stream">
@@ -61,7 +61,7 @@
 
 <!-- Variable -->
 <script>window.ASYNC_CONFIG = {"hostname":"2322222223.github.io","author":"R.linzhou","root":"/blog/","typed_text":["Mobile development"],"theme_version":"2.2.2","theme":{"switch":true,"default":"style-light"},"favicon":{"logo":"/img/logo.svg","icon16":"/img/logo.svg","icon32":"/img/logo.svg","apple_touch_icon":null,"webmanifest":null,"visibilitychange":false,"hidden":"/ogo.svg","show_text":"R.linzhou Blog","hide_text":"R.linzhou Blog"},"i18n":{"placeholder":"搜索文章...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）","author":"本文作者：","copyright_link":"本文链接：","copyright_license_title":"版权声明：","copyright_license_content":"本博客所有文章除特别声明外，均默认采用 undefined 许可协议。","copy_success":"复制成功","copy_failure":"复制失败","open_read_mode":"进入阅读模式","exit_read_mode":"退出阅读模式","notice_outdate_message":"距离上次更新已经 undefined 天了, 文章内容可能已经过时。","sticky":"置顶","just":"刚刚","min":"分钟前","hour":"小时前","day":"天前","month":"个月前"},"swup":false,"plugin":{"flickr_justified_gallery":"https://unpkg.com/flickr-justified-gallery@latest/dist/fjGallery.min.js"},"icons":{"sun":"far fa-sun","moon":"far fa-moon","play":"fas fa-play","email":"far fa-envelope","next":"fas fa-arrow-right","calendar":"far fa-calendar-alt","clock":"far fa-clock","user":"far fa-user","back_top":"fas fa-arrow-up","close":"fas fa-times","search":"fas fa-search","reward":"fas fa-hand-holding-usd","user_tag":"fas fa-user-alt","toc_tag":"fas fa-th-list","read":"fas fa-book-reader","arrows":"fas fa-arrows-alt-h","double_arrows":"fas fa-angle-double-down","copy":"fas fa-copy"},"icontype":"font","highlight":{"plugin":"highlighjs","theme":true,"copy":true,"lang":false,"title":"default","height_limit":200},"toc":{"post_title":true},"live_time":{"start_time":"","prefix":"博客已萌萌哒运行 undefined 天"},"danmu":{"enable":false,"el":".trm-banner"},"creative_commons":{"license":"by-nc-sa","language":"deed.zh"}};</script>
-<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2024-07-01 17:36:26"};</script>
+<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2024-07-01 21:24:02"};</script>
 
 <!-- Theme mode css -->
 <link data-swup-theme rel="stylesheet" href="/blog/css/index.css?v=2.2.2" id="trm-switch-style">
@@ -387,7 +387,7 @@
 <li><strong>高效的状态管理</strong>：通过<code>StreamBuilder</code>，可以轻松实现数据驱动的界面更新，避免手动管理状态。</li>
 <li><strong>灵活的组合方式</strong>：<code>Stream</code>提供了丰富的转换和合并方法，使得数据流的处理变得灵活多样。</li>
 </ol>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>好了，今天分享的内容是Flutter中<code>Stream</code>和<code>StreamBuilder</code>组件的使用及其源码解析。通过理解<code>Stream</code>的工作原理和事件循环机制，以及<code>StreamBuilder</code>的实现细节，我们可以更好地利用这些工具编写高性能、响应迅速的Flutter应用。<a href="mailto:&#103;&#x32;&#51;&#x32;&#50;&#50;&#50;&#x32;&#50;&#x32;&#51;&#x40;&#103;&#109;&#x61;&#x69;&#x6c;&#46;&#99;&#111;&#109;">&#103;&#x32;&#51;&#x32;&#50;&#50;&#50;&#x32;&#50;&#x32;&#51;&#x40;&#103;&#109;&#x61;&#x69;&#x6c;&#46;&#99;&#111;&#109;</a>,如果需要进一步修改或补充，请随时告诉我！</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>好了，今天分享的内容是Flutter中<code>Stream</code>和<code>StreamBuilder</code>组件的使用及其源码解析。通过理解<code>Stream</code>的工作原理和事件循环机制，以及<code>StreamBuilder</code>的实现细节，我们可以更好地利用这些工具编写高性能、响应迅速的Flutter应用。<a href="mailto:&#x67;&#50;&#x33;&#x32;&#x32;&#50;&#x32;&#x32;&#x32;&#x32;&#x33;&#x40;&#x67;&#x6d;&#97;&#x69;&#108;&#46;&#x63;&#111;&#109;">&#x67;&#50;&#x33;&#x32;&#x32;&#50;&#x32;&#x32;&#x32;&#x32;&#x33;&#x40;&#x67;&#x6d;&#97;&#x69;&#108;&#46;&#x63;&#111;&#109;</a>,如果需要进一步修改或补充，请随时告诉我！</p>
 
 </article>
     
