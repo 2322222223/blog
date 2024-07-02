@@ -17,7 +17,7 @@
 <meta property="og:image" content="https://2322222223.github.io/blog/img/404.jpg">
 <meta property="og:image" content="https://2322222223.github.io/blog/img/404.jpg">
 <meta property="article:published_time" content="2024-06-28T09:03:12.000Z">
-<meta property="article:modified_time" content="2024-07-01T13:49:47.029Z">
+<meta property="article:modified_time" content="2024-07-02T13:34:54.914Z">
 <meta property="article:author" content="R.linzhou">
 <meta property="article:tag" content="LLM">
 <meta property="article:tag" content="ARG">
@@ -64,7 +64,7 @@
 
 <!-- Variable -->
 <script>window.ASYNC_CONFIG = {"hostname":"2322222223.github.io","author":"R.linzhou","root":"/blog/","typed_text":["Mobile development"],"theme_version":"2.2.2","theme":{"switch":true,"default":"style-light"},"favicon":{"logo":"/img/logo.svg","icon16":"/img/logo.svg","icon32":"/img/logo.svg","apple_touch_icon":null,"webmanifest":null,"visibilitychange":false,"hidden":"/ogo.svg","show_text":"R.linzhou Blog","hide_text":"R.linzhou Blog"},"i18n":{"placeholder":"搜索文章...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）","author":"本文作者：","copyright_link":"本文链接：","copyright_license_title":"版权声明：","copyright_license_content":"本博客所有文章除特别声明外，均默认采用 undefined 许可协议。","copy_success":"复制成功","copy_failure":"复制失败","open_read_mode":"进入阅读模式","exit_read_mode":"退出阅读模式","notice_outdate_message":"距离上次更新已经 undefined 天了, 文章内容可能已经过时。","sticky":"置顶","just":"刚刚","min":"分钟前","hour":"小时前","day":"天前","month":"个月前"},"swup":false,"plugin":{"flickr_justified_gallery":"https://unpkg.com/flickr-justified-gallery@latest/dist/fjGallery.min.js"},"icons":{"sun":"far fa-sun","moon":"far fa-moon","play":"fas fa-play","email":"far fa-envelope","next":"fas fa-arrow-right","calendar":"far fa-calendar-alt","clock":"far fa-clock","user":"far fa-user","back_top":"fas fa-arrow-up","close":"fas fa-times","search":"fas fa-search","reward":"fas fa-hand-holding-usd","user_tag":"fas fa-user-alt","toc_tag":"fas fa-th-list","read":"fas fa-book-reader","arrows":"fas fa-arrows-alt-h","double_arrows":"fas fa-angle-double-down","copy":"fas fa-copy"},"icontype":"font","highlight":{"plugin":"highlighjs","theme":true,"copy":true,"lang":false,"title":"default","height_limit":200},"toc":{"post_title":true},"live_time":{"start_time":"","prefix":"博客已萌萌哒运行 undefined 天"},"danmu":{"enable":false,"el":".trm-banner"},"creative_commons":{"license":"by-nc-sa","language":"deed.zh"}};</script>
-<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2024-07-01 21:49:47"};</script>
+<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2024-07-02 21:34:54"};</script>
 
 <!-- Theme mode css -->
 <link data-swup-theme rel="stylesheet" href="/blog/css/index.css?v=2.2.2" id="trm-switch-style">
@@ -397,9 +397,9 @@
 <li><strong>安全性</strong>：通过在数据库层面实施角色划分与安全管控，RAG 有效强化了对数据使用的管理，相较于微调模型在数据权限管理上的潜在模糊性，展现出更高的安全性。</li>
 </ol>
 <h2 id="五、对比一下-RAG-和-SFT，说一下两者有哪些区别？"><a href="#五、对比一下-RAG-和-SFT，说一下两者有哪些区别？" class="headerlink" title="五、对比一下 RAG 和 SFT，说一下两者有哪些区别？"></a><strong>五、对比一下 RAG 和 SFT，说一下两者有哪些区别？</strong></h2><p>实际上，对于 LLM 存在的上述问题，SFT 是一个最常见最基本的解决办法，也是 LLM 实现应用的基础步骤。那么有必要在多个维度上比较一下两种方法：</p>
-<p><img src="image.png" alt="img"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
+<p><img src="/blog/image.png" alt="img"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
 <p>当然这两种方法并非非此即彼的，合理且必要的方式是结合业务需要与两种方法的优点，合理使用两种方法。</p>
-<p><img src="image1.png" alt="img"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
+<p><img src="/blog/image1.png" alt="img"  data-tag='post-image' loading="lazy" onerror='this.onerror=null;this.src="/blog/img/404.jpg"'></p>
 <h2 id="SimpleRAG-实战篇"><a href="#SimpleRAG-实战篇" class="headerlink" title="SimpleRAG 实战篇"></a><strong>SimpleRAG 实战篇</strong></h2><h2 id="模块一：版面分析"><a href="#模块一：版面分析" class="headerlink" title="模块一：版面分析"></a><strong>模块一：版面分析</strong></h2><h3 id="为什么-需要-版面分析？"><a href="#为什么-需要-版面分析？" class="headerlink" title="为什么 需要 版面分析？"></a><strong>为什么 需要 版面分析？</strong></h3><p>尽管RAG（检索增强生成）技术的核心价值在于其结合检索与生成手段以提升文本内容的精确度与连贯性，然而在一些具体应用领域，如文档解析、智能化写作及对话系统构建中，特别是在面对结构化或半结构化信息的处理需求时，其功能边界可能拓展至版面分析。这是由于此类信息往往嵌于特定的布局结构中，需要对页面元素及其相互关系进行深入理解。</p>
 <p>此外，当RAG模型面对包含丰富多媒体或多模态成分的数据源，诸如网页、PDF文件、富文本记录、Word文档、图像资料、语音片段、表格数据等复杂内容时，为了能高效地摄取并利用这些非文本信息，具备基本的版面分析能力变得至关重要。这种能力有助于模型精准解析各类信息单元，并成功将它们融合成有意义的整体解读。</p>
 <h3 id="step-1：本地知识文件获取"><a href="#step-1：本地知识文件获取" class="headerlink" title="step 1：本地知识文件获取"></a><strong>step 1：本地知识文件获取</strong></h3><h4 id="q1：如何进行-本地知识文件获取？"><a href="#q1：如何进行-本地知识文件获取？" class="headerlink" title="q1：如何进行 本地知识文件获取？"></a><strong>q1：如何进行 本地知识文件获取？</strong></h4><p>本地知识文件获取涉及从多种数据源（如.txt、.pdf、.html、.doc、.xlsx、.png、.jpg、音频文件等）提取信息的过程。针对不同类型的文件，需要采取特定的访问与解析策略来有效获取其中蕴含的知识。下面我们将介绍对于不同数据源数据的获取方式和难点。</p>
@@ -535,17 +535,17 @@
     <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
         <div class="trm-older-publication">
             
-            <a class="trm-op-top trm-anima-link" href="/blog/2024/06/15/%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B7%BB%E5%8A%A0%E8%B4%AD%E7%89%A9%E8%BD%A6%E5%8A%A8%E7%94%BB/">
+            <a class="trm-op-top trm-anima-link" href="/blog/2024/06/24/RAG%E5%9F%BA%E7%A1%80%E4%B8%8E%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%E4%BB%8B%E7%BB%8D/">
                 <span class="trm-op-cover">
                     <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
                 </span>
-                <h6 class="trm-op-title">小程序添加购物车动画</h6>
+                <h6 class="trm-op-title">RAG基础与工作流程介绍</h6>
             </a>
             <div class="trm-divider trm-mb-15 trm-mt-20"></div>
             <ul class="trm-card-data trm-label">
-                <li>24/06/15</li>
-                <li>12:03</li>
-                <li>未分类</li>
+                <li>24/06/24</li>
+                <li>20:33</li>
+                <li>LLM</li>
             </ul>
         </div>
     </div>

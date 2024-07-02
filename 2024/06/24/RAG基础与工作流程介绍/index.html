@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="x5-fullscreen" content="true">
+<meta name="full-screen" content="yes">
+<meta name="theme-color" content="#317EFB" />
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0" name="viewport">
+<meta name="description" content="RAG（Retrieval-Augmented Generation）技术入门教程RAG（Retrieval-Augmented Generation）是一种结合了信息检索（Retrieval）和文本生成（Generation）的技术，能够有效提升自然语言处理任务的性能。 目录 什么是 RAG？ RAG 的原理与工作流程 搭建 RAG 环境 使用中文知识库的 RAG 示例 RAG 的实现方式与优化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RAG基础与工作流程介绍">
+<meta property="og:url" content="https://2322222223.github.io/blog/2024/06/24/RAG%E5%9F%BA%E7%A1%80%E4%B8%8E%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%E4%BB%8B%E7%BB%8D/index.html">
+<meta property="og:site_name" content="Rlz Blog">
+<meta property="og:description" content="RAG（Retrieval-Augmented Generation）技术入门教程RAG（Retrieval-Augmented Generation）是一种结合了信息检索（Retrieval）和文本生成（Generation）的技术，能够有效提升自然语言处理任务的性能。 目录 什么是 RAG？ RAG 的原理与工作流程 搭建 RAG 环境 使用中文知识库的 RAG 示例 RAG 的实现方式与优化">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-06-24T12:33:29.000Z">
+<meta property="article:modified_time" content="2024-07-02T13:34:54.918Z">
+<meta property="article:author" content="R.linzhou">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="ARG">
+<meta name="twitter:card" content="summary">
+
+
+<title >RAG基础与工作流程介绍</title>
+
+<!-- Favicon -->
+
+    <link href='/blog/img/logo.svg?v=2.2.2' rel='icon' type='image/png' sizes='16x16' ></link>
+
+
+    <link href='/blog/img/logo.svg?v=2.2.2' rel='icon' type='image/png' sizes='32x32' ></link>
+
+
+
+
+<!-- Plugin -->
+
+
+
+
+    
+<link rel="stylesheet" href="/blog/css/plugins/bootstrap.row.css">
+
+    
+<link rel="stylesheet" href="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.css">
+
+    
+    
+
+
+
+
+<!-- Icon -->
+
+    
+<link rel="stylesheet" href="/blog/css/plugins/font-awesome.min.css">
+
+
+
+
+<!-- Variable -->
+<script>window.ASYNC_CONFIG = {"hostname":"2322222223.github.io","author":"R.linzhou","root":"/blog/","typed_text":["Mobile development"],"theme_version":"2.2.2","theme":{"switch":true,"default":"style-light"},"favicon":{"logo":"/img/logo.svg","icon16":"/img/logo.svg","icon32":"/img/logo.svg","apple_touch_icon":null,"webmanifest":null,"visibilitychange":false,"hidden":"/ogo.svg","show_text":"R.linzhou Blog","hide_text":"R.linzhou Blog"},"i18n":{"placeholder":"搜索文章...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）","author":"本文作者：","copyright_link":"本文链接：","copyright_license_title":"版权声明：","copyright_license_content":"本博客所有文章除特别声明外，均默认采用 undefined 许可协议。","copy_success":"复制成功","copy_failure":"复制失败","open_read_mode":"进入阅读模式","exit_read_mode":"退出阅读模式","notice_outdate_message":"距离上次更新已经 undefined 天了, 文章内容可能已经过时。","sticky":"置顶","just":"刚刚","min":"分钟前","hour":"小时前","day":"天前","month":"个月前"},"swup":false,"plugin":{"flickr_justified_gallery":"https://unpkg.com/flickr-justified-gallery@latest/dist/fjGallery.min.js"},"icons":{"sun":"far fa-sun","moon":"far fa-moon","play":"fas fa-play","email":"far fa-envelope","next":"fas fa-arrow-right","calendar":"far fa-calendar-alt","clock":"far fa-clock","user":"far fa-user","back_top":"fas fa-arrow-up","close":"fas fa-times","search":"fas fa-search","reward":"fas fa-hand-holding-usd","user_tag":"fas fa-user-alt","toc_tag":"fas fa-th-list","read":"fas fa-book-reader","arrows":"fas fa-arrows-alt-h","double_arrows":"fas fa-angle-double-down","copy":"fas fa-copy"},"icontype":"font","highlight":{"plugin":"highlighjs","theme":true,"copy":true,"lang":false,"title":"default","height_limit":200},"toc":{"post_title":true},"live_time":{"start_time":"","prefix":"博客已萌萌哒运行 undefined 天"},"danmu":{"enable":false,"el":".trm-banner"},"creative_commons":{"license":"by-nc-sa","language":"deed.zh"}};</script>
+<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2024-07-02 21:34:54"};</script>
+
+<!-- Theme mode css -->
+<link data-swup-theme rel="stylesheet" href="/blog/css/index.css?v=2.2.2" id="trm-switch-style">
+<script>
+    let defaultMode = ASYNC_CONFIG.theme.default !=='auto' ?  ASYNC_CONFIG.theme.default : (window.matchMedia("(prefers-color-scheme: light)").matches ? 'style-light' : 'style-dark')
+    let catchMode = localStorage.getItem('theme-mode') || defaultMode;
+    let type = catchMode === 'style-dark' ? 'add' : 'remove';
+    document.documentElement.classList[type]('dark')
+</script>
+
+<!-- CDN -->
+
+
+    
+    
+
+
+
+<!-- Site Analytics -->
+
+ 
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+<body>
+
+  <!-- app wrapper -->
+  <div class="trm-app-frame">
+
+    <!-- page preloader -->
+    <div class="trm-preloader">
+    <div class="trm-holder">
+        <div class="preloader">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+</div>
+    <!-- page preloader end -->
+
+    <!-- change mode preloader -->
+    <div class="trm-mode-swich-animation-frame">
+    <div class="trm-mode-swich-animation">
+        <i class="i-sun"><i class="iconfont far fa-sun"></i></i>
+        <div class="trm-horizon"></div>
+        <i class="i-moon"><i class="iconfont far fa-moon"></i></i>
+    </div>
+</div>
+    <!-- change mode preloader end -->
+
+      <!-- scroll container -->
+      <div id="trm-dynamic-content" class="trm-swup-animation">
+        <div id="trm-scroll-container" class="trm-scroll-container" style="opacity: 0">
+            <!-- top bar -->
+            <header class="trm-top-bar">
+	<div class="container">
+		<div class="trm-left-side">
+			<!-- logo -->
+<a href="/blog/" class="trm-logo-frame trm-anima-link">
+    
+        <img alt="logo" src="/blog/img/logo.svg">
+    
+    
+        <div class="trm-logo-text">
+            Blog<span></span>
+        </div>
+    
+</a>
+<!-- logo end -->
+		</div>
+		<div class="trm-right-side">
+			<!-- menu -->
+<div class="trm-menu">
+    <nav>
+        <ul>
+            
+            <li class="menu-item-has-children ">
+                <a  href="/blog/" target="">
+                    home
+                </a>
+                
+            </li>
+            
+            <li class="menu-item-has-children ">
+                <a data-no-swup href="/blog/archives/" target="">
+                    archives
+                </a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+</div>
+<!-- menu end -->
+			
+    <!-- mode switcher place -->
+    <div class="trm-mode-switcher-place">
+        <div class="trm-mode-switcher">
+            <i class="iconfont far fa-sun"></i>
+            <input class="tgl tgl-light" id="trm-swich" type="checkbox">
+            <label class="trm-swich" for="trm-swich"></label>
+            <i class="iconfont far fa-moon"></i>
+        </div>
+    </div>
+    <!-- mode switcher place end -->
+
+			
+		</div>
+		<div class="trm-menu-btn">
+			<span></span>
+		</div>
+	</div>
+</header>
+            <!-- top bar end -->
+
+            <!-- body -->
+            
+<div class="trm-content-start">
+    <!-- banner -->
+    <div class="trm-banner">
+    
+    <!-- banner cover -->
+    <img style="object-position:top;object-fit:cover;" alt="banner" class="trm-banner-cover" src="/blog/img/banner.png">
+    <!-- banner cover end -->
+    
+
+    <!-- banner content -->
+    <div class="trm-banner-content trm-overlay">
+        <div class="container">
+            <div class="row">
+                
+                <div class="col-lg-4"></div>
+                
+                <div class="col-lg-8">
+
+                    <!-- banner title -->
+                    <div class="trm-banner-text ">
+                        <div class="trm-label trm-mb-20">
+                            NEWS LETTER
+                        </div>
+                        <h1 class="trm-mb-30 trm-hsmb-font">
+                            RAG基础与工作流程介绍
+                        </h1>
+
+                        
+                            <ul class="trm-breadcrumbs trm-label">
+                                <li>
+                                    <a href="/blog/" class="trm-anima-link">Home</a>
+                                </li>
+                                <li>
+                                    <span>
+                                        2024
+                                    </span>
+                                </li>
+                            </ul>
+                        
+                    </div>
+                    <!-- banner title end -->
+
+                    <!-- scroll hint -->
+                    <span id="scroll-triger" class="trm-scroll-hint-frame">
+                        <div class="trm-scroll-hint"></div>
+                        <span class="trm-label">Scroll down</span>
+                    </span>
+                    <!-- scroll hint end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- banner content end -->
+</div>
+    <!-- banner end -->
+    <div class="container">
+        <div class="row">
+            
+                <div class="trm-page-sidebar col-lg-4 hidden-sm">
+                    <!-- main card -->
+                    <div class="trm-main-card-frame trm-sidebar">
+    <div class="trm-main-card"> 
+        <!-- card header -->
+<div class="trm-mc-header">
+    <div class="trm-avatar-frame trm-mb-20">
+        <img alt="Avatar" class="trm-avatar" src="/blog/img/avatar.png">
+    </div>
+    <h5 class="trm-name trm-mb-15">
+        R.linzhou
+    </h5>
+    
+        <div class="trm-label">
+            I&#39;m
+            <span class="trm-typed-text">
+                <!-- Words for theme.user.typedText -->
+            </span>
+        </div>
+    
+</div>
+<!-- card header end -->
+        <!-- sidebar social -->
+
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<div class="trm-social">
+    
+        <a href="https://github.com/2322222223" title="Github" rel="nofollow" target="_blank">
+            <i class="iconfont fab fa-github"></i>
+        </a>
+    
+        <a href="http://2322222223.com" title="Resume" rel="nofollow" target="_blank">
+            <i class="iconfont far fa-smile"></i>
+        </a>
+    
+</div>
+
+<!-- sidebar social end -->
+        <!-- info -->
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<ul class="trm-table trm-mb-20">
+    
+        <li>
+            <div class="trm-label">
+                地址:
+            </div>
+            <div class="trm-label trm-label-light">
+                Beijing
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                年龄:
+            </div>
+            <div class="trm-label trm-label-light">
+                32
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                邮箱:
+            </div>
+            <div class="trm-label trm-label-light">
+                g2322222223@gmail.com
+            </div>
+        </li>
+    
+</ul>
+<!-- info end -->
+
+        
+    <div class="trm-divider trm-mb-40 trm-mt-40"></div>
+    <!-- action button -->
+    <div class="text-center">
+        <a href="mailto:g2322222223@gmail.com" class="trm-btn">
+            联系我
+            <i class="iconfont far fa-envelope"></i>
+        </a>
+    </div>
+    <!-- action button end -->
+
+    </div>
+</div>
+                    <!-- main card end -->
+                </div>
+            
+            <div class="trm-page-content col-lg-8">
+                <div id="trm-content" class="trm-content">
+                    <div class="trm-post-info row hidden-sm">
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-calendar-alt trm-icon"></i><br>
+            06/24
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-clock trm-icon"></i><br>
+            20:33
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div id="post-author" class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-user trm-icon"></i><br>
+            R.linzhou
+        </div>
+    </div>
+</div>
+<div class="trm-card ">
+    <article id="article-container" class="trm-publication">
+    <h3 id="RAG（Retrieval-Augmented-Generation）技术入门教程"><a href="#RAG（Retrieval-Augmented-Generation）技术入门教程" class="headerlink" title="RAG（Retrieval-Augmented Generation）技术入门教程"></a>RAG（Retrieval-Augmented Generation）技术入门教程</h3><p>RAG（Retrieval-Augmented Generation）是一种结合了信息检索（Retrieval）和文本生成（Generation）的技术，能够有效提升自然语言处理任务的性能。</p>
+<h4 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h4><ol>
+<li>什么是 RAG？</li>
+<li>RAG 的原理与工作流程</li>
+<li>搭建 RAG 环境</li>
+<li>使用中文知识库的 RAG 示例</li>
+<li>RAG 的实现方式与优化</li>
+<li>总结</li>
+</ol>
+<h3 id="1-什么是-RAG？"><a href="#1-什么是-RAG？" class="headerlink" title="1. 什么是 RAG？"></a>1. 什么是 RAG？</h3><p>RAG 是由 Facebook AI 提出的技术，它将检索与生成结合在一起，通过从外部知识库检索相关文档，再利用这些文档生成更加准确和详细的回答。相比纯生成模型，RAG 能够利用外部知识，显著提升回答的准确性和信息量。</p>
+<h3 id="2-RAG-的原理与工作流程"><a href="#2-RAG-的原理与工作流程" class="headerlink" title="2. RAG 的原理与工作流程"></a>2. RAG 的原理与工作流程</h3><h4 id="2-1-RAG-的基本原理"><a href="#2-1-RAG-的基本原理" class="headerlink" title="2.1 RAG 的基本原理"></a>2.1 RAG 的基本原理</h4><p>RAG 模型由两个主要部分组成：</p>
+<ol>
+<li><strong>检索模型</strong>：从知识库中检索与输入问题相关的文档。</li>
+<li><strong>生成模型</strong>：基于检索到的文档和输入问题生成回答。</li>
+</ol>
+<h4 id="2-2-RAG-的工作流程"><a href="#2-2-RAG-的工作流程" class="headerlink" title="2.2 RAG 的工作流程"></a>2.2 RAG 的工作流程</h4><ol>
+<li><strong>输入问题</strong>：用户提出一个问题。</li>
+<li><strong>检索相关文档</strong>：检索模型从知识库中检索与问题相关的文档。</li>
+<li><strong>文档与问题结合</strong>：将检索到的文档和问题结合形成新的输入。</li>
+<li><strong>生成回答</strong>：生成模型根据新的输入生成回答。</li>
+</ol>
+<h3 id="3-搭建-RAG-环境"><a href="#3-搭建-RAG-环境" class="headerlink" title="3. 搭建 RAG 环境"></a>3. 搭建 RAG 环境</h3><p>首先，确保你已经安装了 Python 和 pip。然后，创建一个新的虚拟环境并安装必要的依赖项。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># 创建虚拟环境</span></span><br><span class="line">python -m venv rag_env</span><br><span class="line"></span><br><span class="line"><span class="comment"># 激活虚拟环境</span></span><br><span class="line"><span class="comment"># Windows</span></span><br><span class="line">rag_env\Scripts\activate</span><br><span class="line"><span class="comment"># macOS/Linux</span></span><br><span class="line"><span class="built_in">source</span> rag_env/bin/activate</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装依赖</span></span><br><span class="line">pip install torch transformers faiss-cpu</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-使用中文知识库的-RAG-示例"><a href="#4-使用中文知识库的-RAG-示例" class="headerlink" title="4. 使用中文知识库的 RAG 示例"></a>4. 使用中文知识库的 RAG 示例</h3><p>为了演示，我们使用一个简单的中文知识库。假设我们有一个包含一些中文文档的小型知识库：</p>
+<p><strong>knowledge_base.txt</strong>：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="bullet">1.</span> 北京是中国的首都。</span><br><span class="line"><span class="bullet">2.</span> 长城是中国古代的军事防御工程。</span><br><span class="line"><span class="bullet">3.</span> Python 是一种广泛使用的编程语言。</span><br><span class="line"><span class="bullet">4.</span> 东京是日本的首都。</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-1-检索部分"><a href="#4-1-检索部分" class="headerlink" title="4.1 检索部分"></a>4.1 检索部分</h4><p>我们使用 <code>faiss</code> 库来实现检索。首先，将知识库中的文档向量化。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> faiss</span><br><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> AutoTokenizer, AutoModel</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载模型和分词器</span></span><br><span class="line">tokenizer = AutoTokenizer.from_pretrained(<span class="string">&quot;sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2&quot;</span>)</span><br><span class="line">model = AutoModel.from_pretrained(<span class="string">&quot;sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载知识库</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;knowledge_base.txt&quot;</span>, <span class="string">&quot;r&quot;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    knowledge_base = [line.strip() <span class="keyword">for</span> line <span class="keyword">in</span> f]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 向量化知识库文档</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">embed_texts</span>(<span class="params">texts</span>):</span><br><span class="line">    inputs = tokenizer(texts, return_tensors=<span class="string">&quot;pt&quot;</span>, padding=<span class="literal">True</span>, truncation=<span class="literal">True</span>)</span><br><span class="line">    <span class="keyword">with</span> torch.no_grad():</span><br><span class="line">        outputs = model(**inputs)</span><br><span class="line">    <span class="keyword">return</span> outputs.last_hidden_state.mean(dim=<span class="number">1</span>).cpu().numpy()</span><br><span class="line"></span><br><span class="line">kb_embeddings = embed_texts(knowledge_base)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建 FAISS 索引</span></span><br><span class="line">index = faiss.IndexFlatL2(kb_embeddings.shape[<span class="number">1</span>])</span><br><span class="line">index.add(kb_embeddings)</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-2-生成部分"><a href="#4-2-生成部分" class="headerlink" title="4.2 生成部分"></a>4.2 生成部分</h4><p>我们使用 <code>transformers</code> 库中的 T5 模型来生成回答。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> T5ForConditionalGeneration, T5Tokenizer</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载 T5 模型和分词器</span></span><br><span class="line">t5_tokenizer = T5Tokenizer.from_pretrained(<span class="string">&quot;uer/t5-small-chinese-cluecorpussmall&quot;</span>)</span><br><span class="line">t5_model = T5ForConditionalGeneration.from_pretrained(<span class="string">&quot;uer/t5-small-chinese-cluecorpussmall&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-3-RAG-模型实现"><a href="#4-3-RAG-模型实现" class="headerlink" title="4.3 RAG 模型实现"></a>4.3 RAG 模型实现</h4><p>将检索和生成部分结合起来，构建 RAG 模型。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">rag_model</span>(<span class="params">question, top_k=<span class="number">2</span></span>):</span><br><span class="line">    <span class="comment"># 检索相关文档</span></span><br><span class="line">    question_embedding = embed_texts([question])</span><br><span class="line">    D, I = index.search(question_embedding, top_k)</span><br><span class="line">    retrieved_docs = [knowledge_base[i] <span class="keyword">for</span> i <span class="keyword">in</span> I[<span class="number">0</span>]]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 生成回答</span></span><br><span class="line">    input_text = question + <span class="string">&quot; &quot;</span> + <span class="string">&quot; &quot;</span>.join(retrieved_docs)</span><br><span class="line">    inputs = t5_tokenizer(input_text, return_tensors=<span class="string">&quot;pt&quot;</span>, padding=<span class="literal">True</span>, truncation=<span class="literal">True</span>)</span><br><span class="line">    outputs = t5_model.generate(**inputs)</span><br><span class="line">    <span class="keyword">return</span> t5_tokenizer.decode(outputs[<span class="number">0</span>], skip_special_tokens=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试 RAG 模型</span></span><br><span class="line">question = <span class="string">&quot;中国的首都是哪里？&quot;</span></span><br><span class="line">answer = rag_model(question)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Question: <span class="subst">&#123;question&#125;</span>\nAnswer: <span class="subst">&#123;answer&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-RAG-的实现方式与优化"><a href="#5-RAG-的实现方式与优化" class="headerlink" title="5. RAG 的实现方式与优化"></a>5. RAG 的实现方式与优化</h3><h4 id="5-1-使用-Dense-Passage-Retrieval-DPR"><a href="#5-1-使用-Dense-Passage-Retrieval-DPR" class="headerlink" title="5.1 使用 Dense Passage Retrieval (DPR)"></a>5.1 使用 Dense Passage Retrieval (DPR)</h4><p>DPR 是一种强大的检索模型，能够更好地从知识库中检索相关文档。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> DPRQuestionEncoder, DPRContextEncoder, DPRQuestionEncoderTokenizer, DPRContextEncoderTokenizer</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载 DPR 模型和分词器</span></span><br><span class="line">question_encoder = DPRQuestionEncoder.from_pretrained(<span class="string">&quot;facebook/dpr-question_encoder-single-nq-base&quot;</span>)</span><br><span class="line">context_encoder = DPRContextEncoder.from_pretrained(<span class="string">&quot;facebook/dpr-ctx_encoder-single-nq-base&quot;</span>)</span><br><span class="line">question_tokenizer = DPRQuestionEncoderTokenizer.from_pretrained(<span class="string">&quot;facebook/dpr-question_encoder-single-nq-base&quot;</span>)</span><br><span class="line">context_tokenizer = DPRContextEncoderTokenizer.from_pretrained(<span class="string">&quot;facebook/dpr-ctx_encoder-single-nq-base&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 向量化知识库文档</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">embed_texts_dpr</span>(<span class="params">texts, tokenizer, model</span>):</span><br><span class="line">    inputs = tokenizer(texts, return_tensors=<span class="string">&quot;pt&quot;</span>, padding=<span class="literal">True</span>, truncation=<span class="literal">True</span>)</span><br><span class="line">    <span class="keyword">with</span> torch.no_grad():</span><br><span class="line">        outputs = model(**inputs)</span><br><span class="line">    <span class="keyword">return</span> outputs.pooler_output.cpu().numpy()</span><br><span class="line"></span><br><span class="line">kb_embeddings_dpr = embed_texts_dpr(knowledge_base, context_tokenizer, context_encoder)</span><br><span class="line">index_dpr = faiss.IndexFlatL2(kb_embeddings_dpr.shape[<span class="number">1</span>])</span><br><span class="line">index_dpr.add(kb_embeddings_dpr)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">rag_model_dpr</span>(<span class="params">question, top_k=<span class="number">2</span></span>):</span><br><span class="line">    question_embedding = embed_texts_dpr([question], question_tokenizer, question_encoder)</span><br><span class="line">    D, I = index_dpr.search(question_embedding, top_k)</span><br><span class="line">    retrieved_docs = [knowledge_base[i] <span class="keyword">for</span> i <span class="keyword">in</span> I[<span class="number">0</span>]]</span><br><span class="line">    input_text = question + <span class="string">&quot; &quot;</span> + <span class="string">&quot; &quot;</span>.join(retrieved_docs)</span><br><span class="line">    inputs = t5_tokenizer(input_text, return_tensors=<span class="string">&quot;pt&quot;</span>, padding=<span class="literal">True</span>, truncation=<span class="literal">True</span>)</span><br><span class="line">    outputs = t5_model.generate(**inputs)</span><br><span class="line">    <span class="keyword">return</span> t5_tokenizer.decode(outputs[<span class="number">0</span>], skip_special_tokens=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试 DPR + RAG 模型</span></span><br><span class="line">question = <span class="string">&quot;长城是做什么的？&quot;</span></span><br><span class="line">answer = rag_model_dpr(question)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Question: <span class="subst">&#123;question&#125;</span>\nAnswer: <span class="subst">&#123;answer&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-2-使用-Elasticsearch-进行检索"><a href="#5-2-使用-Elasticsearch-进行检索" class="headerlink" title="5.2 使用 Elasticsearch 进行检索"></a>5.2 使用 Elasticsearch 进行检索</h4><p>Elasticsearch 是一种分布式搜索引擎，可以高效地处理大规模文本检索。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">from</span> elasticsearch <span class="keyword">import</span> Elasticsearch</span><br><span class="line"><span class="keyword">from</span> elasticsearch.helpers <span class="keyword">import</span> bulk</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化 Elasticsearch 客户端</span></span><br><span class="line">es = Elasticsearch()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建索引</span></span><br><span class="line">index_name = <span class="string">&quot;knowledge_base&quot;</span></span><br><span class="line"><span class="keyword">if</span> es.indices.exists(index_name):</span><br><span class="line">    es.indices.delete(index=index_name)</span><br><span class="line">es.indices.create(index=index_name)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 索引文档</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">generate_actions</span>(<span class="params">docs</span>):</span><br><span class="line">    <span class="keyword">for</span> i, doc <span class="keyword">in</span> <span class="built_in">enumerate</span>(docs):</span><br><span class="line">        <span class="keyword">yield</span> &#123;</span><br><span class="line">            <span class="string">&quot;_index&quot;</span>: index_name,</span><br><span class="line">            <span class="string">&quot;_id&quot;</span>: i,</span><br><span class="line">            <span class="string">&quot;_source&quot;</span>: &#123;</span><br><span class="line">                <span class="string">&quot;text&quot;</span>: doc</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">bulk(es, generate_actions(knowledge_base))</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">retrieve_documents_es</span>(<span class="params">question, top_k=<span class="number">2</span></span>):</span><br><span class="line">    query = &#123;</span><br><span class="line">        <span class="string">&quot;query&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;match&quot;</span>: &#123;</span><br><span class="line">                <span class="string">&quot;text&quot;</span>: question</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">&quot;size&quot;</span>: top_k</span><br><span class="line">    &#125;</span><br><span class="line">    response = es.search(index=index_name, body=query)</span><br><span class="line">    <span class="keyword">return</span> [hit[<span class="string">&quot;_source&quot;</span>][<span class="string">&quot;text&quot;</span>] <span class="keyword">for</span> hit <span class="keyword">in</span> response[<span class="string">&quot;hits&quot;</span>][<span class="string">&quot;hits&quot;</span>]]</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">rag_model_es</span>(<span class="params">question, top_k=<span class="number">2</span></span>):</span><br><span class="line">    retrieved_docs = retrieve_documents_es(question, top_k)</span><br><span class="line">    input_text = question + <span class="string">&quot; &quot;</span> + <span class="string">&quot; &quot;</span>.join(retrieved_docs)</span><br><span class="line">    inputs = t5_tokenizer(input_text, return_tensors=<span class="string">&quot;pt&quot;</span>, padding=<span class="literal">True</span>, truncation=<span class="literal">True</span>)</span><br><span class="line">    outputs = t5_model.generate(**inputs)</span><br><span class="line">    <span class="keyword">return</span> t5_tokenizer.decode(outputs[<span class="number">0</span>], skip_special_tokens=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试 Elasticsearch + RAG 模型</span></span><br><span class="line">question = <span class="string">&quot;Python 是什么？&quot;</span></span><br><span class="line">answer = rag_model_es(question)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Question: <span class="subst">&#123;question&#125;</span>\nAnswer: <span class="subst">&#123;answer&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-总结"><a href="#6-总结" class="headerlink" title="6. 总结"></a>6. 总结</h3><p>以上是本文的全部内容,主要介绍了 RAG 技术的原理与工作流程，逐步指导如何从零开始实现一个 RAG 模型，并展示了使用不同检索方式（如 Dense Passage Retrieval 和 Elasticsearch）结合生成模型实现 RAG。</p>
+
+</article>
+    
+    
+
+</div>
+<div class="trm-post-next-prev row">
+    <div class="col-lg-12">
+        <!-- title -->
+        <h5 class="trm-title-with-divider">
+            其他文章
+            <span data-number="02"></span>
+        </h5>
+    </div>
+    
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/blog/2024/06/28/LLM-RAG%E5%85%A5%E9%97%A8%E7%AF%87/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">LLM-RAG篇</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>24/06/28</li>
+                <li>17:03</li>
+                <li>LLM</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+    
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/blog/2024/06/15/%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B7%BB%E5%8A%A0%E8%B4%AD%E7%89%A9%E8%BD%A6%E5%8A%A8%E7%94%BB/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">小程序添加购物车动画</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>24/06/15</li>
+                <li>12:03</li>
+                <li>未分类</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+</div>
+
+    
+
+    <div id="giscus-wrap" class="trm-card trm-scroll-animation comment-container"></div>
+<script data-swup-reload-script>
+    function loadGiscus() {
+        let nowTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+        const config = {
+            src: 'https://giscus.app/client.js',
+            "data-repo": '2322222223/blog',
+            "data-repo-id": 'R_kgDOMCoZ8w',
+            "data-category": 'Announcements',
+            "data-category-id": 'DIC_kwDOMCoZ884Cfxl-',
+            "data-mapping": 'pathname',
+            "data-reactions-enabled": '1',
+            "data-emit-metadata": '1',
+            "data-theme": nowTheme,
+            "data-lang": 'zh-CN',
+            crossorigin: "anonymous",
+            async: true
+        }
+        let ele = document.createElement('script')
+        for (let key in config) {
+            ele.setAttribute(key, config[key])
+        }
+        document.getElementById('giscus-wrap').insertAdjacentElement('afterbegin', ele)
+    }
+
+    function changeGiscusTheme() {
+        let theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+
+        function sendMessage(message) {
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (!iframe) return;
+            iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+
+        sendMessage({
+            setConfig: {
+                theme: theme
+            }
+        });
+    }
+
+    loadGiscus();
+</script>
+
+
+
+                    <div class="trm-divider footer-divider"></div>
+
+                    <!-- footer -->
+                    <footer class="trm-footer-card trm-scroll-animation">
+
+    
+
+    
+        <div class="trm-footer-item">
+            <span>© 2020- 2024</span>
+            <span class="footer-separator"data-separator=" · "></span>
+            <span class="trm-accent-color">R.linzhou</span>
+        </div>
+    
+
+      
+
+     
+
+     
+</footer>
+                    <!-- footer end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            <!-- body end -->
+
+            
+
+            
+<div class="trm-fixed-container">
+    
+    
+        <div class="trm-fixed-btn" data-title="阅读模式" onclick="asyncFun.switchReadMode()">
+            <i class="iconfont fas fa-book-reader"></i>
+        </div>
+    
+    
+        <div class="trm-fixed-btn hidden-md" data-title="单栏和双栏切换" onclick="asyncFun.switchSingleColumn()">
+            <i class="iconfont fas fa-arrows-alt-h"></i>
+        </div>
+    
+    <div id="trm-back-top" class="trm-fixed-btn" data-title="回到顶部">
+        <i class="iconfont fas fa-arrow-up"></i>
+    </div>
+</div>
+        </div>
+      </div>
+      <!-- scroll container end -->
+  </div>
+  <!-- app wrapper end -->
+
+  
+  <!-- Plugin -->
+
+
+
+
+    
+    
+<script src="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+
+    
+
+    
+        <script src="/blog/js/plugins/typing.js?v=2.2.2"></script>
+    
+
+    
+
+    <!-- 数学公式 -->
+    
+
+    <!-- 评论插件 -->
+    
+        
+
+        
+    
+
+		
+
+
+
+
+    <!-- Service Worker -->
+    
+    <script>
+        "serviceWorker" in navigator ?
+        navigator.serviceWorker.register('/blog/sw.js').then(function () {
+            navigator.serviceWorker.controller ? 
+             console.log("Assets cached by the controlling service worker.") :
+             console.log("Please reload this page to allow the service worker to handle network operations.")
+        }).catch(function (e) {
+            console.log("ERROR: " + e)
+        }) : console.log("Service workers are not supported in the current browser.")
+    </script>
+
+    <!-- baidu push -->
+    
+
+
+<script id="async-script" src="/blog/js/main.js?v=2.2.2"></script>
+
+<!-- CDN -->
+
+
+    
+
+    
+
+    
+
+
+
+</body>
+
+</html>
