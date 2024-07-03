@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="x5-fullscreen" content="true">
+<meta name="full-screen" content="yes">
+<meta name="theme-color" content="#317EFB" />
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0" name="viewport">
+<meta name="description" content="一、何为 Word2vec ？1.1 什么是 Word Embedding ？ 在说明 Word2vec 之前，需要先解释一下 Word Embedding。 它就是将「不可计算」「非结构化」的词转化为「可计算」「结构化」的向量。 这一步解决的是”将现实问题转化为数学问题“，是人工智能非常关键的一步。 推荐文章：《一文看懂词嵌入 word embedding（与其他文本表示比较+2种主流算法）》">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NLP入门-word2vec">
+<meta property="og:url" content="https://2322222223.github.io/blog/2024/06/21/NLP%E5%85%A5%E9%97%A8-word2vec/index.html">
+<meta property="og:site_name" content="Rlz Blog">
+<meta property="og:description" content="一、何为 Word2vec ？1.1 什么是 Word Embedding ？ 在说明 Word2vec 之前，需要先解释一下 Word Embedding。 它就是将「不可计算」「非结构化」的词转化为「可计算」「结构化」的向量。 这一步解决的是”将现实问题转化为数学问题“，是人工智能非常关键的一步。 推荐文章：《一文看懂词嵌入 word embedding（与其他文本表示比较+2种主流算法）》">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-06-21T09:27:18.000Z">
+<meta property="article:modified_time" content="2024-07-03T01:02:07.838Z">
+<meta property="article:author" content="R.linzhou">
+<meta property="article:tag" content="NLP">
+<meta property="article:tag" content="word2vec">
+<meta name="twitter:card" content="summary">
+
+
+<title >NLP入门-word2vec</title>
+
+<!-- Favicon -->
+
+    <link href='/blog/img/logo.svg?v=2.2.2' rel='icon' type='image/png' sizes='16x16' ></link>
+
+
+    <link href='/blog/img/logo.svg?v=2.2.2' rel='icon' type='image/png' sizes='32x32' ></link>
+
+
+
+
+<!-- Plugin -->
+
+
+
+
+    
+<link rel="stylesheet" href="/blog/css/plugins/bootstrap.row.css">
+
+    
+<link rel="stylesheet" href="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.css">
+
+    
+    
+
+
+
+
+<!-- Icon -->
+
+    
+<link rel="stylesheet" href="/blog/css/plugins/font-awesome.min.css">
+
+
+
+
+<!-- Variable -->
+<script>window.ASYNC_CONFIG = {"hostname":"2322222223.github.io","author":"R.linzhou","root":"/blog/","typed_text":["Mobile development"],"theme_version":"2.2.2","theme":{"switch":true,"default":"style-light"},"favicon":{"logo":"/img/logo.svg","icon16":"/img/logo.svg","icon32":"/img/logo.svg","apple_touch_icon":null,"webmanifest":null,"visibilitychange":false,"hidden":"/ogo.svg","show_text":"R.linzhou Blog","hide_text":"R.linzhou Blog"},"i18n":{"placeholder":"搜索文章...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）","author":"本文作者：","copyright_link":"本文链接：","copyright_license_title":"版权声明：","copyright_license_content":"本博客所有文章除特别声明外，均默认采用 undefined 许可协议。","copy_success":"复制成功","copy_failure":"复制失败","open_read_mode":"进入阅读模式","exit_read_mode":"退出阅读模式","notice_outdate_message":"距离上次更新已经 undefined 天了, 文章内容可能已经过时。","sticky":"置顶","just":"刚刚","min":"分钟前","hour":"小时前","day":"天前","month":"个月前"},"swup":false,"plugin":{"flickr_justified_gallery":"https://unpkg.com/flickr-justified-gallery@latest/dist/fjGallery.min.js"},"icons":{"sun":"far fa-sun","moon":"far fa-moon","play":"fas fa-play","email":"far fa-envelope","next":"fas fa-arrow-right","calendar":"far fa-calendar-alt","clock":"far fa-clock","user":"far fa-user","back_top":"fas fa-arrow-up","close":"fas fa-times","search":"fas fa-search","reward":"fas fa-hand-holding-usd","user_tag":"fas fa-user-alt","toc_tag":"fas fa-th-list","read":"fas fa-book-reader","arrows":"fas fa-arrows-alt-h","double_arrows":"fas fa-angle-double-down","copy":"fas fa-copy"},"icontype":"font","highlight":{"plugin":"highlighjs","theme":true,"copy":true,"lang":false,"title":"default","height_limit":200},"toc":{"post_title":true},"live_time":{"start_time":"","prefix":"博客已萌萌哒运行 undefined 天"},"danmu":{"enable":false,"el":".trm-banner"},"creative_commons":{"license":"by-nc-sa","language":"deed.zh"}};</script>
+<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2024-07-03 09:02:07"};</script>
+
+<!-- Theme mode css -->
+<link data-swup-theme rel="stylesheet" href="/blog/css/index.css?v=2.2.2" id="trm-switch-style">
+<script>
+    let defaultMode = ASYNC_CONFIG.theme.default !=='auto' ?  ASYNC_CONFIG.theme.default : (window.matchMedia("(prefers-color-scheme: light)").matches ? 'style-light' : 'style-dark')
+    let catchMode = localStorage.getItem('theme-mode') || defaultMode;
+    let type = catchMode === 'style-dark' ? 'add' : 'remove';
+    document.documentElement.classList[type]('dark')
+</script>
+
+<!-- CDN -->
+
+
+    
+    
+
+
+
+<!-- Site Analytics -->
+
+ 
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+<body>
+
+  <!-- app wrapper -->
+  <div class="trm-app-frame">
+
+    <!-- page preloader -->
+    <div class="trm-preloader">
+    <div class="trm-holder">
+        <div class="preloader">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+</div>
+    <!-- page preloader end -->
+
+    <!-- change mode preloader -->
+    <div class="trm-mode-swich-animation-frame">
+    <div class="trm-mode-swich-animation">
+        <i class="i-sun"><i class="iconfont far fa-sun"></i></i>
+        <div class="trm-horizon"></div>
+        <i class="i-moon"><i class="iconfont far fa-moon"></i></i>
+    </div>
+</div>
+    <!-- change mode preloader end -->
+
+      <!-- scroll container -->
+      <div id="trm-dynamic-content" class="trm-swup-animation">
+        <div id="trm-scroll-container" class="trm-scroll-container" style="opacity: 0">
+            <!-- top bar -->
+            <header class="trm-top-bar">
+	<div class="container">
+		<div class="trm-left-side">
+			<!-- logo -->
+<a href="/blog/" class="trm-logo-frame trm-anima-link">
+    
+        <img alt="logo" src="/blog/img/logo.svg">
+    
+    
+        <div class="trm-logo-text">
+            Blog<span></span>
+        </div>
+    
+</a>
+<!-- logo end -->
+		</div>
+		<div class="trm-right-side">
+			<!-- menu -->
+<div class="trm-menu">
+    <nav>
+        <ul>
+            
+            <li class="menu-item-has-children ">
+                <a  href="/blog/" target="">
+                    home
+                </a>
+                
+            </li>
+            
+            <li class="menu-item-has-children ">
+                <a data-no-swup href="/blog/archives/" target="">
+                    archives
+                </a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+</div>
+<!-- menu end -->
+			
+    <!-- mode switcher place -->
+    <div class="trm-mode-switcher-place">
+        <div class="trm-mode-switcher">
+            <i class="iconfont far fa-sun"></i>
+            <input class="tgl tgl-light" id="trm-swich" type="checkbox">
+            <label class="trm-swich" for="trm-swich"></label>
+            <i class="iconfont far fa-moon"></i>
+        </div>
+    </div>
+    <!-- mode switcher place end -->
+
+			
+		</div>
+		<div class="trm-menu-btn">
+			<span></span>
+		</div>
+	</div>
+</header>
+            <!-- top bar end -->
+
+            <!-- body -->
+            
+<div class="trm-content-start">
+    <!-- banner -->
+    <div class="trm-banner">
+    
+    <!-- banner cover -->
+    <img style="object-position:top;object-fit:cover;" alt="banner" class="trm-banner-cover" src="/blog/img/banner.png">
+    <!-- banner cover end -->
+    
+
+    <!-- banner content -->
+    <div class="trm-banner-content trm-overlay">
+        <div class="container">
+            <div class="row">
+                
+                <div class="col-lg-4"></div>
+                
+                <div class="col-lg-8">
+
+                    <!-- banner title -->
+                    <div class="trm-banner-text ">
+                        <div class="trm-label trm-mb-20">
+                            NEWS LETTER
+                        </div>
+                        <h1 class="trm-mb-30 trm-hsmb-font">
+                            NLP入门-word2vec
+                        </h1>
+
+                        
+                            <ul class="trm-breadcrumbs trm-label">
+                                <li>
+                                    <a href="/blog/" class="trm-anima-link">Home</a>
+                                </li>
+                                <li>
+                                    <span>
+                                        2024
+                                    </span>
+                                </li>
+                            </ul>
+                        
+                    </div>
+                    <!-- banner title end -->
+
+                    <!-- scroll hint -->
+                    <span id="scroll-triger" class="trm-scroll-hint-frame">
+                        <div class="trm-scroll-hint"></div>
+                        <span class="trm-label">Scroll down</span>
+                    </span>
+                    <!-- scroll hint end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- banner content end -->
+</div>
+    <!-- banner end -->
+    <div class="container">
+        <div class="row">
+            
+                <div class="trm-page-sidebar col-lg-4 hidden-sm">
+                    <!-- main card -->
+                    <div class="trm-main-card-frame trm-sidebar">
+    <div class="trm-main-card"> 
+        <!-- card header -->
+<div class="trm-mc-header">
+    <div class="trm-avatar-frame trm-mb-20">
+        <img alt="Avatar" class="trm-avatar" src="/blog/img/avatar.png">
+    </div>
+    <h5 class="trm-name trm-mb-15">
+        R.linzhou
+    </h5>
+    
+        <div class="trm-label">
+            I&#39;m
+            <span class="trm-typed-text">
+                <!-- Words for theme.user.typedText -->
+            </span>
+        </div>
+    
+</div>
+<!-- card header end -->
+        <!-- sidebar social -->
+
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<div class="trm-social">
+    
+        <a href="https://github.com/2322222223" title="Github" rel="nofollow" target="_blank">
+            <i class="iconfont fab fa-github"></i>
+        </a>
+    
+        <a href="http://2322222223.com" title="Resume" rel="nofollow" target="_blank">
+            <i class="iconfont far fa-smile"></i>
+        </a>
+    
+</div>
+
+<!-- sidebar social end -->
+        <!-- info -->
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<ul class="trm-table trm-mb-20">
+    
+        <li>
+            <div class="trm-label">
+                地址:
+            </div>
+            <div class="trm-label trm-label-light">
+                Beijing
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                年龄:
+            </div>
+            <div class="trm-label trm-label-light">
+                32
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                邮箱:
+            </div>
+            <div class="trm-label trm-label-light">
+                g2322222223@gmail.com
+            </div>
+        </li>
+    
+</ul>
+<!-- info end -->
+
+        
+    <div class="trm-divider trm-mb-40 trm-mt-40"></div>
+    <!-- action button -->
+    <div class="text-center">
+        <a href="mailto:g2322222223@gmail.com" class="trm-btn">
+            联系我
+            <i class="iconfont far fa-envelope"></i>
+        </a>
+    </div>
+    <!-- action button end -->
+
+    </div>
+</div>
+                    <!-- main card end -->
+                </div>
+            
+            <div class="trm-page-content col-lg-8">
+                <div id="trm-content" class="trm-content">
+                    <div class="trm-post-info row hidden-sm">
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-calendar-alt trm-icon"></i><br>
+            06/21
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-clock trm-icon"></i><br>
+            17:27
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div id="post-author" class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-user trm-icon"></i><br>
+            R.linzhou
+        </div>
+    </div>
+</div>
+<div class="trm-card ">
+    <article id="article-container" class="trm-publication">
+    <h2 id="一、何为-Word2vec-？"><a href="#一、何为-Word2vec-？" class="headerlink" title="一、何为 Word2vec ？"></a><strong>一、何为 Word2vec ？</strong></h2><p><strong>1.1 什么是 Word Embedding ？</strong></p>
+<p>在说明 Word2vec 之前，需要先解释一下 Word Embedding。 它就是将「不可计算」「非结构化」的词转化为「可计算」「结构化」的向量。</p>
+<p><strong>这一步解决的是”将现实问题转化为数学问题“</strong>，是人工智能非常关键的一步。</p>
+<p>推荐文章：《<a target="_blank" rel="noopener" href="https://easyai.tech/ai-definition/word-embedding/">一文看懂词嵌入 word embedding（与其他文本表示比较+2种主流算法）</a>》</p>
+<p>将现实问题转化为数学问题只是第一步，后面还需要求解这个数学问题。所以 Word Embedding 的模型本身并不重要，<strong>重要的是生成出来的结果——词向量</strong>。因为在后续的任务中会直接用到这个词向量。</p>
+<p><strong>1.2 什么是 Word2vec ？</strong></p>
+<p><strong>Word2vec 是 Word Embedding 的方法之一</strong>。他是 2013 年由谷歌的 Mikolov 提出了一套新的词嵌入方法。</p>
+<p>在 Word2vec 出现之前，已经有一些 Word Embedding 的方法，但是之前的方法并不成熟，也没有大规模的得到应用。</p>
+<p>下面会详细介绍 Word2vec 的训练模型和用法。</p>
+<h2 id="二、Word2vec-的-训练模式-有哪些？"><a href="#二、Word2vec-的-训练模式-有哪些？" class="headerlink" title="二、Word2vec 的 训练模式 有哪些？"></a><strong>二、Word2vec 的 训练模式 有哪些？</strong></h2><p>CBOW(Continuous Bag-of-Words Model)和Skip-gram (Continuous Skip-gram Model)，是Word2vec 的两种训练模式。下面简单做一下解释：</p>
+<p><strong>2.1 CBOW</strong></p>
+<p>通过上下文来预测当前值。相当于一句话中扣掉一个词，让你猜这个词是什么。</p>
+<p><strong>2.2 Skip-gram</strong></p>
+<p>用当前词来预测上下文。相当于给你一个词，让你猜前面和后面可能出现什么词。</p>
+<p><strong>2.3 优化方法</strong></p>
+<p>为了提高速度，Word2vec 经常采用 2 种加速方式：</p>
+<ol>
+<li>Negative Sample（负采样）</li>
+<li>Hierarchical Softmax</li>
+</ol>
+<p>具体加速方法就不详细讲解了，感兴趣的可以自己查找资料。</p>
+<h2 id="三、Word2vec-的优缺点"><a href="#三、Word2vec-的优缺点" class="headerlink" title="三、Word2vec 的优缺点"></a><strong>三、Word2vec 的优缺点</strong></h2><p>需要说明的是：Word2vec 是上一代的产物（18 年之前）， 18 年之后想要得到最好的效果，已经不使用 Word Embedding 的方法了，所以也不会用到 Word2vec。</p>
+<p>优点：</p>
+<ol>
+<li>由于 Word2vec 会考虑上下文，跟之前的 Embedding 方法相比，效果要更好（但不如 18 年之后的方法）</li>
+<li>比之前的 Embedding方 法维度更少，所以速度更快</li>
+<li>通用性很强，可以用在各种 NLP 任务中</li>
+</ol>
+<p>缺点：</p>
+<ol>
+<li>由于词和向量是一对一的关系，所以多义词的问题无法解决。</li>
+<li>Word2vec 是一种静态的方式，虽然通用性强，但是无法针对特定任务做动态优化</li>
+</ol>
+<p><strong>四、Word2vec 的实战</strong></p>
+<p>使用<a href="https://link.zhihu.com/?target=https://github.com/RaRe-Technologies/gensim">gensim</a>作为主要的工具来生成word2vec词向量。</p>
+<p>gensim是一个自然语言处理工具包，主要用于主题建模，文本索引和相似度检索。实现了很多流行的算法，比如潜在语义分析LSA，LDA和word2vec等。</p>
+<p>本讲主要介绍gensim中的word2vec模块的内容，该算法包括跳字模型和连续词袋模型，都使用了层次化softmax和负采样技术进行优化。</p>
+<h5 id="4-1-gensim-安装"><a href="#4-1-gensim-安装" class="headerlink" title="4.1 gensim 安装"></a>4.1 gensim <strong>安装</strong></h5><p>pip install gensim</p>
+<h5 id="4-2-模型训练"><a href="#4-2-模型训练" class="headerlink" title="4.2 模型训练"></a>4.2 模型<strong>训练</strong></h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">from</span> gensim.test.utils <span class="keyword">import</span> coomon_texts</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> gensim.models <span class="keyword">import</span> Word2Vec</span><br><span class="line"></span><br><span class="line">model = Word2Vec(</span><br><span class="line"></span><br><span class="line">​    sentence = common_texts, </span><br><span class="line"></span><br><span class="line">​    vector_size=<span class="number">100</span>, </span><br><span class="line"></span><br><span class="line">​    window=<span class="number">5</span>, </span><br><span class="line"></span><br><span class="line">​    min_count=<span class="number">1</span>, </span><br><span class="line"></span><br><span class="line">​    worker=<span class="number">4</span></span><br><span class="line"></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">model.save(<span class="string">&quot;word2vec.model&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+
+<p><strong>注意：</strong></p>
+<p><strong>这里的sentence最好是一个可迭代的对象，或者是一个迭代器，这样如果无监督训练文本较大时，可以按照stream的方式逐渐流入内存中，”读入，训练，抛弃“循环往复，能够最大化节省内存空间。</strong></p>
+<p>示例代码如下，以供参考</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MySentences</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line"></span><br><span class="line">​    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, dirname</span>):</span><br><span class="line"></span><br><span class="line">​        self.dirname = dirname</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">​    <span class="keyword">def</span> <span class="title function_">__iter__</span>(<span class="params">self</span>):</span><br><span class="line"></span><br><span class="line">​        <span class="keyword">for</span> fname <span class="keyword">in</span> os.listdir(self.dirname):</span><br><span class="line"></span><br><span class="line">​            <span class="keyword">for</span> line <span class="keyword">in</span> <span class="built_in">open</span>(os.path.join(self.dirname, fname)):</span><br><span class="line"></span><br><span class="line">​                <span class="keyword">yield</span> line.split()</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">sentences = MySentences(<span class="string">&#x27;/some/directory&#x27;</span>) <span class="comment"># a memory-friendly iterator</span></span><br><span class="line"></span><br><span class="line">model = gensim.models.Word2Vec(sentences)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>输入模型中的数据参考下面的数据结构</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">[[<span class="string">&quot;hello&quot;</span>,<span class="string">&quot;world&quot;</span>],</span><br><span class="line"></span><br><span class="line">[<span class="string">&quot;how&quot;</span>,<span class="string">&quot;are&quot;</span>,<span class="string">&quot;you&quot;</span>],</span><br><span class="line"></span><br><span class="line">[<span class="string">&quot;what&quot;</span>,<span class="string">&quot;do&quot;</span>,<span class="string">&quot;you&quot;</span>,<span class="string">&quot;think&quot;</span>,<span class="string">&quot;about&quot;</span>,<span class="string">&quot;it&quot;</span>]]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>4.3. 保存模型后重新加载训练</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">model = Word2Vec.load(<span class="string">&quot;word2vec.model&quot;</span>)</span><br><span class="line"></span><br><span class="line">model.train([[<span class="string">&quot;Hello&quot;</span>,<span class="string">&quot;world&quot;</span>]], total_examples=<span class="number">1</span>, epoches=<span class="number">1</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>4.4. 词向量</strong></p>
+<p>训练好的词向量被保存在KeyedVectors对象中。可以通过如下方式取得某个词对应的向量，</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vector = model.wv[<span class="string">&#x27;computer&#x27;</span>]<span class="comment">#得到computer对应的向量表示，格式是numpy向量sim = model.wv.most_similar(&#x27;computer&#x27;,topn=10)# 取得最相似的前十个单词</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>4.5. 单独保存词向量</strong></p>
+<p>训练完成后，往往不需要继续保存模型，下游任务只需要词向量，因此我们可以单独保存向量，而抛弃模型。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> gensim.models <span class="keyword">import</span> KeyedVectors</span><br><span class="line"></span><br><span class="line">word_vectors = model.wv</span><br><span class="line"></span><br><span class="line">word_vectors.save(<span class="string">&quot;word2vec.wordvectors&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">wv = KeyedVectors.load(<span class="string">&quot;word2vec.wordvectors&quot;</span>, mmap=<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line"></span><br><span class="line">vector = wv[<span class="string">&#x27;computer&#x27;</span>]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>4.6. 关于词向量的进一步说明</strong></p>
+<p>通过阅读源码，我们发现，词向量被保存在<a target="_blank" rel="noopener" href="http://model.wv.vectors/">model.wv.vectors</a>变量中，</p>
+<p>可以通过下面的代码取得参数矩阵。</p>
+<p>model.wv.vectors</p>
+<p>第二种方式，我们可以直接向<a target="_blank" rel="noopener" href="http://model.wv/">model.wv</a>传入参数来取得目标词的词向量，源代码中定义了__getitem__函数，可以直接通过索引的方式取到目标向量。</p>
+<p>因此使用过程中，我们可以直接通过<a target="_blank" rel="noopener" href="http://model.wv/">model.wv</a>[args]取到目标向量。</p>
+<p><strong>4.7. 几个重要的训练的参数说明</strong></p>
+<p><strong>min_count</strong></p>
+<p>对内部词典进行剪枝，在上百万上千万词的数据集中，只出现一两次的单词显然是没有可能出现合理的词向量表示的，所以最好的处理方式就是忽略他们。因此通过定义min_count参数，可以对词典进行剪枝。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">model = Word2Vec(sentences, min_count=<span class="number">10</span>)  <span class="comment"># default value is 5</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>size</strong></p>
+<p>该参数定义了训练后的词向量的维度，该参数大小反映了算法的自由度，该值越大则需要越多的训练数据，也能产生更好的，更精确的模型。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">model = Word2Vec(sentences, size=<span class="number">200</span>)  <span class="comment"># default value is 100</span></span><br></pre></td></tr></table></figure>
+
+
+<p><strong>workers</strong></p>
+<p>定义并行化程度，来加速训练。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">model = Word2Vec(sentences, workers=<span class="number">4</span>) <span class="comment"># default = 1 worker = no parallelization</span></span><br></pre></td></tr></table></figure>
+
+
+<p>若想使用该参数，则需安装cpython，如果没有cpython，只能使用单核处理，训练速度会变慢。</p>
+<p><strong>五、Word2vec 的可视化</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">from</span> builtins <span class="keyword">import</span> <span class="built_in">bytes</span>, <span class="built_in">range</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">pd.options.mode.chained_assignment = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.manifold <span class="keyword">import</span> TSNE</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> gensim</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> matplotlib.font_manager <span class="keyword">import</span> FontProperties</span><br><span class="line"></span><br><span class="line">font = FontProperties(fname=<span class="string">&quot;himalaya.ttf&quot;</span>,size=<span class="number">20</span>)</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">tsne_plot</span>(<span class="params">model, words_num</span>):</span><br><span class="line"></span><br><span class="line">​    labels = []</span><br><span class="line"></span><br><span class="line">​    tokens = []</span><br><span class="line"></span><br><span class="line">​    <span class="keyword">for</span> word <span class="keyword">in</span> model.wv.vocab:</span><br><span class="line"></span><br><span class="line">​        tokens.append(model[word])</span><br><span class="line"></span><br><span class="line">​        labels.append(word)</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">​    tsne_model = TSNE(perplexity=<span class="number">30</span>, n_components=<span class="number">2</span>, init=<span class="string">&#x27;pca&#x27;</span>, n_iter=<span class="number">1000</span>, random_state=<span class="number">23</span>)</span><br><span class="line"></span><br><span class="line">​    new_values = tsne_model.fit_transform(tokens)</span><br><span class="line"></span><br><span class="line">​    x = []</span><br><span class="line"></span><br><span class="line">​    y = []</span><br><span class="line"></span><br><span class="line">​    <span class="keyword">for</span> value <span class="keyword">in</span> new_values:</span><br><span class="line"></span><br><span class="line">​        x.append(value[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line">​        y.append(value[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line">​    plt.figure(figsize=(<span class="number">10</span>, <span class="number">10</span>))</span><br><span class="line"></span><br><span class="line">​    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(words_num):</span><br><span class="line"></span><br><span class="line">​        plt.scatter(x[i], y[i])</span><br><span class="line"></span><br><span class="line">​        <span class="keyword">if</span> <span class="string">b&#x27;\xe0&#x27;</span> <span class="keyword">in</span> <span class="built_in">bytes</span>(labels[i],encoding=<span class="string">&quot;utf-8&quot;</span>):</span><br><span class="line"></span><br><span class="line">​            this_font = font</span><br><span class="line"></span><br><span class="line">​        <span class="keyword">else</span>:</span><br><span class="line"></span><br><span class="line">​            this_font = <span class="string">&#x27;SimHei&#x27;</span></span><br><span class="line"></span><br><span class="line">​        plt.annotate(labels[i],</span><br><span class="line"></span><br><span class="line">​                     Fontproperties=this_font,</span><br><span class="line"></span><br><span class="line">​                     xy=(x[i], y[i]),</span><br><span class="line"></span><br><span class="line">​                     xytext=(<span class="number">5</span>, <span class="number">2</span>),</span><br><span class="line"></span><br><span class="line">​                     textcoords=<span class="string">&#x27;offset points&#x27;</span>,</span><br><span class="line"></span><br><span class="line">​                     ha=<span class="string">&#x27;right&#x27;</span>,</span><br><span class="line"></span><br><span class="line">​                     va=<span class="string">&#x27;bottom&#x27;</span>)</span><br><span class="line"></span><br><span class="line">​    plt.show()</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line"></span><br><span class="line">​    model = gensim.models.Word2Vec.load(<span class="string">&#x27;word2vec.model&#x27;</span>)</span><br><span class="line"></span><br><span class="line">​    <span class="built_in">print</span>(<span class="string">f&#x27;There are <span class="subst">&#123;<span class="built_in">len</span>(model.wv.index2word)&#125;</span> words in vocab&#x27;</span>)</span><br><span class="line"></span><br><span class="line">​    word_num = <span class="built_in">int</span>(<span class="built_in">input</span>(<span class="string">&#x27;please input how many words you want to plot:&#x27;</span>))</span><br><span class="line"></span><br><span class="line">​    tsne_plot(model, word_num)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>上面代码看着可能比较复杂，实际使用sklearn库中的TSNE方法进行处理，以PCA降维的方式将词向量降为二维从而可以使用二维图绘图。上文中对于藏文及中文在matplotlib图中的显示均考虑，在此展示藏文可视化后的效果。</p>
+<p>​        上述代码在主函数中为了避免出错，首先输出了word2vec模型词表中共有多少词，然后输入小于等于词表长度的数字即可展示，不仅可以避免大于词表长度时的错误，也可避免词表中的词过多而展示不清楚的情况。</p>
+
+</article>
+    
+    
+
+</div>
+<div class="trm-post-next-prev row">
+    <div class="col-lg-12">
+        <!-- title -->
+        <h5 class="trm-title-with-divider">
+            其他文章
+            <span data-number="02"></span>
+        </h5>
+    </div>
+    
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/blog/2024/06/24/RAG%E5%9F%BA%E7%A1%80%E4%B8%8E%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%E4%BB%8B%E7%BB%8D/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">RAG基础与工作流程介绍</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>24/06/24</li>
+                <li>20:33</li>
+                <li>LLM</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+    
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/blog/2024/06/15/%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B7%BB%E5%8A%A0%E8%B4%AD%E7%89%A9%E8%BD%A6%E5%8A%A8%E7%94%BB/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/blog/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">小程序添加购物车动画</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>24/06/15</li>
+                <li>12:03</li>
+                <li>未分类</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+</div>
+
+    
+
+    <div id="giscus-wrap" class="trm-card trm-scroll-animation comment-container"></div>
+<script data-swup-reload-script>
+    function loadGiscus() {
+        let nowTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+        const config = {
+            src: 'https://giscus.app/client.js',
+            "data-repo": '2322222223/blog',
+            "data-repo-id": 'R_kgDOMCoZ8w',
+            "data-category": 'Announcements',
+            "data-category-id": 'DIC_kwDOMCoZ884Cfxl-',
+            "data-mapping": 'pathname',
+            "data-reactions-enabled": '1',
+            "data-emit-metadata": '1',
+            "data-theme": nowTheme,
+            "data-lang": 'zh-CN',
+            crossorigin: "anonymous",
+            async: true
+        }
+        let ele = document.createElement('script')
+        for (let key in config) {
+            ele.setAttribute(key, config[key])
+        }
+        document.getElementById('giscus-wrap').insertAdjacentElement('afterbegin', ele)
+    }
+
+    function changeGiscusTheme() {
+        let theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+
+        function sendMessage(message) {
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (!iframe) return;
+            iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+
+        sendMessage({
+            setConfig: {
+                theme: theme
+            }
+        });
+    }
+
+    loadGiscus();
+</script>
+
+
+
+                    <div class="trm-divider footer-divider"></div>
+
+                    <!-- footer -->
+                    <footer class="trm-footer-card trm-scroll-animation">
+
+    
+
+    
+        <div class="trm-footer-item">
+            <span>© 2020- 2024</span>
+            <span class="footer-separator"data-separator=" · "></span>
+            <span class="trm-accent-color">R.linzhou</span>
+        </div>
+    
+
+      
+
+     
+
+     
+</footer>
+                    <!-- footer end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            <!-- body end -->
+
+            
+
+            
+<div class="trm-fixed-container">
+    
+    
+        <div class="trm-fixed-btn" data-title="阅读模式" onclick="asyncFun.switchReadMode()">
+            <i class="iconfont fas fa-book-reader"></i>
+        </div>
+    
+    
+        <div class="trm-fixed-btn hidden-md" data-title="单栏和双栏切换" onclick="asyncFun.switchSingleColumn()">
+            <i class="iconfont fas fa-arrows-alt-h"></i>
+        </div>
+    
+    <div id="trm-back-top" class="trm-fixed-btn" data-title="回到顶部">
+        <i class="iconfont fas fa-arrow-up"></i>
+    </div>
+</div>
+        </div>
+      </div>
+      <!-- scroll container end -->
+  </div>
+  <!-- app wrapper end -->
+
+  
+  <!-- Plugin -->
+
+
+
+
+    
+    
+<script src="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+
+    
+
+    
+        <script src="/blog/js/plugins/typing.js?v=2.2.2"></script>
+    
+
+    
+
+    <!-- 数学公式 -->
+    
+
+    <!-- 评论插件 -->
+    
+        
+
+        
+    
+
+		
+
+
+
+
+    <!-- Service Worker -->
+    
+    <script>
+        "serviceWorker" in navigator ?
+        navigator.serviceWorker.register('/blog/sw.js').then(function () {
+            navigator.serviceWorker.controller ? 
+             console.log("Assets cached by the controlling service worker.") :
+             console.log("Please reload this page to allow the service worker to handle network operations.")
+        }).catch(function (e) {
+            console.log("ERROR: " + e)
+        }) : console.log("Service workers are not supported in the current browser.")
+    </script>
+
+    <!-- baidu push -->
+    
+
+
+<script id="async-script" src="/blog/js/main.js?v=2.2.2"></script>
+
+<!-- CDN -->
+
+
+    
+
+    
+
+    
+
+
+
+</body>
+
+</html>
